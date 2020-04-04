@@ -1,0 +1,3 @@
+<p>{{airline.name}}</p>
+<p>{{airline.address}}</p>
+<app-flight *ngFor="let flight of airline.flights" [flight]="flight"></app-flight>

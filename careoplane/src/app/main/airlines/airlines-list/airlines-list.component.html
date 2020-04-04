@@ -1,0 +1,5 @@
+<p>airlines-list works!</p>
+
+<div *ngFor="let airline of airlines, let id = index">
+    <app-airline [airline]="airline" [id]="id"></app-airline>
+</div>
