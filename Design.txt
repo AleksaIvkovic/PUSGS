@@ -1,0 +1,195 @@
+app component{ ref: "" -> redirect : "main"
+
+	Main component (Zavisi od vrste user-a) ref:"main"  -> redirect : "home"
+	{
+		Navbar component
+		{
+			Logo
+		
+			Links
+			{
+				home, airlines, rent-a-car
+			}
+			
+			Buttons
+			{
+				Register, LogIn
+			}
+			
+			ProfileDropDown
+			{
+				profile, friends, logOut
+			}
+		}
+		
+		RouteOutlet
+		{
+			Home component #reservation ref:"/home"
+			{
+				ScrollableList component 
+				{
+					Reservation component
+					{
+					
+					}
+				}
+				
+				ScrollableList component
+				{
+					Reservation component
+					{
+					
+					}
+				}
+				
+				ScrollableList component
+				{
+					Request component
+					{
+					
+					}
+				}
+				
+				Details component
+				{
+					RouteOutlet ref:"/:id/:type/details "
+					{
+					
+					}
+				}
+			}
+		
+			Airlines component ref:"/airlines"
+			{
+				RouteOutlet
+				{
+					AirlineList component ref:"/list" 
+					{						
+						Filter component
+						{
+						
+						}
+						
+						Airline component
+						{
+							
+						}
+					}						
+					
+					AirlineDetails component ref:"/:id/details"
+					{
+						Filter component
+						{
+						
+						}
+						
+						Flight component
+						{
+							
+						}
+					}
+				}
+			}
+			
+			RentACar component ref="/rent-a-car"
+			{
+				RouteOutlet
+				{
+					RentACarList component ref="/list"
+					{						
+						Filter component
+						{
+						
+						}
+						
+						RentACar component
+						{
+							
+						}
+					}						
+					
+					RentACarDetails component ref="/:id/details"
+					{
+						Filter component
+						{
+						
+						}
+						
+						Car component
+						{
+							
+						}
+					}
+				}
+			}
+			
+			Friends component ref="/friends"
+			{
+				MyFriends component
+				{
+					RequestsList compontent
+					{
+						Person component
+						{
+							#obratiti paznju na dugmice
+						}
+					}
+				
+					FriendsList compontent
+					{
+						Person component
+						{
+							#obratiti paznju na dugmice
+						}
+					}
+				}
+				
+				PeopleList component
+				{
+					Person component
+					{
+						#obratiti paznju na dugmice
+					}
+				}
+			}
+			
+			UserProfile component ref="/profile"
+			{
+				RouteOutlet
+				{
+					UserProfileDetails component ref="/details"
+					{
+					
+					}
+					
+					Register ref="/edit"
+					{
+						#izmena
+					}
+				}
+			}
+		}
+	}
+
+	UserAutentification component ref="authorisation"
+	{
+		Socialmedia component
+		{
+		
+		}
+		
+		RouteOutlet 
+		{
+			Register component ref="/register"
+			{
+				#dodavanje
+			}
+			
+			LogIn component ref="/log-in"
+			{
+			
+			}
+		}
+	}
+
+}

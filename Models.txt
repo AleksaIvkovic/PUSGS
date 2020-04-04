@@ -1,0 +1,35 @@
+Models:
+	User
+	{
+	
+	}
+	
+	Airline
+	{
+	
+	}
+	
+	Flight
+	{
+	
+	}
+	
+	RentACar
+	{
+	
+	}
+	
+	Car
+	{
+	
+	}
+	
+	Admin
+	{
+		
+	}
+	
+	SpecialAdmin
+	{
+		
+	}
