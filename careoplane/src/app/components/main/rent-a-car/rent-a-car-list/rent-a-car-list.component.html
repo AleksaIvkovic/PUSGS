@@ -1,0 +1,11 @@
+<div class="row">
+    <div class="col-xs-12">
+        <app-rent-a-car-item
+            class="list-group-item" 
+            style="cursor: pointer;" 
+            *ngFor="let rentACarEl of rentACars; let i = index"
+            [rentACar]="rentACarEl"
+            [index]="i">
+        </app-rent-a-car-item>
+    </div>
+</div>

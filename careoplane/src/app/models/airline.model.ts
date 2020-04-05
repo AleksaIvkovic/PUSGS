@@ -1,4 +1,4 @@
-import { Flight } from './flight';
+import { Flight } from './flight.model';
 import { StringifyOptions } from 'querystring';
 
 export class Airline {

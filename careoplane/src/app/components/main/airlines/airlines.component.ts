@@ -11,7 +11,12 @@ export class AirlinesComponent implements OnInit {
   constructor(private router: Router, private activeRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-      this.router.navigate(['list'], {relativeTo: this.activeRoute});
+    // this.activeRoute.params
+    // .subscribe(
+    //   () => {
+    //     this.router.navigate(['list'], {relativeTo: this.activeRoute});
+    //   }
+    // );
   }
 
 }

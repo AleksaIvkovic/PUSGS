@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Airline } from 'src/app/models/airline';
+import { Airline } from 'src/app/models/airline.model';
 import { AirlineService } from 'src/app/services/airline.service';
 
 @Component({

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-import { Airline } from '../models/airline';
-import { Flight } from '../models/flight';
+import { Airline } from '../models/airline.model';
+import { Flight } from '../models/flight.model';
 
 @Injectable({
   providedIn: 'root'
