@@ -23,6 +23,10 @@ import { RentACarListComponent } from './components/main/rent-a-car/rent-a-car-l
 import { RentACarDetailsComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/rent-a-car-details.component';
 import { RentACarItemComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-item/rent-a-car-item.component';
 import { RentACarStartComponent } from './components/main/rent-a-car/rent-a-car-start/rent-a-car-start.component';
+import { VehicleListComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-list.component';
+import { VehicleItemComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-item.component';
+import { VehicleDetailsComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-details.component';
+import { VehicleStartComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-start/vehicle-start.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +46,10 @@ import { RentACarStartComponent } from './components/main/rent-a-car/rent-a-car-
     RentACarDetailsComponent,
     RentACarItemComponent,
     RentACarStartComponent,
+    VehicleListComponent,
+    VehicleItemComponent,
+    VehicleDetailsComponent,
+    VehicleStartComponent,
   ],
   imports: [
     BrowserModule,

@@ -6,3 +6,11 @@ routerLinkActive="active">Back</a>
         <h1>{{ rentACar.name }}</h1>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-7">
+        <app-vehicle-list [rentACar]="rentACar"></app-vehicle-list>
+    </div>
+    <div class="col-md-5">
+        <router-outlet></router-outlet>
+    </div>
+</div>

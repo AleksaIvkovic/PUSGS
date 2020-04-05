@@ -18,14 +18,18 @@ export class RentACarService {
         return this.rentACars[index];
     }
 
+    getVehicleForRentACar(indexRentACar: number, indexVehicle: number) {
+        return this.rentACars[indexRentACar].vehicles[indexVehicle];
+    }
+
     getMockUp(): RentACar[] {
         const pricelist: string[] = [
             'Price 1', 'Price 2', 'Price 3'
         ];
         const vehicles: Vehicle[] = [
-            new Vehicle('Brand 1', 1, 'Color 1'),
-            new Vehicle('Brand 2', 2, 'Color 2'),
-            new Vehicle('Brand 3', 3, 'Color 3'),
+            new Vehicle('Brand 1', 'Car', 4),
+            new Vehicle('Brand 2', 'Van', 3),
+            new Vehicle('Brand 3', 'Truck', 2),
         ];
         const locations: string[] = [
             'Location 1', 'Location 2', 'Location 3'
