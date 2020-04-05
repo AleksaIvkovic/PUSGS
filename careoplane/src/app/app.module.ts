@@ -12,6 +12,9 @@ import { AirlinesListComponent } from './main/airlines/airlines-list/airlines-li
 import { AirlineDetailsComponent } from './main/airlines/airline-details/airline-details.component';
 import { AirlineComponent } from './main/airlines/airlines-list/airline/airline.component';
 import { FlightComponent } from './main/airlines/airline-details/flight/flight.component';
+import { FlightReservationComponent } from './main/airlines/flight-reservation/flight-reservation.component';
+import { DateFilterPipe } from './pipes/date-filter.pipe';
+import { PriceFilterPipe } from './pipes/price-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,10 @@ import { FlightComponent } from './main/airlines/airline-details/flight/flight.c
     AirlinesListComponent,
     AirlineDetailsComponent,
     AirlineComponent,
-    FlightComponent
+    FlightComponent,
+    FlightReservationComponent,
+    DateFilterPipe,
+    PriceFilterPipe,
   ],
   imports: [
     BrowserModule,

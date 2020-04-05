@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 import { MainComponent } from './main/main.component';
 import { AirlinesListComponent } from './main/airlines/airlines-list/airlines-list.component';
 import { AirlineDetailsComponent } from './main/airlines/airline-details/airline-details.component';
 import { AirlinesComponent } from './main/airlines/airlines.component';
+import { FlightReservationComponent } from './main/airlines/flight-reservation/flight-reservation.component';
 
 
 const routes: Routes = [
@@ -12,7 +14,8 @@ const routes: Routes = [
     {path: '', redirectTo: '/main/airlines', pathMatch: 'full'},
     {path: 'airlines', component:AirlinesComponent, children: [
       {path: 'list', component: AirlinesListComponent},
-      {path: ':id/details', component: AirlineDetailsComponent}
+      {path: ':id/details', component: AirlineDetailsComponent},
+      {path: ':alid/:fid/reservation', component: FlightReservationComponent}
     ]}
   ]}
 ];

@@ -12,13 +12,13 @@ export class AirlineService {
   private airlines: Airline[] = [
     {name: "Jat",
     address: "Beograd",
-    description: "",
+    description: "Manji jaci bolji",
     destinations: [],
     flights: [this.flight]
   },
     {name: "Lufthansa",
     address: "Berlin",
-    description: "",
+    description: "Sehr gut",
     destinations: [],
     flights: []
   },];

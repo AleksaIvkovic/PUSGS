@@ -8,6 +8,8 @@ import { Flight } from 'src/app/models/flight';
 })
 export class FlightComponent implements OnInit {
   @Input() flight: Flight;
+  @Input() flightId: number;
+  @Input() airlineId : number;
   count: number;
 
   constructor() { }

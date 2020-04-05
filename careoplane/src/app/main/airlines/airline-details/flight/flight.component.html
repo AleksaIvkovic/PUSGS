@@ -13,3 +13,6 @@
 <p>
     price: {{flight.price}}
 </p>
+<a [routerLink]="['../../',airlineId, flightId, 'reservation']" routerLinkActive="active">
+    reserve
+</a>

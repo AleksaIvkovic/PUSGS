@@ -1,13 +1,13 @@
 <div>
-    <p>
+    <h1>
         {{airline.name}}
-    </p>
+    </h1>
 
     <p>
-        {{airline.address}}
+        ..."{{airline.description}}"...
     </p>
 
     <a [routerLink]="['../',id, 'details']" routerLinkActive="active">
-        more...
+        flights
     </a>
 </div>

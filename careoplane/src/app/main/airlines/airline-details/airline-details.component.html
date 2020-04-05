@@ -1,3 +1,17 @@
-<p>{{airline.name}}</p>
+<h1>{{airline.name}}</h1>
 <p>{{airline.address}}</p>
-<app-flight *ngFor="let flight of airline.flights" [flight]="flight"></app-flight>
+<p>{{airline.description}}</p>
+<hr/>
+
+<input type="date" [(ngModel)]="departure">
+<input type="date" [(ngModel)]="arrival">
+<input type="date" [(ngModel)]="duration">
+<input type="number" [(ngModel)]="distance">
+<input type="number" [(ngModel)]="connections">
+<input type="number" [(ngModel)]="price">
+
+<hr/>
+<div *ngFor="let flight of airline.flights | dateFilter:departure:arrival, let i = index">
+    <app-flight  [flight]="flight" [flightId]="i" [airlineId]="id"></app-flight>
+    <hr/>
+</div>

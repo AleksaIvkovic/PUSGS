@@ -88,6 +88,11 @@ app component{ ref: "" -> redirect : "main"
 							
 						}
 					}
+					
+					FlightReservation component ref:":alid/:fid/reservation"
+					{
+						#multiple steps
+					}
 				}
 			}
 			
