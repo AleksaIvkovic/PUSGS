@@ -15,8 +15,9 @@ import { VehicleStartComponent } from './components/main/rent-a-car/rent-a-car-l
 
 
 const routes: Routes = [
-  {path: '', redirectTo:'/main', pathMatch: 'full'},
+  {path: '', redirectTo:'main', pathMatch: 'full'},
   {path: 'main', component: MainComponent, children: [
+    {path:'', redirectTo: 'airlines', pathMatch: 'full'},
     {path: 'airlines', component: AirlinesComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: AirlinesListComponent},
