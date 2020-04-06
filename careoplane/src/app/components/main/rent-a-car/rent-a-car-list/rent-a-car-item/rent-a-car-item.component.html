@@ -11,7 +11,10 @@
             <h3>{{ rentACar.name }}</h3>
         </div>
         <div class="col-md-6">
-            <h3>{{ rentACar.address }}</h3>
+            <span *ngFor="let location of rentACar.locations; let isLast = last; let i = index">
+                {{ location }}{{ isLast ? '' : ', ' }}
+                <br *ngIf="(i + 1) % 3 === 0">
+            </span>
         </div>
         <div class="col-md-1">
             <h3>{{ rentACar.rating }}</h3>

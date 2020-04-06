@@ -7,24 +7,25 @@ import { Subject } from 'rxjs';
     providedIn: 'root'
 })
 export class RentACarService {
-    pricelist: number[] = [
-        100, 150, 250
-    ];
     vehicles: Vehicle[] = [
-        new Vehicle('Brand 1', 'Car', 4),
-        new Vehicle('Brand 2', 'Van', 3),
-        new Vehicle('Brand 3', 'Truck', 2),
+        new Vehicle('BMW', 'Car', 5, 2019, 200),
+        new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150),
+        new Vehicle('FAP', 'Truck', 2, 2014, 200),
+        new Vehicle('BMW', 'Car', 5, 2016, 220),
+        new Vehicle('Mercedes-Benz', 'Van', 3, 2018, 180),
+        new Vehicle('FAP', 'Truck', 2, 2020, 170),
+        new Vehicle('BMW', 'Car', 5, 2016, 130),
+        new Vehicle('Mercedes-Benz', 'Van', 3, 2019, 140),
+        new Vehicle('FAP', 'Truck', 2, 2015, 100),
     ];
-    locations: string[] = [
-        'Location 1', 'Location 2', 'Location 3'
-    ];
+    
     private rentACars: RentACar[] = [
-        new RentACar('Rent A Car 1', 'Address 1', 'Description 1', this.vehicles, this.locations),
-        new RentACar('Rent A Car 2', 'Address 12', 'Description 2', this.vehicles, this.locations),
-        new RentACar('Rent A Car 3', 'Address 3', 'Description 3', this.vehicles, this.locations),
-        new RentACar('Rent A Car 4', 'Address 4', 'Description 4', this.vehicles, this.locations),
-        new RentACar('Rent A Car 5', 'Address 5', 'Description 5', this.vehicles, this.locations),
-        new RentACar('Rent A Car 6', 'Address 6', 'Description 6', this.vehicles, this.locations)
+        new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', this.vehicles, ['Novi Sad']),
+        new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', this.vehicles, ['Novi Sad', 'Beograd']),
+        new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', this.vehicles, ['Novi Sad']),
+        new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', this.vehicles, ['Beograd']),
+        new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', this.vehicles, ['Indjija']),
+        new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', this.vehicles, ['Pancevo', 'Indjija'])
     ];
     rentACarChanged = new Subject<RentACar[]>();
 
@@ -32,7 +33,7 @@ export class RentACarService {
         //slice
     }
 
-    getRentACar(name: string) {
+    getRentACar(name: string): RentACar {
         for (var rentACar of this.rentACars) {
             if (rentACar.name === name) {
                 return rentACar;
@@ -44,28 +45,39 @@ export class RentACarService {
         return this.rentACars[indexRentACar].vehicles[indexVehicle];
     }
 
-    getMockUp(): RentACar[] {
-        // const pricelist: number[] = [
-        //     100, 150, 250
-        // ];
-        const vehicles: Vehicle[] = [
-            new Vehicle('Brand 1', 'Car', 4),
-            new Vehicle('Brand 2', 'Van', 3),
-            new Vehicle('Brand 3', 'Truck', 2),
-        ];
-        const locations: string[] = [
-            'Location 1', 'Location 2', 'Location 3'
-        ];
+    getVehicleTypes(rentACarName: string): string[] {
+        const rentACar = this.getRentACar(rentACarName);
+        const ret: string[] = [];
 
-        let r1 = new RentACar('Rent A Car 1', 'Address 1', 'Description 1', vehicles, locations);
-        let r2 = new RentACar('Rent A Car 12', 'Address 2', 'Description 2', vehicles, locations);
-        let r3 = new RentACar('Rent A Car 3', 'Address 23', 'Description 3', vehicles, locations);
-        let r4 = new RentACar('Rent A Car 4', 'Address 4', 'Description 4', vehicles, locations);
-        let r5 = new RentACar('Rent A Car 5', 'Address 5', 'Description 5', vehicles, locations);
-        let r6 = new RentACar('Rent A Car 6', 'Address 6', 'Description 6', vehicles, locations);
+        for (let vehicle of rentACar.vehicles) {
+            if (!(ret.indexOf(vehicle.type) > -1)) {
+                ret.push(vehicle.type);
+            }
+        }
+
+        return ret;
+    }
+
+    getMockUp(): RentACar[] {
+        const vehicles: Vehicle[] = [
+            new Vehicle('BMW', 'Car', 5, 2019, 200),
+            new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150),
+            new Vehicle('FAP', 'Truck', 2, 2014, 200),
+            new Vehicle('BMW', 'Car', 5, 2016, 220),
+            new Vehicle('Mercedes-Benz', 'Van', 3, 2018, 180),
+            new Vehicle('FAP', 'Truck', 2, 2020, 170),
+            new Vehicle('BMW', 'Car', 5, 2016, 130),
+            new Vehicle('Mercedes-Benz', 'Van', 3, 2019, 140),
+            new Vehicle('FAP', 'Truck', 2, 2015, 100),
+        ];
 
         this.rentACars = [
-            r1, r2, r3, r4, r5, r6
+            new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', this.vehicles, ['Novi Sad']),
+            new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', this.vehicles, ['Novi Sad', 'Beograd']),
+            new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', this.vehicles, ['Novi Sad']),
+            new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', this.vehicles, ['Beograd']),
+            new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', this.vehicles, ['Indjija']),
+            new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', this.vehicles, ['Pancevo', 'Indjija'])
         ];
 
         return this.rentACars;

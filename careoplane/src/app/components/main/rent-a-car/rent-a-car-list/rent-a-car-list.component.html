@@ -1,3 +1,4 @@
+<hr>
 <div class="row">
     <div class="col-md-6">
         <label for="name">Name: </label>
@@ -14,19 +15,19 @@
         <h3>Name</h3>
     </div>
     <div class="col-md-4" style="margin-left: -20px;">
-        <h3>Location</h3>
+        <h3>Locations</h3>
     </div>
     <div class="col-md-1" style="margin-left: 115px;">
         <h3>Rating</h3>
     </div>
 </div>
-<div class="row scroll">
+<div class="row scroll" style="height: 420px;">
     <div class="col-md-12">
         <app-rent-a-car-item
             class="list-group-item" 
             *ngFor="let rentACarEl of rentACars 
             | filter:filteredName:'name'
-            | filter:filteredLocation:'address'
+            | filter:filteredLocation:'locations'
             ; let i = index"
             [rentACar]="rentACarEl"
             [name]="rentACarEl.name">
