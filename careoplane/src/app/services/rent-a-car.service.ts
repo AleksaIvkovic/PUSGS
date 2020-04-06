@@ -20,12 +20,12 @@ export class RentACarService {
     ];
     
     private rentACars: RentACar[] = [
-        new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', this.vehicles, ['Novi Sad']),
-        new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', this.vehicles, ['Novi Sad', 'Beograd']),
-        new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', this.vehicles, ['Novi Sad']),
-        new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', this.vehicles, ['Beograd']),
-        new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', this.vehicles, ['Indjija']),
-        new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', this.vehicles, ['Pancevo', 'Indjija'])
+        new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
+        new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad', 'Beograd']),
+        new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
+        new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Beograd']),
+        new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Indjija']),
+        new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Pancevo', 'Indjija'])
     ];
     rentACarChanged = new Subject<RentACar[]>();
 
@@ -33,7 +33,7 @@ export class RentACarService {
         //slice
     }
 
-    getRentACar(name: string): RentACar {
+    getRentACarByName(name: string): RentACar {
         for (var rentACar of this.rentACars) {
             if (rentACar.name === name) {
                 return rentACar;
@@ -41,13 +41,17 @@ export class RentACarService {
         }
     }
 
+    getRentACarByIndex(index: number): RentACar {
+        return this.rentACars[index];
+    }
+
     getVehicleForRentACar(indexRentACar: number, indexVehicle: number) {
         return this.rentACars[indexRentACar].vehicles[indexVehicle];
     }
 
     getVehicleTypes(rentACarName: string): string[] {
-        const rentACar = this.getRentACar(rentACarName);
-        const ret: string[] = [];
+        const rentACar = this.getRentACarByName(rentACarName);
+        const ret: string[] = ['Any'];
 
         for (let vehicle of rentACar.vehicles) {
             if (!(ret.indexOf(vehicle.type) > -1)) {
@@ -72,12 +76,12 @@ export class RentACarService {
         ];
 
         this.rentACars = [
-            new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', this.vehicles, ['Novi Sad']),
-            new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', this.vehicles, ['Novi Sad', 'Beograd']),
-            new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', this.vehicles, ['Novi Sad']),
-            new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', this.vehicles, ['Beograd']),
-            new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', this.vehicles, ['Indjija']),
-            new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', this.vehicles, ['Pancevo', 'Indjija'])
+            new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
+            new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad', 'Beograd']),
+            new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
+            new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Beograd']),
+            new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Indjija']),
+            new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Pancevo', 'Indjija'])
         ];
 
         return this.rentACars;

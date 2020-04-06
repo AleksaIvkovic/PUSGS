@@ -21,6 +21,8 @@ export class FilterPipe implements PipeTransform {
           }
         }
       }
+    } else if (propName === 'type' && filterString === 'Any') {
+      return value;
     } else {
       for (const item of value) {
         if (item[propName].toLowerCase().includes(filterString.toLowerCase())) {

@@ -11,6 +11,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 export class VehicleListComponent implements OnInit {
   @Input() rentACar: RentACar;
   vehicleTypes = [];
+  type: string = 'Any';
 
   constructor(
     private rentACarService: RentACarService,
@@ -18,6 +19,7 @@ export class VehicleListComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
+    this.rentACar.locations.unshift('Any');
     this.route.params
     .subscribe(
       (params: Params) => {
