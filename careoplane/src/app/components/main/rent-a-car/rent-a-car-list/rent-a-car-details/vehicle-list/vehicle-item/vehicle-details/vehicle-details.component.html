@@ -1,7 +1,29 @@
 <div class="row">
-    <div class="col-xs-12">
+    <!-- <div class="col-xs-12">
         <h1>{{ vehicle.brand }}</h1>
-    </div>
+    </div> -->
+    <table>
+        <tr>
+            <th>Brand</th>
+            <td>{{ vehicle.brand }}</td>
+        </tr>
+        <tr>
+            <th>Type</th>
+            <td>{{ vehicle.type }}</td>
+        </tr>
+        <tr>
+            <th>Year</th>
+            <td>{{ vehicle.year }}</td>
+        </tr>
+        <tr>
+            <th>Seats</th>
+            <td>{{ vehicle.numOfSeats }}</td>
+        </tr>
+        <tr>
+            <th>Price Per Day</th>
+            <td>{{ vehicle.pricePerDay | currency: 'EUR':true }}</td>
+        </tr>
+    </table>
 </div>
 <div class="row">
     <div class="col-xs-12">

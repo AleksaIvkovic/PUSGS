@@ -9,10 +9,23 @@ export class FilterPipe implements PipeTransform {
     if (value.length === 0 || filterString === '') {
       return value;
     }
+
     const res = [];
-    for (const item of value) {
-      if (item[propName].toLowerCase().includes(filterString.toLowerCase())) {
-        res.push(item);
+
+    if (propName === 'locations') {
+      for (const item of value) {
+        for (const loc of item.locations) {
+          if (loc.toLowerCase().includes(filterString.toLowerCase())) {
+            res.push(item);
+            break;
+          }
+        }
+      }
+    } else {
+      for (const item of value) {
+        if (item[propName].toLowerCase().includes(filterString.toLowerCase())) {
+          res.push(item);
+        }
       }
     }
     return res;

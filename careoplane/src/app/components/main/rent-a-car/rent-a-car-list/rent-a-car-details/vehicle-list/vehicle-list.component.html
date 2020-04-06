@@ -1,5 +1,50 @@
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-md-2 form-group">
+        <label for="mestoPreuzimanja">Mesto preuzimanja: </label>
+        <select class="form-control" id="mestoPreuzimanja" style="width: 180px;">
+            <option>Any</option>
+            <option *ngFor="let location of rentACar.locations">{{ location }}</option>
+        </select>
+    </div>
+    <div class="col-md-2 form-group">
+        <label for="mestoPredaje">Mesto predaje: </label>
+        <select class="form-control" id="mestoPredaje" style="width: 180px;">
+            <option>Any</option>
+            <option *ngFor="let location of rentACar.locations">{{ location }}</option>
+        </select>
+    </div>
+    <div class="col-md-2 form-group">
+        <label for="type">Type: </label>
+        <select class="form-control" id="type" style="width: 180px;">
+            <option>Any</option>
+            <option *ngFor="let type of vehicleTypes">{{ type }}</option>
+        </select>
+    </div>
+    <!-- <div class="col-md-6">
+        <label for="location">Location: </label>
+        <input type="text" [(ngModel)]="filteredLocation" name="location">
+    </div> -->
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-2" style="margin-left: 30px;">
+        <h6>Brand</h6>
+    </div>
+    <div class="col-md-1" style="margin-right: 50px;">
+        <h6>Year</h6>
+    </div>
+    <div class="col-md-1" >
+        <h6>Seats</h6>
+    </div>
+    <div class="col-md-1">
+        <h6>Price</h6>
+    </div>
+    <div class="col-md-1">
+        <h6>Rating</h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-7 scroll" style="height: 300px;">
         <app-vehicle-item
             class="list-group-item" 
             style="cursor: pointer;" 
@@ -7,5 +52,9 @@
             [vehicle]="vehicleEl"
             [index]="i">
         </app-vehicle-item>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-4">
+        <router-outlet></router-outlet>
     </div>
 </div>

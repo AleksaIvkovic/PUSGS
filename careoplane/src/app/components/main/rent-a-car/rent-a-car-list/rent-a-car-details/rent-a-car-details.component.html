@@ -2,15 +2,21 @@
 [routerLink]="['../../']"
 routerLinkActive="active">Back</a>
 <div class="row">
-    <div class="col-xs-12">
-        <h1>{{ rentACar.name }}</h1>
+    <div class="col-md-4">
+        <h3>{{ rentACar.name }}</h3>
+    </div>
+    <div class="col-xs-5">
+        <p style="word-wrap: break-word;">{{ rentACar.description }}</p>
     </div>
 </div>
 <div class="row">
-    <div class="col-md-7">
-        <app-vehicle-list [rentACar]="rentACar"></app-vehicle-list>
+    <div class="col-md-4">
+        <h6>{{ rentACar.address }}</h6>
     </div>
-    <div class="col-md-5">
-        <router-outlet></router-outlet>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <app-vehicle-list [rentACar]="rentACar"></app-vehicle-list>
     </div>
 </div>

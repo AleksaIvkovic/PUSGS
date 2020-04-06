@@ -2,8 +2,25 @@
  style="cursor: pointer"
  [routerLink]="[index, 'details']"
  routerLinkActive="active">
-    <div>
+    <!-- <div>
         <h4 class="list-group-item-heading">{{ vehicle.brand }}</h4>
         <p class="list-group-item-text">{{ vehicle.type }}</p>
+    </div> -->
+    <div class="row">
+        <div class="col-md-3">
+            <h6>{{ vehicle.brand }}</h6>
+        </div>
+        <div class="col-md-3" style="margin-left: 35px;">
+            <h6>{{ vehicle.year }}</h6>
+        </div>
+        <div class="col-md-2">
+            <h6>{{ vehicle.numOfSeats }}</h6>
+        </div>
+        <div class="col-md-2">
+            <h6>{{ vehicle.pricePerDay }}</h6>
+        </div>
+        <div class="col-md-1" style="margin-left: 10px;">
+            <h6>{{ vehicle.rating }}</h6>
+        </div>
     </div>
 </a>
