@@ -8,7 +8,7 @@ import { RentACar } from 'src/app/models/rent-a-car.model';
 })
 export class RentACarItemComponent implements OnInit {
   @Input() rentACar: RentACar;
-  @Input() index: number;
+  @Input() name: string;
 
   constructor() { }
 

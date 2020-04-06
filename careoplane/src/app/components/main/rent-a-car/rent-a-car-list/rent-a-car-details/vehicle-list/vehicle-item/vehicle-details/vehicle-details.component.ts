@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Vehicle } from 'src/app/models/vehicle.model';
-import { VehicleService } from 'src/app/services/vehicle.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { RentACar } from 'src/app/models/rent-a-car.model';
 import { RentACarService } from 'src/app/services/rent-a-car.service';

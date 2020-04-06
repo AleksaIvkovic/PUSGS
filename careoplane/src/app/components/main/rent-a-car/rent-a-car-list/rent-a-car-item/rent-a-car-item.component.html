@@ -1,9 +1,20 @@
 <a class="list-group-item clearfix"
  style="cursor: pointer"
- [routerLink]="['../', index, 'details']"
+ [routerLink]="['../', rentACar.name, 'details']"
  routerLinkActive="active">
-    <div>
+    <!-- <div>
         <h4 class="list-group-item-heading">{{ rentACar.name }}</h4>
-        <p class="list-group-item-text">{{ rentACar.adress }}</p>
+        <p class="list-group-item-text">{{ rentACar.address }}</p>
+    </div> -->
+    <div class="row">
+        <div class="col-md-5">
+            <h3>{{ rentACar.name }}</h3>
+        </div>
+        <div class="col-md-6">
+            <h3>{{ rentACar.address }}</h3>
+        </div>
+        <div class="col-md-1">
+            <h3>{{ rentACar.rating }}</h3>
+        </div>
     </div>
 </a>

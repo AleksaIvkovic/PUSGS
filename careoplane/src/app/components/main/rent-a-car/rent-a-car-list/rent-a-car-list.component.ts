@@ -12,6 +12,8 @@ import { Subscription } from 'rxjs';
 export class RentACarListComponent implements OnInit, OnDestroy {
   rentACars: RentACar[];
   subscription: Subscription;
+  filteredName: string = '';
+  filteredLocation: string = '';
 
   constructor(
     private rentACarService: RentACarService,
@@ -28,9 +30,9 @@ export class RentACarListComponent implements OnInit, OnDestroy {
     this.rentACars = this.rentACarService.getMockUp();
   }
 
-  onDetails(index: number) {
-    this.router.navigate([index, 'details'], {relativeTo: this.activeRoute});
-  }
+  // onDetails(index: number) {
+  //   this.router.navigate([index, 'details'], {relativeTo: this.activeRoute});
+  // }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();

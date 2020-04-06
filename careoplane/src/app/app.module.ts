@@ -27,6 +27,7 @@ import { VehicleListComponent } from './components/main/rent-a-car/rent-a-car-li
 import { VehicleItemComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-item.component';
 import { VehicleDetailsComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-details.component';
 import { VehicleStartComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-start/vehicle-start.component';
+import { FilterPipe } from './pipes/filter.pipe';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { VehicleStartComponent } from './components/main/rent-a-car/rent-a-car-l
     VehicleItemComponent,
     VehicleDetailsComponent,
     VehicleStartComponent,
+    FilterPipe,
   ],
   imports: [
     BrowserModule,

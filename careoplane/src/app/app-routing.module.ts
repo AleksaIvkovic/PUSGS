@@ -26,7 +26,7 @@ const routes: Routes = [
     {path: 'rent-a-car', component: RentACarComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: RentACarListComponent},
-      {path: ':id/details', component: RentACarDetailsComponent, children: [
+      {path: ':name/details', component: RentACarDetailsComponent, children: [
         {path: '', component: VehicleStartComponent, pathMatch: 'full'},
         {path: ':idv/details', component: VehicleDetailsComponent}
       ]},
