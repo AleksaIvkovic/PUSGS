@@ -1,5 +1,17 @@
+<div class="container testimonial-group">
+    <div class="row text-center">
+        <div *ngFor="let airline of airlines" id="pictureDiv">
+            <a [routerLink]="['../',airline.id, 'details']">
+                <app-airline [airline]="airline" [id]="airline.id"></app-airline>
+                <hr/>
+            </a>
+        </div>
+    </div>
+  </div>
+
 <hr/>
-<div *ngFor="let airline of airlines, let id = index">
-    <app-airline [airline]="airline" [id]="id"></app-airline>
+
+  <div *ngFor="let flight of flights">
+    <app-flight [back]="'one'" [flight]="flight" [airlineId]="flight.airlineId" [flightId]="flight.id" [airlineName]="airlines[flight.airlineId].name"></app-flight>
     <hr/>
 </div>

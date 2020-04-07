@@ -1,10 +1,13 @@
-<h1>{{airline.name}}</h1>
-<p>{{airline.address}}</p>
-<p>{{airline.description}}</p>
-
-<hr/>
-
-<div #mapContainer id="map"></div>
+<div class="row">
+    <div class="col-md-6">
+        <h1>{{airline.name}}</h1>
+        <p>{{airline.address}}</p>
+        <p>{{airline.description}}</p>
+    </div>
+    <div class="col-md-6">
+        <div #mapContainer id="map"></div>
+    </div>
+</div>
 
 <hr/>
 
@@ -19,9 +22,7 @@
 <div *ngFor="let flight of airline.flights |
              filter:origin:'origin' | 
              filter:destination:'destination' |
-             priceFilter:price:'price' |
-             priceFilter:connections:'connections', 
-             let i = index">
-    <app-flight  [flight]="flight" [flightId]="i" [airlineId]="id"></app-flight>
+             priceFilter:connections:'connections'">
+    <app-flight [back]="'one'" [flight]="flight" [flightId]="flight.id" [airlineId]="id"></app-flight>
     <hr/>
 </div>

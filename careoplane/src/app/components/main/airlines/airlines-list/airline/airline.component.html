@@ -1,13 +1,3 @@
 <div>
-    <h1>
-        {{airline.name}}
-    </h1>
-
-    <p>
-        ..."{{airline.description}}"...
-    </p>
-
-    <a [routerLink]="['../',id, 'details']" routerLinkActive="active">
-        flights
-    </a>
+    <img class="images" src={{airline.picture}} alt={{airline.name}}>
 </div>
