@@ -5,13 +5,20 @@
     Arrival : {{flight.arrival | date}}
 </p>
 <p>
-    Duration : {{flight.duration | date}}
+    Duration : {{flight.duration}}
+</p>
+<p>
+    Distance : {{flight.distance}}
 </p>
 <p>
     num of connecetions: {{count}}
 </p>
+<div>
+    <p>Connections:</p>
+    <p *ngFor="let con of flight.connections">{{con}}</p>
+</div>
 <p>
-    price: {{flight.price}}
+    price: {{flight.price | currency:'EUR'}}
 </p>
 <a [routerLink]="['../../',airlineId, flightId, 'reservation']" routerLinkActive="active">
     reserve

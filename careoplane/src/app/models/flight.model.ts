@@ -1,15 +1,11 @@
 export class Flight {
-    public departure: Date;
-    public arrival: Date;
-    public duration: Date;
-    public connections: string[];
-    public price: number;
-
-    constructor(departure: Date, arrival: Date, duration: Date, connections: string[], price: number){
-        this.departure = departure;
-        this.arrival = arrival;
-        this.duration = duration;
-        this.connections = connections;
-        this.price = price;
-    }
+    constructor(
+        public origin: string,
+        public destination: string,
+        public departure: Date,
+        public arrival: Date, 
+        public duration: number,
+        public distance: number, 
+        public connections: string[], 
+        public price: number){}
 }
