@@ -1,7 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Airline } from 'src/app/models/airline.model';
-import { AirlineService } from 'src/app/services/airline.service';
 
 @Component({
   selector: 'app-airline',
@@ -12,10 +10,9 @@ export class AirlineComponent implements OnInit {
   @Input() airline: Airline;
   @Input() id: number;
 
-  constructor(private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    console.log(this.airline);
   }
 
 }

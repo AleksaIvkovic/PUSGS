@@ -8,15 +8,20 @@
 
 <hr/>
 
+<input type="text" [(ngModel)]="origin">
+<input type="text" [(ngModel)]="destination">
 <input type="date" [(ngModel)]="departure">
 <input type="date" [(ngModel)]="arrival">
-<input type="date" [(ngModel)]="duration">
-<input type="number" [(ngModel)]="distance">
-<input type="number" [(ngModel)]="connections">
-<input type="number" [(ngModel)]="price">
+<input type="number" [(ngModel)]="connections" min="0">
+<input type="number" [(ngModel)]="price" min="1">
 
 <hr/>
-<div *ngFor="let flight of airline.flights | dateFilter:departure:arrival, let i = index">
+<div *ngFor="let flight of airline.flights |
+             filter:origin:'origin' | 
+             filter:destination:'destination' |
+             priceFilter:price:'price' |
+             priceFilter:connections:'connections', 
+             let i = index">
     <app-flight  [flight]="flight" [flightId]="i" [airlineId]="id"></app-flight>
     <hr/>
 </div>

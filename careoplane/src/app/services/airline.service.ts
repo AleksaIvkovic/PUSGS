@@ -8,19 +8,26 @@ import { Flight } from '../models/flight.model';
   providedIn: 'root'
 })
 export class AirlineService {
-  private flight: Flight = new Flight(new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), ["BB"], 1500);
+  private flight1: Flight = new Flight("Belgrade","London",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "AA", "CC"], 1500);
+  private flight2: Flight = new Flight("Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "DD"], 1500);
   private airlines: Airline[] = [
     {name: "Jat",
     address: "Beograd",
     description: "Manji jaci bolji",
     destinations: [],
-    flights: [this.flight]
+    flights: [this.flight1, this.flight2],
+    cheapFlights: [],
+    airplane: [],
+    pricess: [],
   },
     {name: "Lufthansa",
     address: "Berlin",
     description: "Sehr gut",
     destinations: [],
-    flights: []
+    flights: [this.flight2],
+    cheapFlights: [],
+    airplane: [],
+    pricess: [],
   },];
   
   airlinesChanged = new Subject<Airline[]>()
