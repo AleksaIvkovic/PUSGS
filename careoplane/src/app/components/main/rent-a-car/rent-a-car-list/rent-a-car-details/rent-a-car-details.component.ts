@@ -10,7 +10,7 @@ import { RentACar } from 'src/app/models/rent-a-car.model';
 })
 export class RentACarDetailsComponent implements OnInit {
   rentACar: RentACar;
-  name: string;
+  index: number;
 
   constructor(
     private rentACarService: RentACarService,
@@ -21,8 +21,8 @@ export class RentACarDetailsComponent implements OnInit {
     this.route.params
     .subscribe(
       (params: Params) => {
-        this.name = params['name'];
-        this.rentACar = this.rentACarService.getRentACar(this.name);
+        this.index = params['id'];
+        this.rentACar = this.rentACarService.getRentACarByIndex(this.index);
       }
     );
   }

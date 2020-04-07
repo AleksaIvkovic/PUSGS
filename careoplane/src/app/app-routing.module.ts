@@ -12,6 +12,7 @@ import { RentACarDetailsComponent } from './components/main/rent-a-car/rent-a-ca
 import { RentACarStartComponent } from './components/main/rent-a-car/rent-a-car-start/rent-a-car-start.component';
 import { VehicleDetailsComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-details.component';
 import { VehicleStartComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-start/vehicle-start.component';
+import { VehicleReserveComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-reserve/vehicle-reserve.component';
 
 
 const routes: Routes = [
@@ -27,9 +28,10 @@ const routes: Routes = [
     {path: 'rent-a-car', component: RentACarComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: RentACarListComponent},
-      {path: ':name/details', component: RentACarDetailsComponent, children: [
+      {path: ':id/details', component: RentACarDetailsComponent, children: [
         {path: '', component: VehicleStartComponent, pathMatch: 'full'},
-        {path: ':idv/details', component: VehicleDetailsComponent}
+        {path: ':idv/details', component: VehicleDetailsComponent},
+        {path: ':idv/reserve', component: VehicleReserveComponent}
       ]},
     ]}
   ]}

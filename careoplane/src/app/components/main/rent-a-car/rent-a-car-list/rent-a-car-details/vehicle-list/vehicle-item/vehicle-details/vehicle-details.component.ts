@@ -33,7 +33,7 @@ export class VehicleDetailsComponent implements OnInit {
   }
 
   onReserve() {
-    console.log(this.vehicle);
+    this.router.navigate(['../', 'reserve'], {relativeTo: this.route})
   }
 
 }

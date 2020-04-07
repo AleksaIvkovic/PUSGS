@@ -10,6 +10,7 @@ import { RentACar } from 'src/app/models/rent-a-car.model';
 export class VehicleItemComponent implements OnInit {
   @Input() vehicle: Vehicle;
   @Input() index: number;
+  @Input() rentACar: RentACar;
 
   constructor() { }
 

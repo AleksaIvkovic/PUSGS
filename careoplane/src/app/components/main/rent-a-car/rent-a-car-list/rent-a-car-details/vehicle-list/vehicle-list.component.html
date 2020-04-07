@@ -1,23 +1,20 @@
 <div class="row">
     <div class="col-md-2 form-group">
-        <label for="mestoPreuzimanja">Mesto preuzimanja: </label>
-        <select class="form-control" id="mestoPreuzimanja" style="width: 180px;">
-            <option>Any</option>
+        <label for="pickUp">Pick up from: </label>
+        <select class="form-control" id="pickUp" style="width: 180px;">
             <option *ngFor="let location of rentACar.locations">{{ location }}</option>
         </select>
     </div>
     <div class="col-md-2 form-group">
-        <label for="mestoPredaje">Mesto predaje: </label>
-        <select class="form-control" id="mestoPredaje" style="width: 180px;">
-            <option>Any</option>
+        <label for="returnTo">Return to: </label>
+        <select class="form-control" id="returnTo" style="width: 180px;">
             <option *ngFor="let location of rentACar.locations">{{ location }}</option>
         </select>
     </div>
     <div class="col-md-2 form-group">
         <label for="type">Type: </label>
-        <select class="form-control" id="type" style="width: 180px;">
-            <option>Any</option>
-            <option *ngFor="let type of vehicleTypes">{{ type }}</option>
+        <select class="form-control" id="type" style="width: 180px;" [(ngModel)]="type">
+            <option *ngFor="let type of vehicleTypes" [value]="type">{{ type }}</option>
         </select>
     </div>
     <!-- <div class="col-md-6">
@@ -37,20 +34,20 @@
         <h6>Seats</h6>
     </div>
     <div class="col-md-1">
-        <h6>Price</h6>
+        <h6>Total Price</h6>
     </div>
     <div class="col-md-1">
         <h6>Rating</h6>
     </div>
 </div>
 <div class="row">
-    <div class="col-md-7 scroll" style="height: 300px;">
+    <div class="col-md-7 scroll" style="height: 288px;">
         <app-vehicle-item
-            class="list-group-item" 
-            style="cursor: pointer;" 
-            *ngFor="let vehicleEl of rentACar.vehicles; let i = index"
+            class="list-group-item"  
+            *ngFor="let vehicleEl of rentACar.vehicles | filter:type:'type'; let i = index"
             [vehicle]="vehicleEl"
-            [index]="i">
+            [index]="rentACar.vehicles.indexOf(vehicleEl)"
+            [rentACar]="rentACar">
         </app-vehicle-item>
     </div>
     <div class="col-md-1"></div>
