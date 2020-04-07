@@ -1,15 +1,31 @@
 <div class="row">
     <div class="col-md-2 form-group">
         <label for="pickUp">Pick up from: </label>
-        <select class="form-control" id="pickUp" style="width: 180px;">
-            <option *ngFor="let location of rentACar.locations">{{ location }}</option>
+        <select class="form-control" id="pickUp" style="width: 180px;" [(ngModel)]="pickUpLocation">
+            <option *ngFor="let location of pickUpLocations" [value]="location">{{ location }}</option>
         </select>
     </div>
     <div class="col-md-2 form-group">
+        <label for="pickUp">Pick up date: </label>
+        <mat-form-field style="width: 150px; height: 40px;">
+            <input matInput [matDatepicker]="pickerUp">
+            <mat-datepicker-toggle matSuffix [for]="pickerUp"></mat-datepicker-toggle>
+            <mat-datepicker #pickerUp></mat-datepicker>
+        </mat-form-field>
+    </div>
+    <div class="col-md-2 form-group">
         <label for="returnTo">Return to: </label>
-        <select class="form-control" id="returnTo" style="width: 180px;">
-            <option *ngFor="let location of rentACar.locations">{{ location }}</option>
+        <select class="form-control" id="returnTo" style="width: 180px;" [(ngModel)]="returnToLocation">
+            <option *ngFor="let location of returnToLocations" [value]="location">{{ location }}</option>
         </select>
+    </div>
+    <div class="col-md-2 form-group">
+        <label for="pickUp">Return date: </label>
+        <mat-form-field style="width: 150px; height: 40px;">
+            <input matInput [matDatepicker]="pickerTo">
+            <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+            <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
     </div>
     <div class="col-md-2 form-group">
         <label for="type">Type: </label>
@@ -41,10 +57,13 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-7 scroll" style="height: 288px;">
+    <div class="col-md-7 scroll" style="height: 230px;">
         <app-vehicle-item
             class="list-group-item"  
-            *ngFor="let vehicleEl of rentACar.vehicles | filter:type:'type'; let i = index"
+            *ngFor="let vehicleEl of rentACar.vehicles 
+            | filter:type:'type'
+            | filter:pickUpLocation:'location'
+            ; let i = index"
             [vehicle]="vehicleEl"
             [index]="rentACar.vehicles.indexOf(vehicleEl)"
             [rentACar]="rentACar">

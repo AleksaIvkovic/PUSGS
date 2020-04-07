@@ -21,7 +21,7 @@ export class FilterPipe implements PipeTransform {
           }
         }
       }
-    } else if (propName === 'type' && filterString === 'Any') {
+    } else if (filterString === 'Any' && (propName === 'type' || propName === 'location')) {
       return value;
     } else {
       for (const item of value) {

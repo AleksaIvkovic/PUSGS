@@ -1,1 +1,24 @@
-<p>vehicle-reserve works!</p>
+<div class="row">
+    <table>
+        <tr>
+            <th>Vehicle</th>
+            <td>{{ vehicle.brand }}, {{ vehicle.type }}, {{ vehicle.numOfSeats }} seats</td>
+        </tr>
+        <tr>
+            <th>From</th>
+            <td>Date, Location</td>
+        </tr>
+        <tr>
+            <th>To</th>
+            <td>Date, Location</td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>{{ (rentACar.pricelist[vehicle.type] + vehicle.pricePerDay) | currency: 'EUR':true }}</td>
+        </tr>
+        <tr>
+            <td><button class="btn btn-success">Confirm</button></td>
+            <td><button class="btn btn-danger" (click)="onCancel()">Cancel</button></td>
+        </tr>
+    </table>
+</div>

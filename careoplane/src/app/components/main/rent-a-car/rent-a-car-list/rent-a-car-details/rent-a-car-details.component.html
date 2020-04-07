@@ -4,16 +4,20 @@ routerLinkActive="active">Back</a>
 <div class="row">
     <div class="col-md-4">
         <h3>{{ rentACar.name }}</h3>
+        <h6>{{ rentACar.address }}</h6>
     </div>
-    <div class="col-xs-5">
+    <div class="col-md-4">
+        <div #mapContainer id="map" style="width: 300px; height: 125px;"></div>
+    </div>
+    <div class="col-md-2">
         <p style="word-wrap: break-word;">{{ rentACar.description }}</p>
     </div>
 </div>
-<div class="row">
+<!-- <div class="row">
     <div class="col-md-4">
         <h6>{{ rentACar.address }}</h6>
     </div>
-</div>
+</div> -->
 <hr>
 <div class="row">
     <div class="col-md-12">
