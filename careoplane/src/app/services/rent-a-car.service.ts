@@ -41,6 +41,10 @@ export class RentACarService {
         }
     }
 
+    getRentACarIndex(rentACar: RentACar): number {
+        return this.rentACars.indexOf(rentACar);
+    }
+
     getRentACarByIndex(index: number): RentACar {
         return this.rentACars[index];
     }
