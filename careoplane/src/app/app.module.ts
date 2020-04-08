@@ -33,6 +33,7 @@ import { FilterPipe } from './pipes/filter.pipe';
 import { VehicleReserveComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-reserve/vehicle-reserve.component';
 import { MatNativeDateModule, GestureConfig } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { OrderByPipe } from './pipes/order-by.pipe';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     VehicleStartComponent,
     FilterPipe,
     VehicleReserveComponent,
+    OrderByPipe,
   ],
   imports: [
     BrowserModule,

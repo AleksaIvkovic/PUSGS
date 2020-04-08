@@ -10,7 +10,6 @@
   </div>
 
 <hr/>
-
     <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
       <label for="origin">From</label>
       <input type="text" id="origin" formControlName="origin">
@@ -30,11 +29,10 @@
               class="btn btn-success"
               [disabled]="!searchForm.valid">Search</button>
     </form>
-
 <hr/>
 
 <div *ngIf="search">
-  <div *ngFor="let flight of flights| filter:origin:'origin' | filter:destination:'destination'">
+  <div *ngFor="let flight of flights| filter:origin:'origin' | filter:destination:'destination' | orderBy:'airlineName':true">
     <app-flight [back]="'one'" [flight]="flight" [airlineId]="flight.airlineId" [flightId]="flight.id" [airlineName]="airlines[flight.airlineId].name"></app-flight>
     <hr/>
   </div>

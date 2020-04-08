@@ -1,6 +1,8 @@
 import { Seat } from './seat.model';
 
 export class Flight {
+    public airlineName: string;
+
     constructor(
         public airlineId: number,
         public id: number,

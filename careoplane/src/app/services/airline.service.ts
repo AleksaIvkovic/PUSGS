@@ -28,6 +28,13 @@ export class AirlineService {
   ];
   
   constructor() {
+    for(let flight in this.flights){
+      for(let airline in this.airlines){
+        if(this.flights[flight].airlineId == this.airlines[airline].id){
+          this.flights[flight].airlineName = this.airlines[airline].name;
+        }
+      }
+    }
     this.airlines[0].flights.push(this.flight1);
     this.airlines[0].flights.push(this.flight2);
     this.airlines[0].picture = "https://seeklogo.com/images/J/JAT_Jugoslovenski_Aero_Transport-logo-04390D0687-seeklogo.com.png";
