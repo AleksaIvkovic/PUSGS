@@ -1,10 +1,50 @@
 import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSliderModule } from '@angular/material/slider';
-import {MatSidenavModule} from '@angular/material/sidenav';
+
+// {A11yModule} from '@angular/cdk/a11y';
+import {ClipboardModule} from '@angular/cdk/clipboard';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import {PortalModule} from '@angular/cdk/portal';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import {CdkStepperModule} from '@angular/cdk/stepper';
+import {CdkTableModule} from '@angular/cdk/table';
+import {CdkTreeModule} from '@angular/cdk/tree';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatBadgeModule} from '@angular/material/badge';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import {MatButtonModule} from '@angular/material/button';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatCardModule} from '@angular/material/card';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatStepperModule} from '@angular/material/stepper';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
+import {MatListModule} from '@angular/material/list';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatNativeDateModule, MatRippleModule} from '@angular/material/core';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatSelectModule} from '@angular/material/select';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatSliderModule} from '@angular/material/slider';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatSortModule} from '@angular/material/sort';
+import {MatTableModule} from '@angular/material/table';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatTreeModule} from '@angular/material/tree';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,7 +60,6 @@ import { DateFilterPipe } from './pipes/date-filter.pipe';
 import { PriceFilterPipe } from './pipes/price-filter.pipe';
 import { HeaderComponent } from './components/main/header/header.component';
 import { RentACarComponent } from './components/main/rent-a-car/rent-a-car.component';
-import { MatTabsModule } from '@angular/material/tabs';
 import { RentACarListComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-list.component';
 import { RentACarDetailsComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/rent-a-car-details.component';
 import { RentACarItemComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-item/rent-a-car-item.component';
@@ -31,7 +70,6 @@ import { VehicleDetailsComponent } from './components/main/rent-a-car/rent-a-car
 import { VehicleStartComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-start/vehicle-start.component';
 import { FilterPipe } from './pipes/filter.pipe';
 import { VehicleReserveComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-reserve/vehicle-reserve.component';
-import { MatNativeDateModule, GestureConfig } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OrderByPipe } from './pipes/order-by.pipe';
 
@@ -68,13 +106,51 @@ import { OrderByPipe } from './pipes/order-by.pipe';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatSliderModule,
-    MatTabsModule,
-    MatSidenavModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
+    
     MatFormFieldModule,
+
+    ClipboardModule,
+    CdkStepperModule,
+    CdkTableModule,
+    CdkTreeModule,
+    DragDropModule,
+    MatAutocompleteModule,
+    MatBadgeModule,
+    MatBottomSheetModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    MatStepperModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatGridListModule,
+    MatIconModule,
     MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatNativeDateModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatRadioModule,
+    MatRippleModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    MatSortModule,
+    MatTableModule,
+    MatTabsModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    MatTreeModule,
+    PortalModule,
+    ScrollingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

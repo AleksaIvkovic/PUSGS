@@ -1,15 +1,24 @@
 <div class="container testimonial-group">
-    <div class="row text-center">
-        <div *ngFor="let airline of airlines" id="pictureDiv">
-            <a [routerLink]="['../',airline.id, 'details']">
-                <app-airline [airline]="airline" [id]="airline.id"></app-airline>
-                <hr/>
-            </a>
-        </div>
-    </div>
+  <div class="row text-center">
+      <div *ngFor="let airline of airlines" id="pictureDiv">
+          <a [routerLink]="['../',airline.id, 'details']">
+              <app-airline [airline]="airline" [id]="airline.id"></app-airline>
+          </a>
+      </div>
   </div>
+</div>
 
-<hr/>
+<mat-accordion>
+  <mat-expansion-panel opened="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Search
+      </mat-panel-title>
+      <mat-panel-description>
+        Basics
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
     <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
       <label for="origin">From</label>
       <input type="text" id="origin" formControlName="origin">
@@ -29,12 +38,29 @@
               class="btn btn-success"
               [disabled]="!searchForm.valid">Search</button>
     </form>
+
+  </mat-expansion-panel>
+  <mat-expansion-panel opened="false" *ngIf="search">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Filter
+      </mat-panel-title>
+      <mat-panel-description>
+        Filter
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+</mat-accordion>
+
 <hr/>
 
-<div *ngIf="search">
+<mat-list *ngIf="search">
   <div *ngFor="let flight of flights| filter:origin:'origin' | filter:destination:'destination' | orderBy:'airlineName':true">
     <app-flight [back]="'one'" [flight]="flight" [airlineId]="flight.airlineId" [flightId]="flight.id" [airlineName]="airlines[flight.airlineId].name"></app-flight>
-    <hr/>
   </div>
-</div>
+  <mat-divider></mat-divider>
+  <div mat-subheader>To</div>
+  <mat-divider></mat-divider>
+  <div mat-subheader>Return</div>
+</mat-list>
   
