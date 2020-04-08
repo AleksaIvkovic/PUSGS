@@ -11,7 +11,32 @@
 
 <hr/>
 
-  <div *ngFor="let flight of flights">
+    <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+      <label for="origin">From</label>
+      <input type="text" id="origin" formControlName="origin">
+      <label for="destination">To</label>
+      <input type="text" id="destination" formControlName="destination">
+      <label for="departure">Departure</label>
+      <input type="date" id="departure" formControlName="departure">
+      <label for="ret">Return</label>
+      <input type="date" id="ret" formControlName=retControl>
+      <label for="num">Number of people</label>
+      <input type="number" id="num" formControlName="num">
+      <input type="radio" formControlName=typeControl value="one way">one way
+      <input type="radio" formControlName=typeControl value="round trip">round trip
+      <input type="radio" formControlName=typeControl value="multi-city">multi-city
+      <button
+              type="submit"
+              class="btn btn-success"
+              [disabled]="!searchForm.valid">Search</button>
+    </form>
+
+<hr/>
+
+<div *ngIf="search">
+  <div *ngFor="let flight of flights| filter:origin:'origin' | filter:destination:'destination'">
     <app-flight [back]="'one'" [flight]="flight" [airlineId]="flight.airlineId" [flightId]="flight.id" [airlineName]="airlines[flight.airlineId].name"></app-flight>
     <hr/>
+  </div>
 </div>
+  
