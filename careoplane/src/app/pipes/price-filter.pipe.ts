@@ -19,7 +19,23 @@ export class PriceFilterPipe implements PipeTransform {
           res.push(item);
         }
       }
-    } else {
+    } 
+    else if(propName === 'seats')
+    {
+      for(const item of value){
+        let counter = 0;
+        for(const seat of item['seats']){
+          if(!seat['occupied'])
+          {
+            counter++;
+          }
+        }
+        if(counter >= filterNum){
+          res.push(item);
+        }
+      }
+    }
+    else {
       for (const item of value) 
       {
         if (item[propName] <= filterNum) {
