@@ -5,37 +5,24 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class DateFilterPipe implements PipeTransform {
   
-  transform(value: any, startDate: Date, endDate: Date): any {
-    if(!startDate && !endDate){
+  transform(value: any, myDate: Date): any {
+    if(!myDate){
       return value;
     }
 
     let result = [];
 
-    let sDate: Date = new Date(startDate);
-    let eDate: Date = new Date(endDate);
+    let sDate: Date = new Date(myDate);
+    
+    value.forEach(element => {
+      let myDateWT: Date = new Date(element.departure);
+      myDateWT.setHours(0, 0, 0, 0);
 
-    if(!endDate){
-      value.forEach(element => {
-        if(element.departure.getTime() === sDate.getTime())
-          result.push(element);
-      });
-    }
-    else if(!startDate){
-      value.forEach(element => {
-        if(element.arrival.getTime() === eDate.getTime())
-          result.push(element);
-      });
-    }
-    else{
-      value.forEach(element => {
-        if(element.departure.getTime() === sDate.getTime()
-         && element.arrival.getTime() === eDate.getTime())
-          result.push(element);
-      });
-    }
-
-    return null;
+      if(myDateWT.getTime() === myDate.getTime())
+        result.push(element);
+    });
+    
+    return result;
   }
 
 }

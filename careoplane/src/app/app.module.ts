@@ -1,6 +1,7 @@
 import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TooltipModule } from 'ngx-bootstrap/tooltip'
 
 // {A11yModule} from '@angular/cdk/a11y';
 import {ClipboardModule} from '@angular/cdk/clipboard';
@@ -73,6 +74,8 @@ import { FilterPipe } from './pipes/filter.pipe';
 import { VehicleReserveComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-reserve/vehicle-reserve.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OrderByPipe } from './pipes/order-by.pipe';
+import { ReturnFlightComponent } from './components/main/airlines/airline-details/return-flight/return-flight.component';
+import { SeatSelectorComponent } from './components/main/airlines/flight-reservation/seat-selector/seat-selector.component';
 
 @NgModule({
   declarations: [
@@ -99,6 +102,8 @@ import { OrderByPipe } from './pipes/order-by.pipe';
     FilterPipe,
     VehicleReserveComponent,
     OrderByPipe,
+    ReturnFlightComponent,
+    SeatSelectorComponent,
   ],
   imports: [
     BrowserModule,
@@ -107,9 +112,7 @@ import { OrderByPipe } from './pipes/order-by.pipe';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    
     MatFormFieldModule,
-
     ClipboardModule,
     CdkStepperModule,
     CdkTableModule,
@@ -152,7 +155,8 @@ import { OrderByPipe } from './pipes/order-by.pipe';
     MatTreeModule,
     PortalModule,
     ScrollingModule,
-    MatTableFilterModule
+    MatTableFilterModule,
+    TooltipModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

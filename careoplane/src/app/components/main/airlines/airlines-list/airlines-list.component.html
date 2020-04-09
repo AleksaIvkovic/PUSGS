@@ -91,10 +91,9 @@
     </mat-form-field>
       <mat-slide-toggle
           [color]="'Accent'"
-          [(ngModel)]="way"
-          [checked]="false">
-        <p *ngIf="!way">Increasing</p>
-        <p *ngIf="way">Declining</p>
+          [(ngModel)]=sortWay>
+        <p *ngIf="!sortWay">Increasing</p>
+        <p *ngIf="sortWay">Declining</p>
       </mat-slide-toggle>
   </mat-expansion-panel>
 </mat-accordion>
@@ -102,20 +101,34 @@
 <hr/>
 
 <mat-list *ngIf="search">
-  <app-flight *ngFor="let flight of flights| 
+  <div *ngFor="let flight of flights| 
   filter:origin:'origin' | 
   filter:destination:'destination' | 
-  orderBy:sortBy:true |
+  orderBy:sortBy:sortWay |
   priceFilter:num:'seats' |
   filter:airlineName:'airlineName' |
-  dateFilter: departure: ret"
-  [back]="'one'"
-  [flight]="flight" [airlineId]="flight.airlineId" [flightId]="flight.id"
-  [airlineName]="airlines[flight.airlineId].name"></app-flight>
+  dateFilter: departure">
+    <app-flight 
+    [back]="'one'"
+    [flight]="flight"
+    [showLink]="true"></app-flight> 
+    <mat-divider></mat-divider>
+  </div>
 </mat-list>
 <mat-list *ngIf="twoWay">
-  <div mat-subheader >To</div>
-  <mat-divider></mat-divider>
-  <div mat-subheader>From</div>
+  <div *ngFor="let flight of flights| 
+  filter:origin:'origin' | 
+  filter:destination:'destination' | 
+  orderBy:sortBy:sortWay |
+  priceFilter:num:'seats' |
+  filter:airlineName:'airlineName' |
+  dateFilter: departure">
+    <app-return-flight 
+    [back]="'one'"
+    [flight]="flight"
+    [ret] = "ret"
+    [num] = "num"></app-return-flight>
+    <mat-divider></mat-divider>
+  </div>
 </mat-list>
   

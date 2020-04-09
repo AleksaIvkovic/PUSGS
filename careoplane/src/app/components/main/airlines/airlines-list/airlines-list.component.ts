@@ -41,7 +41,7 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
 
   airlineName: string;
   sortBy: string = 'price';
-  way:boolean = false;
+  sortWay:boolean = false;
   
   constructor(private airlineService: AirlineService) { }
 
@@ -119,4 +119,9 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
     this.exs = false;
     this.exf = true;
   }
+
+  toggleControl = new FormControl();
+  onToggleChange() {
+    this.sortWay = this.toggleControl.value;
+  } 
 }
