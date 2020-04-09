@@ -1,23 +1,21 @@
-<a style="cursor: pointer"
-[routerLink]="['../../']"
-routerLinkActive="active">Back</a>
 <div class="row">
-    <div class="col-md-4">
-        <h3>{{ rentACar.name }}</h3>
-        <h6>{{ rentACar.address }}</h6>
-    </div>
-    <div class="col-md-4">
-        <div #mapContainer id="map" style="width: 300px; height: 125px;"></div>
-    </div>
+    <a 
+        [routerLink]="['../../']"
+        routerLinkActive="active"
+        mat-mini-fab >
+        <
+    </a>
     <div class="col-md-2">
+        <h1>{{ rentACar.name }}</h1>
+        <h4>{{ rentACar.address }}</h4>
+    </div>
+    <div class="col-md-4">
+        <div #mapContainer id="map" style="width: 300px; height: 130px;"></div>
+    </div>
+    <div class="col-md-3">
         <p style="word-wrap: break-word;">{{ rentACar.description }}</p>
     </div>
 </div>
-<!-- <div class="row">
-    <div class="col-md-4">
-        <h6>{{ rentACar.address }}</h6>
-    </div>
-</div> -->
 <hr>
 <div class="row">
     <div class="col-md-12">

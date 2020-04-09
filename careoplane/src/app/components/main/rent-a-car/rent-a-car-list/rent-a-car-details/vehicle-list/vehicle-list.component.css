@@ -1,3 +1,11 @@
+table {
+    width: 100%;
+}  
+
+mat-form-field {
+    width: 150px;
+}
+
 div.scroll { 
     height: 440px; 
     overflow-x: hidden; 
