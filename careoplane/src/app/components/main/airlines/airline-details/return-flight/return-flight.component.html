@@ -1,0 +1,22 @@
+<div *ngFor="
+    let f of flights|
+    filter:flight.destination:'origin' |
+    filter:flight.origin:'destination' |
+    priceFilter:num:'seats' |
+    dateFilter: ret
+    ">
+    From
+    <app-flight 
+    [back]="'one'"
+    [flight]="flight" [showLink]="false"></app-flight>    
+    <br/>
+    To
+    <app-flight
+    [back]="'one'"
+    [flight]="f" [showLink]="false"></app-flight>
+    <div mat-line>
+        <a [routerLink]="[backStr,flight.airlineId, flight.id,f.airlineId,f.id,'reservation']" routerLinkActive="active">
+            reserve
+        </a>
+    </div>
+</div>

@@ -73,6 +73,7 @@ import { FilterPipe } from './pipes/filter.pipe';
 import { VehicleReserveComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-reserve/vehicle-reserve.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OrderByPipe } from './pipes/order-by.pipe';
+import { ReturnFlightComponent } from './components/main/airlines/airline-details/return-flight/return-flight.component';
 
 @NgModule({
   declarations: [
@@ -99,6 +100,7 @@ import { OrderByPipe } from './pipes/order-by.pipe';
     FilterPipe,
     VehicleReserveComponent,
     OrderByPipe,
+    ReturnFlightComponent,
   ],
   imports: [
     BrowserModule,
@@ -107,7 +109,6 @@ import { OrderByPipe } from './pipes/order-by.pipe';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    
     MatFormFieldModule,
 
     ClipboardModule,

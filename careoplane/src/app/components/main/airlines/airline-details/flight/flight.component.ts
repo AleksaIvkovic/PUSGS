@@ -8,10 +8,8 @@ import { Flight } from 'src/app/models/flight.model';
 })
 export class FlightComponent implements OnInit {
   @Input() flight: Flight;
-  @Input() flightId: number;
-  @Input() airlineId : number;
   @Input() back: string;
-  @Input() airlineName: string = "";
+  @Input() showLink:boolean;
 
   backStr: string;
   count: number;

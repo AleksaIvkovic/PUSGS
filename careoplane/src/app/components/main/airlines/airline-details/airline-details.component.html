@@ -23,6 +23,5 @@
 <mat-list>
     <app-flight *ngFor="let flight of airline.flights| filter:origin:'origin' 
     | filter:destination:'destination' | orderBy:'airlineName':true" [back]="'two'"
-    [flight]="flight" [airlineId]="flight.airlineId" [flightId]="airline.id"
-    [airlineName]="airline.name"></app-flight>
+    [flight]="flight" [showLink]="true"></app-flight>
 </mat-list>

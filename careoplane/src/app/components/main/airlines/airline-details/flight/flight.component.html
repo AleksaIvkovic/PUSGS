@@ -1,8 +1,10 @@
+<div class="row">
+    <div class="col-md-6">
         <mat-list>
             <mat-list-item>
                 <div mat-line>
-                    <a [routerLink]="[backStr,airlineId, 'details']">
-                        {{airlineName}}
+                    <a [routerLink]="[backStr,flight.airlineId, 'details']">
+                        {{flight.airlineName}}
                     </a>
                 </div>
                 <div mat-line>
@@ -25,21 +27,25 @@
                 </div>
             </mat-list-item>
         </mat-list>
-        <mat-list>
-            <mat-list-item>
-                <div mat-line>
-                    num of connecetions: {{count}}
+    </div>
+    <div class="col-md-6">   
+    <mat-list>
+        <mat-list-item>
+            <div mat-line>
+                num of connections: {{count}}
+            </div>
+            <div mat-line>
+                Connections:
+                <div mat-line *ngFor="let con of flight.connections">
+                    {{con}}
                 </div>
-                <div mat-line>
-                    Connections:
-                    <div mat-line *ngFor="let con of flight.connections">
-                        {{con}}
-                    </div>
-                </div>
-                <div mat-line>
-                    <a [routerLink]="[backStr,airlineId, flightId, 'reservation']" routerLinkActive="active">
-                        reserve
-                    </a>
-                </div>
-            </mat-list-item>
-        </mat-list>
+            </div>
+            <div mat-line *ngIf="showLink">
+                <a [routerLink]="[backStr,flight.airlineId, flight.id, 'reservation']" routerLinkActive="active">
+                    reserve
+                </a>
+            </div>
+        </mat-list-item>
+    </mat-list>
+</div>
+</div>

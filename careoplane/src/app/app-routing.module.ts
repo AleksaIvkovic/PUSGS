@@ -23,7 +23,8 @@ const routes: Routes = [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: AirlinesListComponent},
       {path: ':id/details', component: AirlineDetailsComponent},
-      {path: ':alid/:fid/reservation', component: FlightReservationComponent}
+      {path: ':alid/:fid/reservation', component: FlightReservationComponent},
+      {path: ':alid1/:fid1/:alid2/:fid2/reservation', component: FlightReservationComponent}
     ]},
     {path: 'rent-a-car', component: RentACarComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},

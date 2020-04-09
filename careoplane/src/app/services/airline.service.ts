@@ -17,6 +17,7 @@ export class AirlineService {
   private flight1: Flight = new Flight(this.airlines[0].id,0,"Belgrade","London",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "AA", "CC"]);
   private flight2: Flight = new Flight(this.airlines[0].id,1,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "DD"]);
   private flight3: Flight = new Flight(this.airlines[1].id,2,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "DD"]);
+  private flight4: Flight = new Flight(this.airlines[1].id,3,"Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "DD"]);
   
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
@@ -24,7 +25,8 @@ export class AirlineService {
   private flights: Flight[] = [
     this.flight1,
     this.flight2,
-    this.flight3
+    this.flight3,
+    this.flight4
   ];
   
   constructor() {
@@ -76,6 +78,7 @@ export class AirlineService {
     this.airlines[0].flights.push(this.flight2);
     this.airlines[0].picture = "https://seeklogo.com/images/J/JAT_Jugoslovenski_Aero_Transport-logo-04390D0687-seeklogo.com.png";
     this.airlines[1].flights.push(this.flight3);
+    this.airlines[1].flights.push(this.flight4);
     this.airlines[1].picture="https://www.logo-designer.co/wp-content/uploads/2018/02/2018-new-lufthansa-logo-design-airplane-livery.png";
   }
   
