@@ -10,10 +10,10 @@ import { Seat } from '../models/seat.model';
 })
 export class AirlineService {
   private airlines: Airline[] = [
-    new Airline(0,"Jat","Beograd","Manji jaci bolji",[],0,[],[],[5,5,20]),
-    new Airline(1,"Lufthansa","Berlin","Sehr gut",[],0,[],[],[]),
+    new Airline(0,"Jat","Beograd","Manji jaci bolji",[],0,[1,1.5,2],[3,3],[5,5,20]),
+    new Airline(1,"Lufthansa","Berlin","Sehr gut",[],0,[2,3,4],[2,4,2],[5,10,40]),
   ];
-  
+
   private flight1: Flight = new Flight(this.airlines[0].id,0,"Belgrade","London",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "AA", "CC"]);
   private flight2: Flight = new Flight(this.airlines[0].id,1,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "DD"]);
   private flight3: Flight = new Flight(this.airlines[1].id,2,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "DD"]);
@@ -28,13 +28,50 @@ export class AirlineService {
   ];
   
   constructor() {
-    for(let flight in this.flights){
-      for(let airline in this.airlines){
-        if(this.flights[flight].airlineId == this.airlines[airline].id){
-          this.flights[flight].airlineName = this.airlines[airline].name;
+    for(let flight of this.flights){
+
+      for(let airline of this.airlines){
+      
+        if(flight.airlineId == airline.id){
+          
+          flight.airlineName = airline.name;
+          
+          for(let i = 0; i < airline.pricess.length; i++){
+            flight.pricess.push(flight.distance * airline.pricess[i]);
+          }
+
+          let count = 1;
+          let characters: string[] = ['A','B','C','D','E','F','G','H','I','J'];
+          let sum = 0;
+      
+          for(let i = 0;i < airline.seatingArrangement.length;i++){
+            sum += airline.seatingArrangement[i];
+          }
+      
+          for(let i = 0;i < airline.segments.length;i++){
+            let type: string;
+            
+            if(i == 0){
+              type = "first";
+            }
+            else if(i == 1){
+              type == "bussines";
+            }
+            else{
+              type == "economy";
+            }
+
+            for(let j = 0;j < airline.segments[0];j++){
+              for(let k= 0;k < sum;k++){
+                flight.seats.push(new Seat(airline.id,flight.airlineId,count + ' ' + characters[k],type));
+              }
+              count++;
+            }
+          }
         }
       }
     }
+
     this.airlines[0].flights.push(this.flight1);
     this.airlines[0].flights.push(this.flight2);
     this.airlines[0].picture = "https://seeklogo.com/images/J/JAT_Jugoslovenski_Aero_Transport-logo-04390D0687-seeklogo.com.png";

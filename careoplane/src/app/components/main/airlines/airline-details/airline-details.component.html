@@ -19,10 +19,10 @@
 <input type="number" [(ngModel)]="price" min="1">
 
 <hr/>
-<div *ngFor="let flight of airline.flights |
-             filter:origin:'origin' | 
-             filter:destination:'destination' |
-             priceFilter:connections:'connections'">
-    <app-flight [back]="'two'" [flight]="flight" [flightId]="flight.id" [airlineId]="id"></app-flight>
-    <hr/>
-</div>
+
+<mat-list>
+    <app-flight *ngFor="let flight of airline.flights| filter:origin:'origin' 
+    | filter:destination:'destination' | orderBy:'airlineName':true" [back]="'two'"
+    [flight]="flight" [airlineId]="flight.airlineId" [flightId]="airline.id"
+    [airlineName]="airline.name"></app-flight>
+</mat-list>

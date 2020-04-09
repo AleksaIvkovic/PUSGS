@@ -14,5 +14,6 @@ export class Flight {
         public distance: number, 
         public connections: string[],
         public seats: Seat[] = new Array<Seat>(),
-        public rating: number = 0){}
+        public rating: number = 0,
+        public pricess: number[] = []){}
 }

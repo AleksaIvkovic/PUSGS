@@ -5,8 +5,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class OrderByPipe implements PipeTransform {
 
-  transform(value: any, field:string, reverse: true): any {
-    if(value.lengt == 0 || !field || field == ''){
+  transform(value: any, field:string, reverse: boolean): any {
+    if(value.length == 0 || !field || field == ''){
       return value;
     }
 
