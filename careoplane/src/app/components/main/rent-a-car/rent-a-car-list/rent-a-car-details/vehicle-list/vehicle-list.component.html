@@ -71,7 +71,7 @@
             </div>
             <div class="col-md-2">
                 <button 
-                    [disabled]="!searchForm.dirty && !searchForm.valid"
+                    [disabled]="!searchForm.get('pickerPickUp').valid && !searchForm.get('pickerReturn').valid"
                     mat-raised-button 
                     style="width: 150px; height: 50px; margin-top: -20px;"
                     type="submit">
@@ -93,7 +93,7 @@
     </div>
 </div>
 <hr>
-<div class="row">
+<div class="row" *ngIf="searchPerformed">
     <div class="col-md-7">
         <table 
         matSort 
@@ -140,6 +140,14 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    <mat-paginator 
+        #paginator
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [pageIndex]="currentPage"
+        (page)="handlePage($event)">
+    </mat-paginator>
     </div>
     <div class="col-md-1"></div>
     <div class="col-md-4">
