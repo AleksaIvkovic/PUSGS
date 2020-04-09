@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, Inject } from '@angular/core';
 import { RentACarService } from 'src/app/services/rent-a-car.service';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { RentACar } from 'src/app/models/rent-a-car.model';
 import { Subscription } from 'rxjs';
+import { Admin } from 'src/app/models/admin.model';
 
 @Component({
   selector: 'app-rent-a-car-details',
@@ -10,6 +11,9 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./rent-a-car-details.component.css']
 })
 export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() admin: Admin;
+  isAdmin: boolean = false;
+
   @ViewChild('mapContainer', {static: false}) gmap: ElementRef;
   map: google.maps.Map;
   lat = 40.730610;
@@ -37,8 +41,13 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     this.subscription = this.route.params
     .subscribe(
       (params: Params) => {
-        this.index = params['id'];
-        this.rentACar = this.rentACarService.getRentACarByIndex(this.index);
+        if (this.admin) {
+          this.isAdmin = true;
+          this.rentACar = this.rentACarService.getRentACarByName(this.admin.company);
+        } else {
+          this.index = params['id'];
+          this.rentACar = this.rentACarService.getRentACarByIndex(this.index);
+        }
       }
     );
   }
@@ -46,9 +55,12 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
   mapInitializer() {
     this.map = new google.maps.Map(this.gmap.nativeElement, this.mapOptions);
     this.marker.setMap(this.map);
-   }
+  }
 
-   ngAfterViewInit() {
+  onEdit() {
+  }
+
+  ngAfterViewInit() {
     this.mapInitializer();
   }
 

@@ -13,6 +13,7 @@ import { RentACarStartComponent } from './components/main/rent-a-car/rent-a-car-
 import { VehicleDetailsComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-details.component';
 import { VehicleStartComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-start/vehicle-start.component';
 import { VehicleReserveComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-reserve/vehicle-reserve.component';
+import { RentACarProfileComponent } from './components/main/rent-a-car/rent-a-car-profile/rent-a-car-profile.component';
 
 
 const routes: Routes = [
@@ -34,6 +35,9 @@ const routes: Routes = [
         {path: ':idv/details', component: VehicleDetailsComponent},
         {path: ':idv/reserve', component: VehicleReserveComponent}
       ]},
+    ]},
+    {path: 'rent-a-car-profile', component: RentACarProfileComponent, children: [
+      {path: ':idvh/details', component: VehicleDetailsComponent}
     ]}
   ]}
 ];
