@@ -103,6 +103,23 @@ export class RentACarListComponent implements OnInit, OnDestroy {
           }
         }
       }
+
+      if (this.searchForm.value['pickerPickUp'] !== null) {
+        if (!indexesToRemove.includes(searchedRentACars.indexOf(rentACar))) {
+          let keep = [];
+          for (let vehicle of rentACar.vehicles) {
+            for (let takenDate of vehicle.unavailableDates) {
+              if (takenDate.getDate() >= this.searchForm.value['pickerPickUp'].getDate() && takenDate.getDate() <= this.searchForm.value['pickerReturn'].getDate()) {
+                keep.push('.');
+                break;
+              }
+            }
+          }
+          if (keep.length === rentACar.vehicles.length) {
+            indexesToRemove.push(searchedRentACars.indexOf(rentACar));
+          }
+        }
+      }
     }
 
     indexesToRemove.sort(function(a,b){ return b - a; });

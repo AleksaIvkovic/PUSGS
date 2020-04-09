@@ -6,19 +6,31 @@
         </tr>
         <tr>
             <th>From</th>
-            <td>Date, Location</td>
+            <td>{{ pickUpDate | date:'MM/dd/yyyy'}}, {{ pickUpLocation }}</td>
         </tr>
         <tr>
             <th>To</th>
-            <td>Date, Location</td>
+            <td>{{ returnDate | date:'MM/dd/yyyy'}}, {{ returnLocation }}</td>
         </tr>
         <tr>
             <th>Price</th>
-            <td>{{ (rentACar.pricelist[vehicle.type] + vehicle.pricePerDay) | currency: 'EUR':true }}</td>
+            <td>{{ (rentACar.pricelist[vehicle.type] + vehicle.pricePerDay * numOfDays) | currency: 'EUR':true }}</td>
         </tr>
-        <tr>
-            <td><button class="btn btn-success">Confirm</button></td>
-            <td><button class="btn btn-danger" (click)="onCancel()">Cancel</button></td>
+        <tr class="last">
+            <td>
+                <button 
+                    mat-raised-button 
+                    class="btn-success">
+                    Confirm
+                </button>
+            </td>
+            <td>
+                <button 
+                    mat-raised-button 
+                    color="warn"
+                    (click)="onCancel()">
+                    Cancel
+                </button></td>
         </tr>
     </table>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Vehicle } from 'src/app/models/vehicle.model';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { RentACar } from 'src/app/models/rent-a-car.model';
@@ -12,10 +12,14 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./vehicle-details.component.css']
 })
 export class VehicleDetailsComponent implements OnInit, OnDestroy {
+  @Output() reserveClicked = new EventEmitter();
+
   vehicle: Vehicle;
   idRentACar: number;
   idVehicle: number;
   subscription: Subscription;
+
+  // displayedColumns: string[] = ['brand', 'year', 'type', 'seats', 'price', 'location', 'rating'];
 
   constructor(
     private rentACarService: RentACarService,
@@ -36,7 +40,8 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   }
 
   onReserve() {
-    this.router.navigate(['../', 'reserve'], {relativeTo: this.route})
+    // this.rentACarService.doNextOnReserve(new Date(), 'A', new Date(), 'B');
+    this.router.navigate(['../', 'reserve'], {relativeTo: this.route});
   }
 
   ngOnDestroy() {

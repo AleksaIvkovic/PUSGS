@@ -8,12 +8,12 @@
             <td>{{ vehicle.brand }}</td>
         </tr>
         <tr>
-            <th>Type</th>
-            <td>{{ vehicle.type }}</td>
-        </tr>
-        <tr>
             <th>Year</th>
             <td>{{ vehicle.year }}</td>
+        </tr>
+        <tr>
+            <th>Type</th>
+            <td>{{ vehicle.type }}</td>
         </tr>
         <tr>
             <th>Seats</th>
@@ -28,13 +28,18 @@
             <td>{{ vehicle.location }}</td>
         </tr>
         <tr>
+            <th>Rating</th>
+            <td>{{ vehicle.rating }}</td>
+        </tr>
+        <tr class="last">
             <td></td>
             <td>
                 <button 
-         class="btn btn-primary"
-         (click)="onReserve()">
-         Reserve
-        </button>
+                    mat-raised-button 
+                    color="primary"
+                    (click)="onReserve()">
+                    Reserve
+                </button>
             </td>
         </tr>
     </table>
