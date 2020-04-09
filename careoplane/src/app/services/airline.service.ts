@@ -10,8 +10,8 @@ import { Seat } from '../models/seat.model';
 })
 export class AirlineService {
   private airlines: Airline[] = [
-    new Airline(0,"Jat","Beograd","Manji jaci bolji",[],0,[1,1.5,2],[3,3],[5,5,20]),
-    new Airline(1,"Lufthansa","Berlin","Sehr gut",[],0,[2,3,4],[2,4,2],[5,10,40]),
+    new Airline(0,"Jat","Beograd","Manji jaci bolji",[],0,[2,1.5,1],[3,3],[1,1,2]),
+    new Airline(1,"Lufthansa","Berlin","Sehr gut",[],0,[4,3,2],[2,4,2],[5,10,40]),
   ];
 
   private flight1: Flight = new Flight(this.airlines[0].id,0,"Belgrade","London",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "AA", "CC"]);
@@ -21,6 +21,16 @@ export class AirlineService {
   
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
+  ticketsChanged = new Subject<any>();
+  emptyTickets = new Subject<any>();
+
+  public updateTickes(tickets: any){
+    this.ticketsChanged.next(tickets);
+  }
+
+  public resetTickets(tickets: any){
+    this.emptyTickets.next(tickets);
+  }
   
   private flights: Flight[] = [
     this.flight1,
@@ -63,7 +73,7 @@ export class AirlineService {
               type == "economy";
             }
 
-            for(let j = 0;j < airline.segments[0];j++){
+            for(let j = 0;j < airline.segments[i];j++){
               for(let k= 0;k < sum;k++){
                 flight.seats.push(new Seat(airline.id,flight.airlineId,count + ' ' + characters[k],type));
               }
@@ -92,5 +102,9 @@ export class AirlineService {
 
   getAirline(id: number): Airline{
     return this.airlines[id];
+  }
+
+  getFlight(id: number): Flight {
+    return this.flights[id];
   }
 }

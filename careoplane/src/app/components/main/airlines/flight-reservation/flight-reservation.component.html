@@ -1,28 +1,20 @@
 <mat-horizontal-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="firstFormGroup">
     <ng-template matStepLabel>Choose seats</ng-template>
-    <app-seat-selector></app-seat-selector>
+    <app-seat-selector [flight]="flight1"></app-seat-selector>
+    <button mat-button matStepperNext color="primary" [disabled]="checked">Next</button>
   </mat-step>
   <mat-step [stepControl]="secondFormGroup">
-    <form [formGroup]="secondFormGroup">
-      <ng-template matStepLabel>Fill out your address</ng-template>
-      <mat-form-field>
-        <mat-label>Address</mat-label>
-        <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
-                required>
-      </mat-form-field>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
-      </div>
-    </form>
+    <ng-template matStepLabel>Enter passenger/s information</ng-template>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button matStepperNext color="primary">Next</button>
   </mat-step>
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
     <p>You are now done.</p>
     <div>
       <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
+      <button mat-button (click)="stepper.reset(); Reset()">Reset</button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>
