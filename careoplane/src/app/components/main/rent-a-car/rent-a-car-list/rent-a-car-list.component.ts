@@ -49,6 +49,7 @@ export class RentACarListComponent implements OnInit, OnDestroy {
     .subscribe(
       (rentACars: RentACar[]) => {
         this.rentACars = rentACars;
+        this.searchedRentACars = this.rentACars.slice();
         this.dataSource = rentACars.slice();
         this.dataSource.paginator = this.paginator;
         this.length = this.rentACars.length;
@@ -57,6 +58,7 @@ export class RentACarListComponent implements OnInit, OnDestroy {
     );
 
     this.rentACars = this.rentACarService.getMockUp();
+    this.searchedRentACars = this.rentACars.slice();
     this.dataSource = this.rentACars.slice();
     this.dataSource.sort = this.sort;
     this.length = this.rentACars.length;
@@ -78,20 +80,23 @@ export class RentACarListComponent implements OnInit, OnDestroy {
     );
   }
 
+  searchedRentACars: RentACar[];
+
   onSearch() {
     this.searchPerformed = true;
-    const searchedRentACars: RentACar[] = this.rentACars.slice();
+    // const searchedRentACars: RentACar[] = this.rentACars.slice();
+    this.searchedRentACars = this.rentACars.slice();
     let indexesToRemove: number[] = [];
 
-    for (let rentACar of searchedRentACars) {
+    for (let rentACar of this.searchedRentACars) {
       if (this.searchForm.value['name'] !== 'Any' && this.searchForm.value['name'] !== '') {
         if (!rentACar.name.toLowerCase().includes(this.searchForm.value['name'].toLowerCase())) {
-          indexesToRemove.push(searchedRentACars.indexOf(rentACar));
+          indexesToRemove.push(this.searchedRentACars.indexOf(rentACar));
         }
       }
 
       if (this.searchForm.value['locations'] !== 'Any' && this.searchForm.value['locations'] !== '') {
-        if (!indexesToRemove.includes(searchedRentACars.indexOf(rentACar))) {
+        if (!indexesToRemove.includes(this.searchedRentACars.indexOf(rentACar))) {
           let keep = false;
           for (let location of rentACar.locations) {
             if (location.toLowerCase().includes(this.searchForm.value['locations'].toLowerCase())) {
@@ -99,13 +104,13 @@ export class RentACarListComponent implements OnInit, OnDestroy {
             }
           }
           if (!keep) {
-            indexesToRemove.push(searchedRentACars.indexOf(rentACar));
+            indexesToRemove.push(this.searchedRentACars.indexOf(rentACar));
           }
         }
       }
 
       if (this.searchForm.value['pickerPickUp'] !== null) {
-        if (!indexesToRemove.includes(searchedRentACars.indexOf(rentACar))) {
+        if (!indexesToRemove.includes(this.searchedRentACars.indexOf(rentACar))) {
           let keep = [];
           for (let vehicle of rentACar.vehicles) {
             for (let takenDate of vehicle.unavailableDates) {
@@ -116,7 +121,7 @@ export class RentACarListComponent implements OnInit, OnDestroy {
             }
           }
           if (keep.length === rentACar.vehicles.length) {
-            indexesToRemove.push(searchedRentACars.indexOf(rentACar));
+            indexesToRemove.push(this.searchedRentACars.indexOf(rentACar));
           }
         }
       }
@@ -124,10 +129,12 @@ export class RentACarListComponent implements OnInit, OnDestroy {
 
     indexesToRemove.sort(function(a,b){ return b - a; });
     for (var i = 0; i <= indexesToRemove.length - 1; i++) {
-      searchedRentACars.splice(indexesToRemove[i], 1);
+      this.searchedRentACars.splice(indexesToRemove[i], 1);
     }
       
-    this.dataSource = searchedRentACars;
+    this.dataSource = this.searchedRentACars;
+    this.length = this.dataSource.length;
+    this.iterator();
   }
 
   onCancelSearch() {
@@ -137,6 +144,7 @@ export class RentACarListComponent implements OnInit, OnDestroy {
       'pickerPickUp': null,
       'pickerReturn': null,
     });
+    this.searchedRentACars = this.rentACars.slice();
     this.searchForm.markAsPristine();
     this.searchPerformed = false;
     this.dataSource = this.rentACars.slice();
@@ -154,12 +162,12 @@ export class RentACarListComponent implements OnInit, OnDestroy {
   private iterator() {
     const end = (this.currentPage + 1) * this.pageSize;
     const start = this.currentPage * this.pageSize;
-    const part = this.rentACars.slice(start, end);
+    const part = this.searchedRentACars.slice(start, end);
     this.dataSource = part;
   }
 
   sortData(sort: Sort) {
-    const data = this.rentACars.slice();
+    const data = this.dataSource.slice();
     if (!sort.active || sort.direction === '') {
       this.dataSource = data;
       return;

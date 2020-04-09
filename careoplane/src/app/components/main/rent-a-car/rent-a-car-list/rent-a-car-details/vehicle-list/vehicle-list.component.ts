@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { MatSort, Sort } from '@angular/material/sort';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Vehicle } from 'src/app/models/vehicle.model';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-vehicle-list',
@@ -14,6 +15,7 @@ import { Vehicle } from 'src/app/models/vehicle.model';
 })
 export class VehicleListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() rentACar: RentACar;
 
   dataSource;
@@ -35,6 +37,12 @@ export class VehicleListComponent implements OnInit, OnDestroy {
   pickUpDateFormControl: FormControl = new FormControl(null, Validators.required);
   returnDateFormControl: FormControl = new FormControl(null, Validators.required);
 
+  length;
+  currentPage = 0;
+  pageSize = 4;
+  pageSizeOptions: number[] = [4];
+  pageEvent: PageEvent;
+
   constructor(
     private rentACarService: RentACarService,
     private route: ActivatedRoute,
@@ -54,11 +62,19 @@ export class VehicleListComponent implements OnInit, OnDestroy {
     .subscribe(
       (params: Params) => {
         this.vehicleTypes = this.rentACarService.getVehicleTypes(this.rentACar.name);
+        this.searchedVehicles = this.rentACar.vehicles.slice();
+        this.dataSource = this.rentACar.vehicles.slice();
+        this.dataSource.paginator = this.paginator;
+        this.length = this.rentACar.vehicles.length;
+        this.iterator();
       }
     );
 
+    this.searchedVehicles = this.rentACar.vehicles.slice();
     this.dataSource = this.rentACar.vehicles.slice();
     this.dataSource.sort = this.sort;
+    this.length = this.rentACar.vehicles.length;
+    this.iterator();
   }
 
   initForm() {
@@ -84,30 +100,36 @@ export class VehicleListComponent implements OnInit, OnDestroy {
     );
   }
 
+  searchedVehicles: Vehicle[];
+
   onSearch() {
+    if (!this.searchForm.valid) {
+      return;
+    }
     this.rentACarService.doNextOnReserve(this.searchForm.value['pickerPickUp'], this.searchForm.value['pickUpLocation'], this.searchForm.value['pickerReturn'], this.searchForm.value['returnToLocation']);
     this.searchPerformed = true;
-    const searchedVehicles: Vehicle[] = this.rentACar.vehicles.slice();
+    // const searchedVehicles: Vehicle[] = this.rentACar.vehicles.slice();
+    this.searchedVehicles = this.rentACar.vehicles.slice();
     let indexesToRemove: number[] = [];
 
     for (let vehicle of this.rentACar.vehicles) {
       if (this.searchForm.value['pickUpLocation'] !== 'Any') {
         if (!vehicle.location.toLowerCase().includes(this.searchForm.value['pickUpLocation'].toLowerCase())) {
-          indexesToRemove.push(searchedVehicles.indexOf(vehicle));
+          indexesToRemove.push(this.searchedVehicles.indexOf(vehicle));
         }
       }
 
       if (this.searchForm.value['type'] !== 'Any') {
-        if (!indexesToRemove.includes(searchedVehicles.indexOf(vehicle))) {
+        if (!indexesToRemove.includes(this.searchedVehicles.indexOf(vehicle))) {
           if (!vehicle.type.toLowerCase().includes(this.searchForm.value['type'].toLowerCase())) {
-            indexesToRemove.push(searchedVehicles.indexOf(vehicle));
+            indexesToRemove.push(this.searchedVehicles.indexOf(vehicle));
           }
         }
       }
 
       if (this.searchForm.value['pickerPickUp'] !== null) {
         this.numOfDays = (this.searchForm.value['pickerReturn'] - this.searchForm.value['pickerPickUp'])  / 1000 / 60 / 60 / 24 + 1;
-        if (!indexesToRemove.includes(searchedVehicles.indexOf(vehicle))) {
+        if (!indexesToRemove.includes(this.searchedVehicles.indexOf(vehicle))) {
           let keep = true;
           for (let takenDate of vehicle.unavailableDates) {
             if (takenDate.getDate() >= this.searchForm.value['pickerPickUp'].getDate() && takenDate.getDate() <= this.searchForm.value['pickerReturn'].getDate()) {
@@ -115,7 +137,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
             }
           }
           if (!keep) {
-            indexesToRemove.push(searchedVehicles.indexOf(vehicle));
+            indexesToRemove.push(this.searchedVehicles.indexOf(vehicle));
           }
         }
       }
@@ -123,18 +145,46 @@ export class VehicleListComponent implements OnInit, OnDestroy {
 
     indexesToRemove.sort(function(a,b){ return b - a; });
     for (var i = 0; i <= indexesToRemove.length - 1; i++) {
-      searchedVehicles.splice(indexesToRemove[i], 1);
+      this.searchedVehicles.splice(indexesToRemove[i], 1);
     }
       
-    this.dataSource = searchedVehicles;
+    this.dataSource = this.searchedVehicles;
+    this.length = this.dataSource.length;
+    this.iterator();
   }
 
   onCancelSearch() {
     this.searchPerformed = false;
+    this.searchForm.setValue({
+      'pickUpLocation': this.pickUpLocations[0],
+      'pickerPickUp': this.pickUpDateFormControl,
+      'returnToLocation': this.returnToLocations[0],
+      'pickerReturn': this.returnDateFormControl,
+      'type': this.vehicleTypes[0]
+    });
+    this.searchedVehicles = this.rentACar.vehicles.slice();
+    this.searchForm.markAsPristine();
+    this.dataSource = this.rentACar.vehicles.slice();
+    this.dataSource.paginator = this.paginator;
+    this.length = this.rentACar.vehicles.length;
+    this.iterator();
+  }
+
+  handlePage(e: any) {
+    this.currentPage = e.pageIndex;
+    this.pageSize = e.pageSize;
+    this.iterator();
+  }
+
+  private iterator() {
+    const end = (this.currentPage + 1) * this.pageSize;
+    const start = this.currentPage * this.pageSize;
+    const part = this.searchedVehicles.slice(start, end);
+    this.dataSource = part;
   }
 
   sortData(sort: Sort) {
-    const data = this.rentACar.vehicles.slice();
+    const data = this.dataSource.slice();
     if (!sort.active || sort.direction === '') {
       this.dataSource = data;
       return;
