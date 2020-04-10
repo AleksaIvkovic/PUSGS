@@ -44,6 +44,8 @@ export class VehicleListComponent implements OnInit, OnDestroy {
   pageSizeOptions: number[] = [4];
   pageEvent: PageEvent;
 
+  vehicleListSubscription: Subscription;
+
   constructor(
     private rentACarService: RentACarService,
     private route: ActivatedRoute,
@@ -56,13 +58,24 @@ export class VehicleListComponent implements OnInit, OnDestroy {
     }
     this.returnToLocations = this.rentACar.locations.slice();
     this.returnToLocation = this.returnToLocations[0];
-    this.vehicleTypes = this.rentACarService.getVehicleTypes(this.rentACar.name);
+    this.vehicleTypes = this.rentACarService.getVehicleTypes();
     this.initForm();
     // this.rentACar.locations.unshift('Any');
+    this.vehicleListSubscription = this.rentACarService.vehicleListChanged
+    .subscribe(
+      (vehicles: Vehicle[]) => {
+        this.searchedVehicles = vehicles;
+        this.dataSource = vehicles;
+        this.dataSource.paginator = this.paginator;
+        this.length = this.rentACar.vehicles.length;
+        this.iterator();
+      }
+    );
+
     this.subscription = this.route.params
     .subscribe(
       (params: Params) => {
-        this.vehicleTypes = this.rentACarService.getVehicleTypes(this.rentACar.name);
+        this.vehicleTypes = this.rentACarService.getVehicleTypes();
         this.searchedVehicles = this.rentACar.vehicles.slice();
         this.dataSource = this.rentACar.vehicles.slice();
         this.dataSource.paginator = this.paginator;
@@ -209,6 +222,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.vehicleListSubscription.unsubscribe();
   }
 
 }

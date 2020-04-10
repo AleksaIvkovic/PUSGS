@@ -7,6 +7,13 @@ import { Subject, Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class RentACarService {
+    vehicleTypes: string[] = [
+        'Any',
+        'Car',
+        'Van',
+        'Truck'
+    ];
+
     vehicles: Vehicle[] = [
         new Vehicle('BMW', 'Car', 5, 2019, 200),
         new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150),
@@ -27,7 +34,9 @@ export class RentACarService {
         new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Indjija']),
         new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Pancevo', 'Indjija'])
     ];
-    rentACarChanged = new Subject<RentACar[]>();
+    rentACarsChanged = new Subject<RentACar[]>();
+    vehicleListChanged = new Subject<Vehicle[]>();
+    rentACarChanged = new Subject<RentACar>();
 
     getRentACars() {
         //slice
@@ -58,21 +67,22 @@ export class RentACarService {
         return this.getVehicleForRentACar(index, indexVehicle);
     }
 
-    getVehicleTypes(rentACarName: string): string[] {
-        const rentACar = this.getRentACarByName(rentACarName);
-        const ret: string[] = [];
+    getVehicleTypes(): string[] {
+        // const rentACar = this.getRentACarByName(rentACarName);
+        // const ret: string[] = [];
 
-        for (let vehicle of rentACar.vehicles) {
-            if (!(ret.indexOf(vehicle.type) > -1)) {
-                ret.push(vehicle.type);
-            }
-        }
+        // for (let vehicle of rentACar.vehicles) {
+        //     if (!(ret.indexOf(vehicle.type) > -1)) {
+        //         ret.push(vehicle.type);
+        //     }
+        // }
 
-        if (ret.length !== 1) {
-            ret.unshift('Any');
-        }
+        // if (ret.length !== 1) {
+        //     ret.unshift('Any');
+        // }
 
-        return ret;
+        // return ret;
+        return this.vehicleTypes.slice();
     }
 
     getMockUp(): RentACar[] {
@@ -101,7 +111,31 @@ export class RentACarService {
     }
 
     addRentACar() {
-        //this.rentACarChanged.next(this.rentACars.slice());
+        //this.rentACarsChanged.next(this.rentACars.slice());
+    }
+
+    addVehicle(rentACar: RentACar, vehicle: Vehicle) {
+        let index = this.getRentACarIndex(rentACar);
+        this.rentACars[index].vehicles.push(vehicle);
+        this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
+        this.rentACarChanged.next(this.rentACars[index]);
+    }
+
+    removeVehicle(rentACar: RentACar, vehicleIndex: number) {
+        let index = this.getRentACarIndex(rentACar);
+        this.rentACars[index].vehicles.splice(vehicleIndex, 1);
+        this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
+        this.rentACarChanged.next(this.rentACars[index]);
+    }
+
+    editVehicle(rentACar: RentACar, vehicleIndex: number, newBrand: string, newSeats: number, newPrice: number, newLocation: string) {
+        let index = this.getRentACarIndex(rentACar);
+        this.rentACars[index].vehicles[vehicleIndex].brand = newBrand;
+        this.rentACars[index].vehicles[vehicleIndex].numOfSeats = newSeats;
+        this.rentACars[index].vehicles[vehicleIndex].pricePerDay = newPrice;
+        this.rentACars[index].vehicles[vehicleIndex].location = newLocation;
+        this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
+        this.rentACarChanged.next(this.rentACars[index]);
     }
 
     reserveObservable: Observable<any>;

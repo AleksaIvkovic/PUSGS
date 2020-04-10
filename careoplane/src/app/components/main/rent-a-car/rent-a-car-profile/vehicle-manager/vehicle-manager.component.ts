@@ -1,54 +1,108 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { RentACarService } from 'src/app/services/rent-a-car.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { RentACar } from 'src/app/models/rent-a-car.model';
 import { UserService } from 'src/app/services/user.service';
+import { Vehicle } from 'src/app/models/vehicle.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscriber, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-vehicle-manager',
   templateUrl: './vehicle-manager.component.html',
   styleUrls: ['./vehicle-manager.component.css']
 })
-export class VehicleManagerComponent implements OnInit {
+export class VehicleManagerComponent implements OnInit, OnDestroy {
   rentACar: RentACar;
   addForm: FormGroup;
   maxYear: Date;
   vehicleTypes: string[];
   locations: string[];
+  vehicleIndex: number;
+  isEdit: boolean = true;
+  vehicle: Vehicle;
+  indexLocation: number;
+  indexType: number;
+  subscribtion: Subscription;
 
   constructor(
     private rentACarService: RentACarService,
     private userService: UserService,
     private router: Router,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
+    private _snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
     this.rentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
-    this.vehicleTypes = this.rentACarService.getVehicleTypes(this.rentACar.name);
+    this.vehicleTypes = this.rentACarService.getVehicleTypes();
     this.vehicleTypes.splice(0, 1);
     this.locations = this.rentACar.locations;
+    this.subscribtion = this.activeRoute.params
+    .subscribe(
+      (params: Params) => {
+        this.vehicleIndex = +params['idvh'];
+        if (this.vehicleIndex === undefined || Number.isNaN(this.vehicleIndex)) {
+          this.isEdit = false;
+        } else {
+          this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.rentACar.name, this.vehicleIndex);
+          this.indexLocation = this.locations.indexOf(this.vehicle.location);
+          this.indexType = this.vehicleTypes.indexOf(this.vehicle.type);
+        }
+    });
     this.initForm();
   }
 
   initForm() {
     this.addForm = new FormGroup({
-      'brand': new FormControl(null, Validators.required),
+      'brand': this.isEdit ? new FormControl(this.vehicle.brand, Validators.required) : new FormControl(null, Validators.required),
       'pickerYear': new FormControl(null, Validators.required),
-      'type': new FormControl(this.vehicleTypes[0]),
-      'seats': new FormControl('1'),
-      'price': new FormControl(null, Validators.required),
-      'location': new FormControl(this.locations[0]),
+      'type': this.isEdit ? new FormControl(this.vehicleTypes[this.indexType], Validators.required) : new FormControl(null, Validators.required),
+      'seats': this.isEdit ? new FormControl(this.vehicle.numOfSeats, Validators.required) : new FormControl(null, Validators.required),
+      'price': this.isEdit ? new FormControl(this.vehicle.pricePerDay, Validators.required) : new FormControl(null, Validators.required),
+      'location': this.isEdit ? new FormControl(this.locations[this.indexLocation], Validators.required) : new FormControl(null, Validators.required),
     });
   }
 
-  onAdd() {
+  onSubmit() {
+    let message: string = '';
+    if (!this.isEdit) {
+      let year = <Date>this.addForm.value['pickerYear'];
+    
+      let vehicle = new Vehicle(
+        this.addForm.value['brand'], 
+        this.addForm.value['type'],
+        this.addForm.value['seats'],
+        year.getFullYear(),
+        this.addForm.value['price'],
+        this.addForm.value['location']
+      );
 
+      this.rentACarService.addVehicle(this.rentACar, vehicle);
+      this._snackBar.open('Vehicle added successfully', 'OK', {
+        duration: 5000,
+      });
+      this.router.navigate(['../'], {relativeTo: this.activeRoute});
+    } else {
+      this.rentACarService.editVehicle(this.rentACar, this.vehicleIndex, this.addForm.value['brand'], this.addForm.value['seats'], this.addForm.value['price'], this.addForm.value['location']);
+      this._snackBar.open('Vehicle edited successfully', 'OK', {
+        duration: 5000,
+      });
+      this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+    }
   }
 
   onCancel() {
-    this.router.navigate(['../'], {relativeTo: this.activeRoute});
+    if (this.isEdit) {
+      this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+    } else {
+      this.router.navigate(['../'], {relativeTo: this.activeRoute});
+    }
+  }
+
+  ngOnDestroy() {
+    this.subscribtion.unsubscribe();
   }
 
 }

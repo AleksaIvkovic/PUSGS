@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { RentACar } from 'src/app/models/rent-a-car.model';
 import { Subscription } from 'rxjs';
 import { Admin } from 'src/app/models/admin.model';
+import { Vehicle } from 'src/app/models/vehicle.model';
 
 @Component({
   selector: 'app-rent-a-car-details',
@@ -31,6 +32,8 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
   rentACar: RentACar;
   index: number;
   subscription: Subscription;
+  vehicleListSubscription: Subscription;
+  rentACarSubscription: Subscription;
 
   constructor(
     private rentACarService: RentACarService,
@@ -38,6 +41,18 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     private router: Router) { }
 
   ngOnInit(): void {
+    this.rentACarSubscription = this.rentACarService.rentACarChanged
+    .subscribe(
+      (rentACar: RentACar) => {
+        this.rentACar = rentACar;
+      }
+    );
+    this.vehicleListSubscription = this.rentACarService.vehicleListChanged
+    .subscribe(
+      (vehicles: Vehicle[]) => {
+        this.rentACar.vehicles = vehicles;
+      }
+    );
     this.subscription = this.route.params
     .subscribe(
       (params: Params) => {
@@ -71,6 +86,7 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    this.vehicleListSubscription.unsubscribe();
   }
 
 }

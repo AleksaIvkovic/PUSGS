@@ -39,6 +39,7 @@ const routes: Routes = [
     ]},
     {path: 'rent-a-car-profile', component: RentACarProfileComponent, children: [
       {path: ':idvh/details', component: VehicleDetailsComponent},
+      {path: ':idvh/edit', component: VehicleManagerComponent},
       {path: 'add-vehicle', component: VehicleManagerComponent}
     ]}
   ]}

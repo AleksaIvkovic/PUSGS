@@ -1,6 +1,6 @@
 <form 
     [formGroup]="addForm" 
-    (ngSubmit)="onAdd()">
+    (ngSubmit)="onSubmit()">
     <div class="row">
         <div class="col-md-5">
             <mat-form-field appearance="fill">
@@ -14,19 +14,18 @@
         </div>
         <div class="col-md-5">
             <mat-form-field appearance="fill">
+                <mat-label>Seats</mat-label>
                 <input 
-                    matInput 
-                    [matDatepicker]="pickerYear" 
-                    placeholder="Year"
-                    id="pickerYear"
-                    [formControlName]="'pickerYear'"
-                    [max]="maxYear">
-                <mat-datepicker-toggle matSuffix [for]="pickerYear"></mat-datepicker-toggle>
-                <mat-datepicker #pickerYear></mat-datepicker>
+                    matInput
+                    name="seats" 
+                    type="number" 
+                    [formControlName]="'seats'"
+                    id="seats"
+                    [min]="1">
             </mat-form-field>
         </div>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="!isEdit">
         <div class="col-md-5">
             <mat-form-field appearance="fill">
                 <mat-label>Type</mat-label>
@@ -42,14 +41,15 @@
         </div>
         <div class="col-md-5">
             <mat-form-field appearance="fill">
-                <mat-label>Seats</mat-label>
                 <input 
-                    matInput
-                    name="seats" 
-                    type="number" 
-                    [formControlName]="'seats'"
-                    id="seats"
-                    min="1">
+                    matInput 
+                    [matDatepicker]="pickerYear" 
+                    placeholder="Year"
+                    id="pickerYear"
+                    [formControlName]="'pickerYear'"
+                    [max]="maxYear">
+                <mat-datepicker-toggle matSuffix [for]="pickerYear"></mat-datepicker-toggle>
+                <mat-datepicker #pickerYear></mat-datepicker>
             </mat-form-field>
         </div>
     </div>
@@ -95,10 +95,18 @@
         </div>
         <div class="col-md-5">
             <button 
+                *ngIf="!isEdit"
                 mat-raised-button 
                 class="btn-success"
                 type="submit">
                 Add
+            </button>
+            <button 
+                *ngIf="isEdit"
+                mat-raised-button 
+                class="btn-success"
+                type="submit">
+                Save
             </button>
         </div>
     </div>
