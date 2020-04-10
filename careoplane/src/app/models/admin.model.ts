@@ -2,7 +2,7 @@ export class Admin {
     constructor(
         public email: string,
         public pass: string,
-        public sysAdmin: boolean,
+        public type: string,
         public company: any = ''
     ) {}
 }

@@ -18,7 +18,7 @@ export class UserService {
     private rentACarAdmin: Admin = new Admin(
         'admin@gmail.com',
         'admin',
-        false,
+        'rent-a-car',
         'UNI LINE TTR'
     );
 
