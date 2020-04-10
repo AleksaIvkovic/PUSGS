@@ -14,14 +14,14 @@ export class OrderByPipe implements PipeTransform {
 
     for(let i = 0; i < res.length; i++) {
       for(let j = 0; j < res.length - 1; j++) {
-
           if((res[j])[field] > (res[j + 1])[field]) {
-              let swap = (res[j])[field];
-              (res[j])[field] = (res[j + 1])[field];
-              (res[j])[field] = swap;
+              let swap = (res[j]);
+              (res[j]) = (res[j + 1]);
+              (res[j + 1]) = swap;
           }
       }
     }
+    
 
     if(reverse){
       let reverseRes = [];

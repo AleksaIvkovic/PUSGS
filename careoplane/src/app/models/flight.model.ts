@@ -2,7 +2,8 @@ import { Seat } from './seat.model';
 
 export class Flight {
     public airlineName: string;
-
+    public conCount: number;
+        
     constructor(
         public airlineId: number,
         public id: number,
@@ -15,5 +16,7 @@ export class Flight {
         public connections: string[],
         public seats: Seat[] = new Array<Seat>(),
         public rating: number = 0,
-        public pricess: number[] = []){}
+        public pricess: number[] = []){
+            this.conCount = connections.length;
+        }
 }

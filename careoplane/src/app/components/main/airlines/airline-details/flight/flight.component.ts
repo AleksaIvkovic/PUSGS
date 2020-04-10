@@ -12,12 +12,10 @@ export class FlightComponent implements OnInit {
   @Input() showLink:boolean;
 
   backStr: string;
-  count: number;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.count = this.flight.connections.length;
     if(this.back == 'one'){
         this.backStr = '../';
     }

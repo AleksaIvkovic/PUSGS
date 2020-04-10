@@ -15,9 +15,9 @@ export class AirlineService {
   ];
 
   private flight1: Flight = new Flight(this.airlines[0].id,0,"Belgrade","London",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "AA", "CC"]);
-  private flight2: Flight = new Flight(this.airlines[0].id,1,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "DD"]);
-  private flight3: Flight = new Flight(this.airlines[1].id,2,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "DD"]);
-  private flight4: Flight = new Flight(this.airlines[1].id,3,"Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "DD"]);
+  private flight2: Flight = new Flight(this.airlines[0].id,1,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 16, 2500, ["BB", "DD"]);
+  private flight3: Flight = new Flight(this.airlines[1].id,2,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 18, 2500, ["BB"]);
+  private flight4: Flight = new Flight(this.airlines[1].id,3,"Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 15, 2500, ["BB", "DD", "CC", "EE"]);
   
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
