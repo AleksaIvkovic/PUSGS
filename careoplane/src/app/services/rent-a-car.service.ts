@@ -53,6 +53,11 @@ export class RentACarService {
         return this.rentACars[indexRentACar].vehicles[indexVehicle];
     }
 
+    getVehicleForRentACarByName(rentACarName: string, indexVehicle: number) {
+        let index = this.getRentACarIndex(this.getRentACarByName(rentACarName));
+        return this.getVehicleForRentACar(index, indexVehicle);
+    }
+
     getVehicleTypes(rentACarName: string): string[] {
         const rentACar = this.getRentACarByName(rentACarName);
         const ret: string[] = [];
@@ -71,26 +76,26 @@ export class RentACarService {
     }
 
     getMockUp(): RentACar[] {
-        const vehicles: Vehicle[] = [
-            new Vehicle('BMW', 'Car', 5, 2019, 200),
-            new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150),
-            new Vehicle('FAP', 'Truck', 2, 2014, 200),
-            new Vehicle('BMW', 'Car', 5, 2016, 220),
-            new Vehicle('Mercedes-Benz', 'Van', 3, 2018, 180),
-            new Vehicle('FAP', 'Truck', 2, 2020, 170),
-            new Vehicle('BMW', 'Car', 5, 2016, 130),
-            new Vehicle('Mercedes-Benz', 'Van', 3, 2019, 140),
-            new Vehicle('FAP', 'Truck', 2, 2015, 100),
-        ];
+        // const vehicles: Vehicle[] = [
+        //     new Vehicle('BMW', 'Car', 5, 2019, 200),
+        //     new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150),
+        //     new Vehicle('FAP', 'Truck', 2, 2014, 200),
+        //     new Vehicle('BMW', 'Car', 5, 2016, 220),
+        //     new Vehicle('Mercedes-Benz', 'Van', 3, 2018, 180),
+        //     new Vehicle('FAP', 'Truck', 2, 2020, 170),
+        //     new Vehicle('BMW', 'Car', 5, 2016, 130),
+        //     new Vehicle('Mercedes-Benz', 'Van', 3, 2019, 140),
+        //     new Vehicle('FAP', 'Truck', 2, 2015, 100),
+        // ];
 
-        this.rentACars = [
-            new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()]), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, '', 0.5, [new Date()]), new Vehicle('FAP', 'Truck', 2, 2014, 200, '', 0.5, [new Date()]),], ['Novi Sad']),
-            new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad', 'Beograd']),
-            new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
-            new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Beograd']),
-            new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Indjija']),
-            new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Pancevo', 'Indjija'])
-        ];
+        // this.rentACars = [
+        //     new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()]), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, '', 0.5, [new Date()]), new Vehicle('FAP', 'Truck', 2, 2014, 200, '', 0.5, [new Date()]),], ['Novi Sad']),
+        //     new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad', 'Beograd']),
+        //     new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
+        //     new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Beograd']),
+        //     new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Indjija']),
+        //     new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Pancevo', 'Indjija'])
+        // ];
 
         return this.rentACars;
     }

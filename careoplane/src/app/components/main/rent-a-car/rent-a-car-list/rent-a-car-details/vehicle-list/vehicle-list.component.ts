@@ -17,6 +17,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @Input() rentACar: RentACar;
+  @Input() isAdmin: boolean = false;
 
   dataSource;
   displayedColumns: string[] = ['brand', 'year', 'type', 'seats', 'price', 'rating'];

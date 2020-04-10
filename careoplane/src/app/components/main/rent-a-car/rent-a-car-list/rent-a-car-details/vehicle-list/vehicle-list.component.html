@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" *ngIf="!isAdmin">
     <div class="col-md-12">
         <form 
             [formGroup]="searchForm" 
@@ -93,7 +93,7 @@
     </div>
 </div>
 <hr>
-<div class="row" *ngIf="searchPerformed">
+<div class="row" *ngIf="searchPerformed || isAdmin">
     <div class="col-md-7">
         <table 
         matSort 

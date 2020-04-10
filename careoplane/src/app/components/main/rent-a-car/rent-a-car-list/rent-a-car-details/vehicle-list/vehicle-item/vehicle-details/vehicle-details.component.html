@@ -1,7 +1,4 @@
 <div class="row">
-    <!-- <div class="col-xs-12">
-        <h1>{{ vehicle.brand }}</h1>
-    </div> -->
     <table>
         <tr>
             <th>Brand</th>
@@ -35,10 +32,18 @@
             <td></td>
             <td>
                 <button 
+                    *ngIf="!isAdmin"
                     mat-raised-button 
                     color="primary"
                     (click)="onReserve()">
                     Reserve
+                </button>
+                <button 
+                    *ngIf="isAdmin"
+                    mat-raised-button 
+                    color="primary"
+                    (click)="onEditVehicle()">
+                    Edit Vehicle
                 </button>
             </td>
         </tr>

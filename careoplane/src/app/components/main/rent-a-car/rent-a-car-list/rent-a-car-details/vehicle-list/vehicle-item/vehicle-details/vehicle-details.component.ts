@@ -5,6 +5,7 @@ import { RentACar } from 'src/app/models/rent-a-car.model';
 import { RentACarService } from 'src/app/services/rent-a-car.service';
 import { Url } from 'url';
 import { Subscription } from 'rxjs';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -18,11 +19,14 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   idRentACar: number;
   idVehicle: number;
   subscription: Subscription;
+  adminVehicleId: number;
+  isAdmin: boolean = false;
 
   // displayedColumns: string[] = ['brand', 'year', 'type', 'seats', 'price', 'location', 'rating'];
 
   constructor(
     private rentACarService: RentACarService,
+    private userService: UserService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -32,9 +36,16 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
     .subscribe(
       (params: Params) => {
         // this.idRentACar = +params['id'];
-        this.idRentACar = +(this.router.url.split('/')[3])
-        this.idVehicle = +params['idv'];
-        this.vehicle = this.rentACarService.getVehicleForRentACar(this.idRentACar, this.idVehicle);
+        this.adminVehicleId = +params['idvh'];
+        if (this.adminVehicleId === undefined) {
+          this.idRentACar = +(this.router.url.split('/')[3])
+          this.idVehicle = +params['idv'];
+          this.vehicle = this.rentACarService.getVehicleForRentACar(this.idRentACar, this.idVehicle);
+        } else {
+          // let rentACar: RentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
+          this.isAdmin = true;
+          this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.userService.getMockUpRentACarAdmin().company, this.adminVehicleId);
+        }
       }
     );
   }
@@ -42,6 +53,10 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   onReserve() {
     // this.rentACarService.doNextOnReserve(new Date(), 'A', new Date(), 'B');
     this.router.navigate(['../', 'reserve'], {relativeTo: this.route});
+  }
+
+  onEditVehicle() {
+    
   }
 
   ngOnDestroy() {
