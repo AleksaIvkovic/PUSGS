@@ -58,6 +58,11 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   onEdit() {
+  
+  }
+
+  onAddVehicle() {
+    this.router.navigate(['/main/rent-a-car-profile/add-vehicle']);
   }
 
   ngAfterViewInit() {

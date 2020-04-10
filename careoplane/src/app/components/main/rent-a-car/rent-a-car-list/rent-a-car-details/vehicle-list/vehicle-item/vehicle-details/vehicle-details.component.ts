@@ -37,7 +37,7 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
       (params: Params) => {
         // this.idRentACar = +params['id'];
         this.adminVehicleId = +params['idvh'];
-        if (this.adminVehicleId === undefined) {
+        if (this.adminVehicleId === undefined || Number.isNaN(this.adminVehicleId)) {
           this.idRentACar = +(this.router.url.split('/')[3])
           this.idVehicle = +params['idv'];
           this.vehicle = this.rentACarService.getVehicleForRentACar(this.idRentACar, this.idVehicle);
@@ -56,6 +56,10 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   }
 
   onEditVehicle() {
+    
+  }
+
+  onRemoveVehicle() {
     
   }
 

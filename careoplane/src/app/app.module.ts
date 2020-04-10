@@ -77,6 +77,7 @@ import { OrderByPipe } from './pipes/order-by.pipe';
 import { ReturnFlightComponent } from './components/main/airlines/airline-details/return-flight/return-flight.component';
 import { SeatSelectorComponent } from './components/main/airlines/flight-reservation/seat-selector/seat-selector.component';
 import { RentACarProfileComponent } from './components/main/rent-a-car/rent-a-car-profile/rent-a-car-profile.component';
+import { VehicleManagerComponent } from './components/main/rent-a-car/rent-a-car-profile/vehicle-manager/vehicle-manager.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { RentACarProfileComponent } from './components/main/rent-a-car/rent-a-ca
     ReturnFlightComponent,
     SeatSelectorComponent,
     RentACarProfileComponent,
+    VehicleManagerComponent,
   ],
   imports: [
     BrowserModule,
