@@ -18,6 +18,7 @@ import { AirlineProfileComponent } from './components/main/airlines/airline-prof
 import { AirlineEditComponent } from './components/main/airlines/airline-edit/airline-edit.component';
 import { VehicleManagerComponent } from './components/main/rent-a-car/rent-a-car-profile/vehicle-manager/vehicle-manager.component';
 import { RentACarManagerComponent } from './components/main/rent-a-car/rent-a-car-manager/rent-a-car-manager.component';
+import { UserAuthentificationComponent } from './components/user-authentification/user-authentification.component';
 
 
 const routes: Routes = [
@@ -57,7 +58,8 @@ const routes: Routes = [
       {path: ':idvh/details', component: VehicleDetailsComponent},
       {path: ':idvh/edit', component: VehicleManagerComponent},
     ]}
-  ]}
+  ]},
+  {path: 'user-authentification', component: UserAuthentificationComponent}
 ];
 
 @NgModule({
