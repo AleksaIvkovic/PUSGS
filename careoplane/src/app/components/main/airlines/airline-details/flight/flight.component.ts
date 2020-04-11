@@ -12,7 +12,6 @@ export class FlightComponent implements OnInit {
   @Input() showLink:boolean;
 
   backStr: string;
-
   constructor() { }
 
   ngOnInit(): void {

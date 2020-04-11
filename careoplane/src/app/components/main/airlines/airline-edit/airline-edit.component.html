@@ -53,26 +53,49 @@
             <div class="col-md-4">
                 <mat-form-field appearance="fill">
                     <mat-label>Business class</mat-label>
-                    <input matInput type="number" [min]="1" [formControlName]="'rowsFirstClass'">
+                    <input matInput type="number" [min]="1" [formControlName]="'rowsBusinessClass'">
                 </mat-form-field>
             </div>
             <div class="col-md-4">
                 <mat-form-field appearance="fill">
                     <mat-label>Economy class</mat-label>
-                    <input matInput type="number" [min]="1" [formControlName]="'rowsFirstClass'">
+                    <input matInput type="number" [min]="1" [formControlName]="'rowsEconomyClass'">
                 </mat-form-field>
             </div>
         </div>
         <mat-label>seating arrangement per row</mat-label>
-        <div *ngFor="let seat of seats" class="col-md-2">
-            {{seat}}
-        </div>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Number of seats colume {{seats.length + 1}}</mat-label>
-            <input matInput type="number" min="1">
-        </mat-form-field>
+        <div class="row">
+            <div class="col-xs-12" formArrayName="seats" cdkDropList (cdkDropListDropped)="drop($event)">
+              <div
+                class="row"
+                *ngFor="let seatsControl of getList(); let i = index"
+                [formGroupName]="i"
+                style="margin-top: 10px;"
+                cdkDrag>
+                <div class="col-xs-8">
+                  <mat-form-field appearance="fill">
+                    <mat-label>Number of seats in row {{i + 1}}</mat-label>
+                        <input matInput type="number" [min]="1" [formControlName]="'seat'">
+                    </mat-form-field>
+                </div>
+                <div class="col-xs-2" >
+                  <button type="button" class="drag-handle" mat-icon-button cdkDragHandle>
+                    <mat-icon>unfold_more</mat-icon>
+                  </button>
+                </div>
+                <div class="col-xs-2">
+                  <button mat-mini-fab (click)="onDeleteConnection(i)" color="warn">X</button>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-xs-12">
+                  <button mat-raised-button color="accent" type="button" (click)="onAddConnection()">Add seats</button>
+                </div>
+              </div>
+            </div>
+          </div>
     </div>
     <br/>
-    <button mat-raised-button color="primary" type="submit">Submit</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!group.valid">Submit</button>
 </form>  

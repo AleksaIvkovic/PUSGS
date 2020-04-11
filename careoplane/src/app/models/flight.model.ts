@@ -4,18 +4,19 @@ export class Flight {
     public conCount: number;
         
     constructor(
-        public airlineName: string,
-        public id: number,
-        public origin: string,
-        public destination: string,
-        public departure: Date,
-        public arrival: Date, 
-        public duration: number,
-        public distance: number, 
-        public connections: string[],
+        public airlineName: string = null,
+        public origin: string = null,
+        public destination: string = null,
+        public departure: Date = null,
+        public arrival: Date = null, 
+        public durationHours: number = null,
+        public durationMinutes: number = null,
+        public distance: number = null, 
+        public connections: string[] = [],
+        public id: number = null,
         public seats: Seat[] = new Array<Seat>(),
-        public rating: number = 0,
-        public pricess: number[] = []){
+        public pricess: number[] = []
+        ){
             this.conCount = connections.length;
         }
 }

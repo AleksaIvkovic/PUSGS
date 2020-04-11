@@ -7,6 +7,8 @@ import { Airline } from 'src/app/models/airline.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Subscription } from 'rxjs';
 import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
+import { MatChipInputEvent } from '@angular/material/chips';
+import {COMMA, ENTER, DASH} from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-airline-details',
@@ -32,6 +34,11 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   mapOptions: google.maps.MapOptions;
   marker: google.maps.Marker;
 
+  visible = true;
+  removable = true;
+  addOnBlur = true;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+
   constructor(private geocodingService: GeoCodingServiceService,private router: Router,private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
@@ -52,19 +59,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   mapInitializer() {
-    this.mapOptions  = {
-      center:this.geocodingService.LatLon('Rumenacka 31, Novi Sad, Serbia')
-      ,
-      zoom: 8
-    }; 
-    this.map = new google.maps.Map(this.gmap.nativeElement, 
-    this.mapOptions);
-    this.marker = new google.maps.Marker({
-      position: this.geocodingService.LatLon('Rumenacka 31, Novi Sad, Serbia'),
-      map: this.map
-    });
-    (this.airline.latLng);
-    this.marker.setMap(this.map);
+    this.geocodingService.LatLon(this.airline.address,this.map, this.gmap);
   }
 
   ngAfterViewInit() {
@@ -77,5 +72,29 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   onEdit(): void{
     this.router.navigate(['../../',this.name,'edit'], { relativeTo: this.activeRoute });
+  }
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if ((value || '').trim()) {
+      this.airline.destinations.push(value.trim());
+    }
+
+    if (input) {
+      input.value = '';
+    }
+
+    this.airlineService.editAirline(this.airline);
+  }
+
+  remove(destination: string): void {
+    const index = this.airline.destinations.indexOf(destination);
+
+    if (index >= 0) {
+      this.airline.destinations.splice(index, 1);
+      this.airlineService.editAirline(this.airline);
+    }
   }
 }

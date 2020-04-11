@@ -17,6 +17,7 @@ import { RentACarProfileComponent } from './components/main/rent-a-car/rent-a-ca
 import { AirlineProfileComponent } from './components/main/airlines/airline-profile/airline-profile.component';
 import { AirlineEditComponent } from './components/main/airlines/airline-edit/airline-edit.component';
 import { VehicleManagerComponent } from './components/main/rent-a-car/rent-a-car-profile/vehicle-manager/vehicle-manager.component';
+import { FlightEditComponent } from './components/main/airlines/flight-edit/flight-edit.component';
 
 
 const routes: Routes = [
@@ -48,7 +49,8 @@ const routes: Routes = [
       {path: ':alid/details', component: AirlineDetailsComponent},
       {path: ':alid/edit', component: AirlineEditComponent},
       {path: 'new', component: AirlineEditComponent},
-      
+      {path: ':fid/edit-fligh', component: FlightEditComponent},
+      {path: 'add-flight', component: FlightEditComponent},
     ]}
   ]}
 ];

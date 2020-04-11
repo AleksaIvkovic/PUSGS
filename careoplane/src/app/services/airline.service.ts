@@ -10,14 +10,14 @@ import { Seat } from '../models/seat.model';
 })
 export class AirlineService {
   private airlines: Airline[] = [
-    new Airline("Jat","Beograd","Manji jaci bolji",[2,1.5,1],[3,3],[1,1,2]),
-    new Airline("Lufthansa","Berlin","Sehr gut",[4,3,2],[2,4,2],[5,10,40]),
+    new Airline("Jat","Beograd","Manji jaci bolji",[2,1.5,1],[3,3],[1,1,2],[],"",1,["Belgrade","Paris","New York"]),
+    new Airline("Lufthansa","Berlin","Sehr gut",[4,3,2],[2,4,2],[5,10,40],[],"",1,["Belgrade","Paris","New York"]),
   ];
 
-  private flight1: Flight = new Flight("Jat",0,"Belgrade","London",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "AA", "CC"]);
-  private flight2: Flight = new Flight("Jat",1,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 16, 2500, ["BB", "DD"]);
-  private flight3: Flight = new Flight("Lufthansa",2,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 18, 2500, ["BB"]);
-  private flight4: Flight = new Flight("Lufthansa",3,"Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 15, 2500, ["BB", "DD", "CC", "EE"]);
+  private flight1: Flight = new Flight("Jat","Belgrade","New York",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 12, 2500, ["Paris","Belgrade"],0);
+  private flight2: Flight = new Flight("Jat","Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 16, 12, 2500, ["BB", "DD"],1);
+  private flight3: Flight = new Flight("Lufthansa","Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 18, 12, 2500, ["BB"],2);
+  private flight4: Flight = new Flight("Lufthansa","Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 15, 12, 2500, ["BB", "DD", "CC", "EE"],3);
   
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
@@ -110,8 +110,13 @@ export class AirlineService {
     this.airlinesChanged.next(this.airlines.slice());
   }
 
-  editAirline() {
-    this.airlinesChanged.next(this.airlines.slice());
+  editAirline(airline: Airline) {
+    for(let tempAirline of this.airlines){
+      if(tempAirline.name === airline.name){
+        tempAirline=airline;
+      }
+    }
+    this.airlinesChanged.next(this.airlines.slice())
   }
 
   getFlight(id: number): Flight {
@@ -124,7 +129,64 @@ export class AirlineService {
         return false;
       }
     }
-
     return true;
+  }
+
+  getCurrentAirline(): Airline {
+    return this.airlines[0];
+  }
+
+  EditFlight(flight: Flight) {
+    for(let flightTemp of this.flights){
+      if(flight.id == flightTemp.id){
+        flightTemp = flight;
+      }
+    }
+  }
+
+  AddFlgiht(flight: Flight) {
+    flight.id= this.flights.length;
+    this.generateSeats(flight);
+    for(let airline of this.airlines){
+      if(airline.name == flight.airlineName){
+        airline.flights.push(flight);
+      }
+    }
+  }
+
+  generateSeats(flight: Flight) {
+    for(let airline of this.airlines){
+      
+      if(flight.airlineName == airline.name){
+        let count = 1;
+        let characters: string[] = ['A','B','C','D','E','F','G','H','I','J'];
+        let sum = 0;
+    
+        for(let i = 0;i < airline.seatingArrangement.length;i++){
+          sum += airline.seatingArrangement[i];
+        }
+    
+        for(let i = 0;i < airline.segments.length;i++){
+          let type: string;
+          
+          if(i == 0){
+            type = "first";
+          }
+          else if(i == 1){
+            type == "bussines";
+          }
+          else{
+            type == "economy";
+          }
+
+          for(let j = 0;j < airline.segments[i];j++){
+            for(let k= 0;k < sum;k++){
+              flight.seats.push(new Seat(airline.name,flight.id,count + ' ' + characters[k],type));
+            }
+            count++;
+          }
+        }
+      }
+    }
   }
 }
