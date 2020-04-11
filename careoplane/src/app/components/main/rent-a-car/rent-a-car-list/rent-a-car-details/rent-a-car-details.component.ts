@@ -73,7 +73,7 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   onEdit() {
-  
+    this.router.navigate(['edit'], {relativeTo: this.route});
   }
 
   onAddVehicle() {

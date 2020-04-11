@@ -18,6 +18,8 @@ import { AirlineProfileComponent } from './components/main/airlines/airline-prof
 import { AirlineEditComponent } from './components/main/airlines/airline-edit/airline-edit.component';
 import { VehicleManagerComponent } from './components/main/rent-a-car/rent-a-car-profile/vehicle-manager/vehicle-manager.component';
 import { FlightEditComponent } from './components/main/airlines/flight-edit/flight-edit.component';
+import { RentACarManagerComponent } from './components/main/rent-a-car/rent-a-car-manager/rent-a-car-manager.component';
+import { UserAuthentificationComponent } from './components/user-authentification/user-authentification.component';
 
 
 const routes: Routes = [
@@ -43,16 +45,24 @@ const routes: Routes = [
     {path: 'rent-a-car-profile', component: RentACarProfileComponent, children: [
       {path: ':idvh/details', component: VehicleDetailsComponent},
       {path: ':idvh/edit', component: VehicleManagerComponent},
-      {path: 'add-vehicle', component: VehicleManagerComponent}
+      {path: 'add-vehicle', component: VehicleManagerComponent},
     ]},
+    {path: 'rent-a-car-profile/edit', component: RentACarManagerComponent},
     {path: 'airline-profile', component: AirlineProfileComponent, children:[
       {path: ':alid/details', component: AirlineDetailsComponent},
       {path: ':alid/edit', component: AirlineEditComponent},
       {path: 'new', component: AirlineEditComponent},
       {path: ':fid/edit-fligh', component: FlightEditComponent},
       {path: 'add-flight', component: FlightEditComponent},
+      
+    ]},
+    {path: 'new-rent-a-car-profile', component: RentACarManagerComponent, children: [
+      {path: 'add-vehicle', component: VehicleManagerComponent},
+      {path: ':idvh/details', component: VehicleDetailsComponent},
+      {path: ':idvh/edit', component: VehicleManagerComponent},
     ]}
-  ]}
+  ]},
+  {path: 'user-authentification', component: UserAuthentificationComponent}
 ];
 
 @NgModule({
