@@ -1,8 +1,8 @@
 <div class="container testimonial-group">
   <div class="row text-center">
       <div *ngFor="let airline of airlines" id="pictureDiv">
-          <a [routerLink]="['../',airline.id, 'details']">
-              <app-airline [airline]="airline" [id]="airline.id"></app-airline>
+          <a [routerLink]="['../',airline.name, 'details']">
+              <app-airline [airline]="airline"></app-airline>
           </a>
       </div>
   </div>

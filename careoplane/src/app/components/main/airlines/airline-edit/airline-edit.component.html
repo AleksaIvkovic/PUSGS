@@ -1,0 +1,78 @@
+<form [formGroup]="group" (ngSubmit)="onSubmit()">
+    <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Name</mat-label>
+          <input matInput [formControlName]="'name'">
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+          <mat-label>Address</mat-label>
+          <input matInput [formControlName]="'address'">
+        </mat-form-field>
+        <button
+            mat-raised-button 
+            color="accent"
+            (click)="verifyAddress()">
+            Verify address
+        </button>
+        <br>
+        <mat-form-field appearance="fill">
+          <mat-label>Description</mat-label>
+          <textarea matInput [formControlName]="'description'"></textarea>
+        </mat-form-field>
+        <br/>
+        <mat-label>Prices per class</mat-label>
+        <div class="row">
+            <div class="col-md-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>First class</mat-label>
+                    <input matInput type="number" [min]="1" [formControlName]="'priceFirstClass'">
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Business class</mat-label>
+                    <input matInput type="number" [min]="1" [formControlName]="'priceBusinessClass'">
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Economy class</mat-label>
+                    <input matInput type="number" [min]="1" [formControlName]="'priceEconomyClass'">
+                </mat-form-field>
+            </div>
+        </div>
+        <mat-label>Number of rows per class</mat-label>
+        <div class="row">
+            <div class="col-md-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>First class</mat-label>
+                    <input matInput type="number" [min]="1" [formControlName]="'rowsFirstClass'">
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Business class</mat-label>
+                    <input matInput type="number" [min]="1" [formControlName]="'rowsFirstClass'">
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field appearance="fill">
+                    <mat-label>Economy class</mat-label>
+                    <input matInput type="number" [min]="1" [formControlName]="'rowsFirstClass'">
+                </mat-form-field>
+            </div>
+        </div>
+        <mat-label>seating arrangement per row</mat-label>
+        <div *ngFor="let seat of seats" class="col-md-2">
+            {{seat}}
+        </div>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Number of seats colume {{seats.length + 1}}</mat-label>
+            <input matInput type="number" min="1">
+        </mat-form-field>
+    </div>
+    <br/>
+    <button mat-raised-button color="primary" type="submit">Submit</button>
+</form>  

@@ -3,7 +3,7 @@
         <mat-list>
             <mat-list-item>
                 <div mat-line>
-                    <a [routerLink]="[backStr,flight.airlineId, 'details']">
+                    <a [routerLink]="[backStr,flight.airlineName, 'details']">
                         {{flight.airlineName}}
                     </a>
                 </div>
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div mat-line *ngIf="showLink">
-                <a [routerLink]="[backStr,flight.airlineId, flight.id, 'reservation']" routerLinkActive="active">
+                <a [routerLink]="[backStr,flight.airlineName, flight.id, 'reservation']" routerLinkActive="active">
                     reserve
                 </a>
             </div>

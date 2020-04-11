@@ -89,7 +89,7 @@ export class SeatSelectorComponent implements OnInit {
       }
     });
     //Process a simple bus layout
-    this.airline = this.airlineService.getAirline(this.flight.airlineId);
+    this.airline = this.airlineService.getAirline(this.flight.airlineName);
 
     this.seatConfigFun();
     this.processSeatChart(this.seatConfig);

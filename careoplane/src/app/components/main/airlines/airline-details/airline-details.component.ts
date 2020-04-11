@@ -1,11 +1,12 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
 /// <reference types=”@types/googlemaps” />
 
 import { Airline } from 'src/app/models/airline.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Subscription } from 'rxjs';
+import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
 
 @Component({
   selector: 'app-airline-details',
@@ -13,7 +14,9 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./airline-details.component.css']
 })
 export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
-  id: number;
+  name: string;
+  admin: boolean = false;
+  
   airline: Airline;
   paramsSub: Subscription;
 
@@ -26,33 +29,41 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   @ViewChild('mapContainer', {static: false}) gmap: ElementRef;
   map: google.maps.Map;
-  lat = 40.730610;
-  lng = -73.935242;
-  coordinates = new google.maps.LatLng(this.lat, this.lng);
-  mapOptions: google.maps.MapOptions = {
-    center: this.coordinates,
-    zoom: 8,
-  };
-  marker = new google.maps.Marker({
-    position: this.coordinates,
-    map: this.map,
-  });
+  mapOptions: google.maps.MapOptions;
+  marker: google.maps.Marker;
 
-  constructor(private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
+  constructor(private geocodingService: GeoCodingServiceService,private router: Router,private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
     this.paramsSub = this.activeRoute.params.subscribe(
       (params: Params) => {
-          this.id = params['id'];
-          this.airline = this.airlineService.getAirline(this.id);
+          if(params['id']){
+            this.name = params['id'];
+          }
+          else{
+            this.name = params['alid'];
+            this.admin = true;
+          }
+          this.airline = this.airlineService.getAirline(this.name);
       }
     );
+    
     console.log(this.airline);
   }
 
   mapInitializer() {
+    this.mapOptions  = {
+      center:this.geocodingService.LatLon('Rumenacka 31, Novi Sad, Serbia')
+      ,
+      zoom: 8
+    }; 
     this.map = new google.maps.Map(this.gmap.nativeElement, 
     this.mapOptions);
+    this.marker = new google.maps.Marker({
+      position: this.geocodingService.LatLon('Rumenacka 31, Novi Sad, Serbia'),
+      map: this.map
+    });
+    (this.airline.latLng);
     this.marker.setMap(this.map);
   }
 
@@ -64,4 +75,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.paramsSub.unsubscribe();
   }
 
+  onEdit(): void{
+    this.router.navigate(['../../',this.name,'edit'], { relativeTo: this.activeRoute });
+  }
 }

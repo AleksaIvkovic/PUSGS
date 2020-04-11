@@ -60,8 +60,6 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
     )
     this.airlineService.getAirlines();
     this.airlineService.getAllFlights();
-    console.log(this.airlines);
-    console.log(this.flights);
   }
 
   ngOnDestroy(): void {

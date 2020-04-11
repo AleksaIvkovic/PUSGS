@@ -10,14 +10,14 @@ import { Seat } from '../models/seat.model';
 })
 export class AirlineService {
   private airlines: Airline[] = [
-    new Airline(0,"Jat","Beograd","Manji jaci bolji",[],0,[2,1.5,1],[3,3],[1,1,2]),
-    new Airline(1,"Lufthansa","Berlin","Sehr gut",[],0,[4,3,2],[2,4,2],[5,10,40]),
+    new Airline("Jat","Beograd","Manji jaci bolji",[2,1.5,1],[3,3],[1,1,2]),
+    new Airline("Lufthansa","Berlin","Sehr gut",[4,3,2],[2,4,2],[5,10,40]),
   ];
 
-  private flight1: Flight = new Flight(this.airlines[0].id,0,"Belgrade","London",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "AA", "CC"]);
-  private flight2: Flight = new Flight(this.airlines[0].id,1,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 16, 2500, ["BB", "DD"]);
-  private flight3: Flight = new Flight(this.airlines[1].id,2,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 18, 2500, ["BB"]);
-  private flight4: Flight = new Flight(this.airlines[1].id,3,"Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 15, 2500, ["BB", "DD", "CC", "EE"]);
+  private flight1: Flight = new Flight("Jat",0,"Belgrade","London",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 2500, ["BB", "AA", "CC"]);
+  private flight2: Flight = new Flight("Jat",1,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 16, 2500, ["BB", "DD"]);
+  private flight3: Flight = new Flight("Lufthansa",2,"Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 18, 2500, ["BB"]);
+  private flight4: Flight = new Flight("Lufthansa",3,"Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 15, 2500, ["BB", "DD", "CC", "EE"]);
   
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
@@ -44,10 +44,7 @@ export class AirlineService {
 
       for(let airline of this.airlines){
       
-        if(flight.airlineId == airline.id){
-          
-          flight.airlineName = airline.name;
-          
+        if(flight.airlineName == airline.name){
           for(let i = 0; i < airline.pricess.length; i++){
             flight.pricess.push(flight.distance * airline.pricess[i]);
           }
@@ -75,7 +72,7 @@ export class AirlineService {
 
             for(let j = 0;j < airline.segments[i];j++){
               for(let k= 0;k < sum;k++){
-                flight.seats.push(new Seat(airline.id,flight.airlineId,count + ' ' + characters[k],type));
+                flight.seats.push(new Seat(airline.name,flight.id,count + ' ' + characters[k],type));
               }
               count++;
             }
@@ -100,11 +97,34 @@ export class AirlineService {
     this.flightsChanged.next(this.flights.slice())
   }
 
-  getAirline(id: number): Airline{
-    return this.airlines[id];
+  getAirline(name: string): Airline{
+    for(let airline of this.airlines){
+      if(airline.name === name){
+        return airline;
+      }
+    }
+  }
+
+  addAirline(airline: Airline): void {
+    this.airlines.push(airline);
+    this.airlinesChanged.next(this.airlines.slice());
+  }
+
+  editAirline() {
+    this.airlinesChanged.next(this.airlines.slice());
   }
 
   getFlight(id: number): Flight {
     return this.flights[id];
+  }
+
+  verifyName(value: string) {
+    for(let tempAirline of this.airlines){
+      if(tempAirline.name.toLowerCase() === value.toLowerCase()){
+        return false;
+      }
+    }
+
+    return true;
   }
 }

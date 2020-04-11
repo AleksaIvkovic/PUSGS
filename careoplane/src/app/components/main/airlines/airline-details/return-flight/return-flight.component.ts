@@ -14,8 +14,7 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
   @Input() ret: Date;
   @Input() num: number;
   backStr: string;
-  count: number;
-
+  
   flights: Flight[];
   flightsSubscription: Subscription;
 
@@ -29,7 +28,6 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
     );
     this.airlineService.getAllFlights();
 
-    this.count = this.flight.connections.length;
     if(this.back == 'one'){
         this.backStr = '../';
     }

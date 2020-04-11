@@ -8,7 +8,6 @@ import { Airline } from 'src/app/models/airline.model';
 })
 export class AirlineComponent implements OnInit {
   @Input() airline: Airline;
-  @Input() id: number;
 
   constructor() { }
 

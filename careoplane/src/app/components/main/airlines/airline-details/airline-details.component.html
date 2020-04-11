@@ -6,22 +6,17 @@
     </div>
     <div class="col-md-6">
         <div #mapContainer id="map"></div>
+        <button
+            mat-raised-button 
+            color="primary"
+            (click)="onEdit()"
+            *ngIf="admin">
+            Edit Info
+        </button>
     </div>
 </div>
 
-<hr/>
-
-<input type="text" [(ngModel)]="origin">
-<input type="text" [(ngModel)]="destination">
-<input type="date" [(ngModel)]="departure">
-<input type="date" [(ngModel)]="arrival">
-<input type="number" [(ngModel)]="connections" min="0">
-<input type="number" [(ngModel)]="price" min="1">
-
-<hr/>
-
 <mat-list>
-    <app-flight *ngFor="let flight of airline.flights| filter:origin:'origin' 
-    | filter:destination:'destination' | orderBy:'airlineName':true" [back]="'two'"
+    <app-flight *ngFor="let flight of airline.flights" [back]="'two'"
     [flight]="flight" [showLink]="true"></app-flight>
 </mat-list>

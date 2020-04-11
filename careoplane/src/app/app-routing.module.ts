@@ -14,6 +14,8 @@ import { VehicleDetailsComponent } from './components/main/rent-a-car/rent-a-car
 import { VehicleStartComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-start/vehicle-start.component';
 import { VehicleReserveComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-reserve/vehicle-reserve.component';
 import { RentACarProfileComponent } from './components/main/rent-a-car/rent-a-car-profile/rent-a-car-profile.component';
+import { AirlineProfileComponent } from './components/main/airlines/airline-profile/airline-profile.component';
+import { AirlineEditComponent } from './components/main/airlines/airline-edit/airline-edit.component';
 
 
 const routes: Routes = [
@@ -38,6 +40,11 @@ const routes: Routes = [
     ]},
     {path: 'rent-a-car-profile', component: RentACarProfileComponent, children: [
       {path: ':idvh/details', component: VehicleDetailsComponent}
+    ]},
+    {path: 'airline-profile', component: AirlineProfileComponent, children:[
+      {path: ':alid/details', component: AirlineDetailsComponent},
+      {path: ':alid/edit', component: AirlineEditComponent},
+      {path: 'new', component: AirlineEditComponent},
     ]}
   ]}
 ];
