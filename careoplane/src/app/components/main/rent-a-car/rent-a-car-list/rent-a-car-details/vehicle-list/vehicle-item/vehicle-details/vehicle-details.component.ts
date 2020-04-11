@@ -6,6 +6,7 @@ import { RentACarService } from 'src/app/services/rent-a-car.service';
 import { Url } from 'url';
 import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -21,6 +22,7 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   adminVehicleId: number;
   isAdmin: boolean = false;
+  rentACar: RentACar;
 
   // displayedColumns: string[] = ['brand', 'year', 'type', 'seats', 'price', 'location', 'rating'];
 
@@ -28,7 +30,8 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
     private rentACarService: RentACarService,
     private userService: UserService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private _snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -37,12 +40,12 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
       (params: Params) => {
         // this.idRentACar = +params['id'];
         this.adminVehicleId = +params['idvh'];
-        if (this.adminVehicleId === undefined) {
+        if (this.adminVehicleId === undefined || Number.isNaN(this.adminVehicleId)) {
           this.idRentACar = +(this.router.url.split('/')[3])
           this.idVehicle = +params['idv'];
           this.vehicle = this.rentACarService.getVehicleForRentACar(this.idRentACar, this.idVehicle);
         } else {
-          // let rentACar: RentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
+          this.rentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
           this.isAdmin = true;
           this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.userService.getMockUpRentACarAdmin().company, this.adminVehicleId);
         }
@@ -56,7 +59,16 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   }
 
   onEditVehicle() {
-    
+    this.router.navigate(['../', 'edit'], {relativeTo: this.route});
+  }
+
+  onRemoveVehicle() {
+    let index = +this.router.url.split('/')[3];
+    this.rentACarService.removeVehicle(this.rentACar, index);
+    this._snackBar.open('Vehicle removed successfully', 'OK', {
+      duration: 5000,
+    });
+    this.router.navigate(['../../'], {relativeTo: this.route});
   }
 
   ngOnDestroy() {

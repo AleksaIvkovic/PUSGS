@@ -7,36 +7,24 @@
         <mat-icon>arrow_back</mat-icon>
     </a>
     <div class="col-md-2">
-        <h1>{{ rentACar.name }}</h1>
+        <h1>{{ rentACar.name }}</h1><h3> {{ rentACar.rating }} </h3>
         <h4>{{ rentACar.address }}</h4>
     </div>
     <div class="col-md-4">
         <div #mapContainer id="map" style="width: 300px; height: 130px;"></div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <p style="word-wrap: break-word;">{{ rentACar.description }}</p>
     </div>
-    <div class="col-md-1" *ngIf="isAdmin">
-        <button
-            mat-raised-button 
-            color="primary"
-            (click)="onEdit()">
-            Edit Info
-        </button>
-    </div>
-</div>
-<div class="row" *ngIf="isAdmin">
-    <div class="col-md-6">
+    <div class="col-md-2">
         <table>
             <tr>
                 <th>Locations</th>
-                <td *ngFor="let location of rentACar.locations">
-                    {{location}}
-                </td>
+            </tr>
+            <tr *ngFor="let location of rentACar.locations">
+                {{location}}
             </tr>
         </table>
-    </div>
-    <div class="col-md-6">
         <table>
             <tr>
                 <th>Price List</th>
@@ -46,8 +34,24 @@
             </tr>
         </table>
     </div>
+    <div class="col-md-1" *ngIf="isAdmin">
+        <button
+            style="width: 100px;"
+            mat-raised-button 
+            color="primary"
+            (click)="onEdit()">
+            Edit Info
+        </button>
+        <button
+            style="margin-top: 10px; width: 100px;"
+            mat-raised-button 
+            color="primary"
+            (click)="onAddVehicle()">
+            Add Vehicle
+        </button>
+    </div>
 </div>
-<hr>
+<hr *ngIf="!isAdmin">
 <div class="row">
     <div class="col-md-12">
         <app-vehicle-list [rentACar]="rentACar" [isAdmin]="isAdmin"></app-vehicle-list>

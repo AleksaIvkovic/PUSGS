@@ -20,17 +20,18 @@
             <td>
                 <button 
                     mat-raised-button 
-                    class="btn-success">
-                    Confirm
+                    color="warn"
+                    (click)="onCancel()">
+                    Cancel
                 </button>
             </td>
             <td>
                 <button 
                     mat-raised-button 
-                    color="warn"
-                    (click)="onCancel()">
-                    Cancel
-                </button></td>
+                    class="btn-success">
+                    Confirm
+                </button>
+            </td>
         </tr>
     </table>
 </div>

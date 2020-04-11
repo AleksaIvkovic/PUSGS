@@ -45,7 +45,7 @@ export class RentACarListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initForm();
-    this.subscription = this.rentACarService.rentACarChanged
+    this.subscription = this.rentACarService.rentACarsChanged
     .subscribe(
       (rentACars: RentACar[]) => {
         this.rentACars = rentACars;

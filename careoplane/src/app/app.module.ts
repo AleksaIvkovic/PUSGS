@@ -80,6 +80,7 @@ import { RentACarProfileComponent } from './components/main/rent-a-car/rent-a-ca
 import { AirlineProfileComponent } from './components/main/airlines/airline-profile/airline-profile.component';
 import { AirlineEditComponent } from './components/main/airlines/airline-edit/airline-edit.component';
 import { AirlineService } from './services/airline.service';
+import { VehicleManagerComponent } from './components/main/rent-a-car/rent-a-car-profile/vehicle-manager/vehicle-manager.component';
 
 @NgModule({
   declarations: [
@@ -111,6 +112,7 @@ import { AirlineService } from './services/airline.service';
     RentACarProfileComponent,
     AirlineProfileComponent,
     AirlineEditComponent,
+    VehicleManagerComponent,
   ],
   imports: [
     BrowserModule,

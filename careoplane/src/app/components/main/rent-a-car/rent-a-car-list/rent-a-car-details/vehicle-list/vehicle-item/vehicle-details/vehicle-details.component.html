@@ -29,7 +29,15 @@
             <td>{{ vehicle.rating }}</td>
         </tr>
         <tr class="last">
-            <td></td>
+            <td>
+                <button 
+                    *ngIf="isAdmin"
+                    mat-raised-button 
+                    color="warn"
+                    (click)="onRemoveVehicle()">
+                    Remove Vehicle
+                </button>
+            </td>
             <td>
                 <button 
                     *ngIf="!isAdmin"
