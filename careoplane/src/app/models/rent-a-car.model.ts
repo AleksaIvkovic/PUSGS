@@ -5,8 +5,8 @@ export class RentACar {
         public name: string, 
         public address: string,
         public description: string,
-        public vehicles: Vehicle[],
-        public locations: string[],
+        public vehicles: Vehicle[] = [],
+        public locations: string[] = [],
         public rating: number = 0.7,
         public pricelist: { [service: string] : number; } = {}) {
             pricelist['Car'] = 100;

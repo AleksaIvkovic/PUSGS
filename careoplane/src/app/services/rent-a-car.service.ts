@@ -27,16 +27,19 @@ export class RentACarService {
     ];
     
     private rentACars: RentACar[] = [
-        new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()]), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, '', 0.5, [new Date()]), new Vehicle('FAP', 'Truck', 2, 2014, 200, '', 0.5, [new Date()]),], ['Novi Sad']),
-        new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()]), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad', 'Beograd']),
-        new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
-        new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Beograd']),
-        new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Indjija']),
-        new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Pancevo', 'Indjija'])
+        new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad, Serbia', 'Description 1', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()]), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, '', 0.5, [new Date()]), new Vehicle('FAP', 'Truck', 2, 2014, 200, '', 0.5, [new Date()]),], ['Novi Sad']),
+        new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad, Serbia', 'Description 2', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()]), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad', 'Beograd']),
+        new RentACar('INEX', 'Micurinova 68A, Novi Sad, Serbia', 'Description 3', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
+        new RentACar('Union', 'Brankova 12, Beograd, Serbia', 'Description 4', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Beograd']),
+        new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija, Serbia', 'Description 5', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Indjija']),
+        new RentACar('Avis', 'Mose Pijade 18, Pancevo, Serbia', 'Description 6', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Pancevo', 'Indjija'])
     ];
     rentACarsChanged = new Subject<RentACar[]>();
     vehicleListChanged = new Subject<Vehicle[]>();
     rentACarChanged = new Subject<RentACar>();
+
+    newVehicleListChanged = new Subject<Vehicle[]>();
+    newVehicles: Vehicle[] = [];
 
     getRentACars() {
         //slice
@@ -110,8 +113,33 @@ export class RentACarService {
         return this.rentACars;
     }
 
-    addRentACar() {
-        //this.rentACarsChanged.next(this.rentACars.slice());
+    getTempVehicle(indexVehicle: number) {
+        return this.newVehicles[indexVehicle];
+    }
+
+    addRentACar(newRentACar: RentACar): boolean {
+        for (let rentACar of this.rentACars) {
+            if (rentACar.name.toLocaleLowerCase() === newRentACar.name.toLowerCase()) {
+                return false;
+            }
+        }
+
+        this.rentACars.push(newRentACar);
+        this.rentACarsChanged.next(this.rentACars.slice());
+        return true;
+    }
+
+    editRentACar(rentACarName: string, newAddress: string, newDescription: string, newLocations: string[]) {
+        let indexRentACar = this.rentACars.indexOf(this.getRentACarByName(rentACarName));
+        this.rentACars[indexRentACar].address = newAddress;
+        this.rentACars[indexRentACar].description = newDescription;
+        this.rentACars[indexRentACar].locations = newLocations;
+        this.rentACarsChanged.next(this.rentACars.slice());
+    }
+
+    addTempVehicle(vehicle: Vehicle) {
+        this.newVehicles.push(vehicle);
+        this.newVehicleListChanged.next(this.newVehicles.slice());
     }
 
     addVehicle(rentACar: RentACar, vehicle: Vehicle) {
@@ -128,6 +156,11 @@ export class RentACarService {
         this.rentACarChanged.next(this.rentACars[index]);
     }
 
+    removeTempVehicle(vehicleIndex: number) {
+        this.newVehicles.splice(vehicleIndex, 1);
+        this.newVehicleListChanged.next(this.newVehicles.slice());
+    }
+
     editVehicle(rentACar: RentACar, vehicleIndex: number, newBrand: string, newSeats: number, newPrice: number, newLocation: string) {
         let index = this.getRentACarIndex(rentACar);
         this.rentACars[index].vehicles[vehicleIndex].brand = newBrand;
@@ -136,6 +169,14 @@ export class RentACarService {
         this.rentACars[index].vehicles[vehicleIndex].location = newLocation;
         this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
         this.rentACarChanged.next(this.rentACars[index]);
+    }
+
+    editTempVehicle(vehicleIndex: number, newBrand: string, newSeats: number, newPrice: number, newLocation: string) {
+        this.newVehicles[vehicleIndex].brand = newBrand;
+        this.newVehicles[vehicleIndex].numOfSeats = newSeats;
+        this.newVehicles[vehicleIndex].pricePerDay = newPrice;
+        this.newVehicles[vehicleIndex].location = newLocation;
+        this.newVehicleListChanged.next(this.newVehicles.slice());
     }
 
     reserveObservable: Observable<any>;

@@ -39,15 +39,19 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
     .subscribe(
       (params: Params) => {
         // this.idRentACar = +params['id'];
-        this.adminVehicleId = +params['idvh'];
+        this.adminVehicleId = +params['idvh']; //U pitanju je profil servisa
         if (this.adminVehicleId === undefined || Number.isNaN(this.adminVehicleId)) {
           this.idRentACar = +(this.router.url.split('/')[3])
           this.idVehicle = +params['idv'];
           this.vehicle = this.rentACarService.getVehicleForRentACar(this.idRentACar, this.idVehicle);
         } else {
-          this.rentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
+          if (this.router.url.includes('new')) {
+            this.vehicle = this.rentACarService.newVehicles[this.adminVehicleId];
+          } else {
+            this.rentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
+            this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.userService.getMockUpRentACarAdmin().company, this.adminVehicleId);
+          }
           this.isAdmin = true;
-          this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.userService.getMockUpRentACarAdmin().company, this.adminVehicleId);
         }
       }
     );
@@ -63,8 +67,13 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   }
 
   onRemoveVehicle() {
-    let index = +this.router.url.split('/')[3];
-    this.rentACarService.removeVehicle(this.rentACar, index);
+    if (this.router.url.includes('new')) {
+      this.rentACarService.removeTempVehicle(this.adminVehicleId);
+    } else {
+      let index = +this.router.url.split('/')[3];
+      this.rentACarService.removeVehicle(this.rentACar, index);
+    }
+    
     this._snackBar.open('Vehicle removed successfully', 'OK', {
       duration: 5000,
     });

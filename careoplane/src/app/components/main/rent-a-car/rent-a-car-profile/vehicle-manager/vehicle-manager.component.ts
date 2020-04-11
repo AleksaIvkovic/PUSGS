@@ -21,6 +21,7 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
   locations: string[];
   vehicleIndex: number;
   isEdit: boolean = true;
+  isNew = false;
   vehicle: Vehicle;
   indexLocation: number;
   indexType: number;
@@ -35,22 +36,37 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.rentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
-    this.vehicleTypes = this.rentACarService.getVehicleTypes();
-    this.vehicleTypes.splice(0, 1);
-    this.locations = this.rentACar.locations;
-    this.subscribtion = this.activeRoute.params
-    .subscribe(
-      (params: Params) => {
-        this.vehicleIndex = +params['idvh'];
-        if (this.vehicleIndex === undefined || Number.isNaN(this.vehicleIndex)) {
-          this.isEdit = false;
-        } else {
-          this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.rentACar.name, this.vehicleIndex);
-          this.indexLocation = this.locations.indexOf(this.vehicle.location);
-          this.indexType = this.vehicleTypes.indexOf(this.vehicle.type);
-        }
-    });
+    if (this.router.url.includes('new')) {
+      this.vehicleTypes = this.rentACarService.getVehicleTypes();
+      this.vehicleTypes.splice(0, 1);
+      if (!this.router.url.includes('edit')) {
+        this.isEdit = false;
+      } else {
+        this.indexLocation = 0;
+        this.vehicleIndex = +this.router.url.split('/')[3];
+        this.vehicle = this.rentACarService.getTempVehicle(this.vehicleIndex);
+      }
+      this.locations = ['HQ'];
+      this.isNew = true;
+    } else {
+      this.rentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
+      this.vehicleTypes = this.rentACarService.getVehicleTypes();
+      this.vehicleTypes.splice(0, 1);
+      this.locations = this.rentACar.locations;
+      this.subscribtion = this.activeRoute.params
+      .subscribe(
+        (params: Params) => {
+          this.vehicleIndex = +params['idvh'];
+          if (this.vehicleIndex === undefined || Number.isNaN(this.vehicleIndex)) {
+            this.isEdit = false;
+          } else {
+            this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.rentACar.name, this.vehicleIndex);
+            this.indexLocation = this.locations.indexOf(this.vehicle.location);
+            this.indexType = this.vehicleTypes.indexOf(this.vehicle.type);
+          }
+      });
+    }
+    
     this.initForm();
   }
 
@@ -66,7 +82,6 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    let message: string = '';
     if (!this.isEdit) {
       let year = <Date>this.addForm.value['pickerYear'];
     
@@ -79,13 +94,23 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
         this.addForm.value['location']
       );
 
-      this.rentACarService.addVehicle(this.rentACar, vehicle);
+      if (this.isNew) {
+        this.rentACarService.addTempVehicle(vehicle);
+      } else {
+        this.rentACarService.addVehicle(this.rentACar, vehicle);
+      }
+      
       this._snackBar.open('Vehicle added successfully', 'OK', {
         duration: 5000,
       });
       this.router.navigate(['../'], {relativeTo: this.activeRoute});
     } else {
-      this.rentACarService.editVehicle(this.rentACar, this.vehicleIndex, this.addForm.value['brand'], this.addForm.value['seats'], this.addForm.value['price'], this.addForm.value['location']);
+      if (this.isNew) {
+        this.rentACarService.editTempVehicle(this.vehicleIndex, this.addForm.value['brand'], this.addForm.value['seats'], this.addForm.value['price'], this.addForm.value['location']);
+      } else {
+        this.rentACarService.editVehicle(this.rentACar, this.vehicleIndex, this.addForm.value['brand'], this.addForm.value['seats'], this.addForm.value['price'], this.addForm.value['location']);
+      }
+      
       this._snackBar.open('Vehicle edited successfully', 'OK', {
         duration: 5000,
       });
@@ -102,7 +127,9 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscribtion.unsubscribe();
+    if (!this.isNew) {
+      this.subscribtion.unsubscribe();
+    }
   }
 
 }

@@ -52,43 +52,53 @@ export class VehicleListComponent implements OnInit, OnDestroy {
     private router: Router) { }
 
   ngOnInit(): void {
-    this.pickUpLocations = this.rentACar.locations.slice();
-    if (this.pickUpLocations.length !== 1) {
-      this.pickUpLocations.unshift('Any');
+    if (this.rentACar === undefined) {
+      this.rentACarService.newVehicleListChanged.
+      subscribe(
+        (vehicles: Vehicle[]) => {
+          this.dataSource = vehicles;
+          this.searchedVehicles = vehicles;
+        }
+      );
+    } else {
+      this.pickUpLocations = this.rentACar.locations.slice();
+      if (this.pickUpLocations.length !== 1) {
+        this.pickUpLocations.unshift('Any');
+      }
+      this.returnToLocations = this.rentACar.locations.slice();
+      this.returnToLocation = this.returnToLocations[0];
+      this.vehicleTypes = this.rentACarService.getVehicleTypes();
+      this.initForm();
+      // this.rentACar.locations.unshift('Any');
+      this.vehicleListSubscription = this.rentACarService.vehicleListChanged
+      .subscribe(
+        (vehicles: Vehicle[]) => {
+          this.searchedVehicles = vehicles;
+          this.dataSource = vehicles;
+          this.dataSource.paginator = this.paginator;
+          this.length = this.rentACar.vehicles.length;
+          this.iterator();
+        }
+      );
+
+      this.subscription = this.route.params
+      .subscribe(
+        (params: Params) => {
+          this.vehicleTypes = this.rentACarService.getVehicleTypes();
+          this.searchedVehicles = this.rentACar.vehicles.slice();
+          this.dataSource = this.rentACar.vehicles.slice();
+          this.dataSource.paginator = this.paginator;
+          this.length = this.rentACar.vehicles.length;
+          this.iterator();
+        }
+      );
+
+      this.searchedVehicles = this.rentACar.vehicles.slice();
+      this.dataSource = this.rentACar.vehicles.slice();
+      this.dataSource.sort = this.sort;
+      this.length = this.rentACar.vehicles.length;
+      this.iterator();
     }
-    this.returnToLocations = this.rentACar.locations.slice();
-    this.returnToLocation = this.returnToLocations[0];
-    this.vehicleTypes = this.rentACarService.getVehicleTypes();
-    this.initForm();
-    // this.rentACar.locations.unshift('Any');
-    this.vehicleListSubscription = this.rentACarService.vehicleListChanged
-    .subscribe(
-      (vehicles: Vehicle[]) => {
-        this.searchedVehicles = vehicles;
-        this.dataSource = vehicles;
-        this.dataSource.paginator = this.paginator;
-        this.length = this.rentACar.vehicles.length;
-        this.iterator();
-      }
-    );
-
-    this.subscription = this.route.params
-    .subscribe(
-      (params: Params) => {
-        this.vehicleTypes = this.rentACarService.getVehicleTypes();
-        this.searchedVehicles = this.rentACar.vehicles.slice();
-        this.dataSource = this.rentACar.vehicles.slice();
-        this.dataSource.paginator = this.paginator;
-        this.length = this.rentACar.vehicles.length;
-        this.iterator();
-      }
-    );
-
-    this.searchedVehicles = this.rentACar.vehicles.slice();
-    this.dataSource = this.rentACar.vehicles.slice();
-    this.dataSource.sort = this.sort;
-    this.length = this.rentACar.vehicles.length;
-    this.iterator();
   }
 
   initForm() {
@@ -221,8 +231,10 @@ export class VehicleListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.vehicleListSubscription.unsubscribe();
+    if (this.rentACar !== undefined) {
+      this.subscription.unsubscribe();
+      this.vehicleListSubscription.unsubscribe();
+    }
   }
 
 }
