@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { LogInComponent } from '../../log-in/log-in.component';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +11,9 @@ import { LogInComponent } from '../../log-in/log-in.component';
 export class HeaderComponent implements OnInit {
 
   constructor(
-    private logInDialog: MatDialog
+    private logInDialog: MatDialog,
+    private router: Router,
+    private activeRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -18,13 +21,18 @@ export class HeaderComponent implements OnInit {
 
   onLogIn() {
     let dialogRef = this.logInDialog.open(
-      LogInComponent
+      LogInComponent, {
+        data: {usermail: '', password: ''}
+      }
     );
 
     dialogRef.afterClosed()
     .subscribe(
-      result => {
-        console.log(result);
+      (result) => {
+        if (result !== "false") {
+          //redirekcija na odredjenu stranicu ulogovanog korisnika
+          this.router.navigate(['/main/user-profile']);
+        }
     })
   }
 

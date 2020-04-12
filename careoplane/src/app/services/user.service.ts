@@ -40,6 +40,26 @@ export class UserService {
         return this.rentACarAdmin;
     }
 
+    logIn(usermail: string, password: string): boolean {
+        if (usermail === undefined || password === undefined) {
+            return false;
+        }
+        
+        let isMail = usermail.includes('@') ? true : false;
+        for (let user of this.users) {
+            if (isMail) {
+                if (user.email === usermail && user.password === password) {
+                    return true;
+                }
+            } else {
+                if (user.username === usermail && user.password === password) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     registerUser(newUser: User): boolean {
         //Provera da li je slobodan username
         this.loggedInUser = newUser; //Ovo je samo privremeno, mora prvo da potvrdi preko mejla
