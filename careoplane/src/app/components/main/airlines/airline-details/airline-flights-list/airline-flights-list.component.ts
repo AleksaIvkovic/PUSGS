@@ -1,22 +1,20 @@
-import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-
-import { Airline } from 'src/app/models/airline.model';
-import { AirlineService } from 'src/app/services/airline.service';
-import { Subscription, Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { Flight } from 'src/app/models/flight.model';
-import {map, startWith} from 'rxjs/operators';
+import { Subscription, Observable } from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AirlineService } from 'src/app/services/airline.service';
+import { startWith, map } from 'rxjs/operators';
+import { Airline } from 'src/app/models/airline.model';
 
 @Component({
-  selector: 'app-airlines-list',
-  templateUrl: './airlines-list.component.html',
-  styleUrls: ['./airlines-list.component.css']
+  selector: 'app-airline-flights-list',
+  templateUrl: './airline-flights-list.component.html',
+  styleUrls: ['./airline-flights-list.component.css']
 })
-export class AirlinesListComponent implements OnInit, OnDestroy {
-  airlines: Airline[];
-  airlinesSubscription: Subscription;
+export class AirlineFlightsListComponent implements OnInit {
   flights: Flight[];
   flightsSubscription: Subscription;
+  airline: Airline;
 
   typeControl: FormControl = new FormControl('one way', Validators.required);
   retControl: FormControl = new FormControl(null);
@@ -44,7 +42,6 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
   search: boolean = false;
   twoWay: boolean = false;
 
-  airlineName: string;
   sortBy: string = 'price';
   sortWay:boolean = false;
   classType: string;
@@ -53,24 +50,13 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initForm();
-    this.airlinesSubscription = this.airlineService.airlinesChanged.subscribe(
-      (airlines:Airline[])=> {
-        this.airlines = airlines;
-      }
-    )
-    this.flightsSubscription = this.airlineService.flightsChanged.subscribe(
-      (flights:Flight[])=> {
-        this.flights = flights;
-      }
-    )
-    this.airlineService.getAirlines();
-    this.airlineService.getAllFlights();
 
-    for(let airline of this.airlines){
-      for(let city of airline.destinations){
-        if(!this.cities.includes(city)){
-          this.cities.push(city);
-        }
+    this.airline = this.airlineService.getCurrentAirline();
+    this.flights = this.airline.flights;
+
+    for(let city of this.airline.destinations){
+      if(!this.cities.includes(city)){
+        this.cities.push(city);
       }
     }
 
@@ -92,7 +78,6 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.airlinesSubscription.unsubscribe();
     this.flightsSubscription.unsubscribe();
   }
 
@@ -155,4 +140,5 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
   onToggleChange() {
     this.sortWay = this.toggleControl.value;
   } 
+
 }

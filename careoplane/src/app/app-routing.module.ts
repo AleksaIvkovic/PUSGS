@@ -20,6 +20,8 @@ import { VehicleManagerComponent } from './components/main/rent-a-car/rent-a-car
 import { FlightEditComponent } from './components/main/airlines/flight-edit/flight-edit.component';
 import { RentACarManagerComponent } from './components/main/rent-a-car/rent-a-car-manager/rent-a-car-manager.component';
 import { UserAuthentificationComponent } from './components/user-authentification/user-authentification.component';
+import { AirlineFastTicketsComponent } from './components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
+import { AirlineFlightsListComponent } from './components/main/airlines/airline-details/airline-flights-list/airline-flights-list.component';
 
 
 const routes: Routes = [
@@ -29,7 +31,11 @@ const routes: Routes = [
     {path: 'airlines', component: AirlinesComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: AirlinesListComponent},
-      {path: ':id/details', component: AirlineDetailsComponent},
+      {path: ':id/details', component: AirlineDetailsComponent, children: [
+        {path: '', redirectTo: 'list', pathMatch: 'full'},
+        {path: 'list', component: AirlineFlightsListComponent},
+        {path: ':fast-tickets', component: AirlineFastTicketsComponent},
+      ]},
       {path: ':alid/:fid/reservation', component: FlightReservationComponent},
       {path: ':alid1/:fid1/:alid2/:fid2/reservation', component: FlightReservationComponent}
     ]},

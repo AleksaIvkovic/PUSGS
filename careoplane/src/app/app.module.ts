@@ -85,6 +85,8 @@ import { FlightEditComponent } from './components/main/airlines/flight-edit/flig
 import { RentACarManagerComponent } from './components/main/rent-a-car/rent-a-car-manager/rent-a-car-manager.component';
 import { UserAuthentificationComponent } from './components/user-authentification/user-authentification.component';
 import { LogInComponent } from './components/log-in/log-in.component';
+import { AirlineFastTicketsComponent } from './components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
+import { AirlineFlightsListComponent } from './components/main/airlines/airline-details/airline-flights-list/airline-flights-list.component';
 
 @NgModule({
   declarations: [
@@ -121,6 +123,8 @@ import { LogInComponent } from './components/log-in/log-in.component';
     RentACarManagerComponent,
     UserAuthentificationComponent,
     LogInComponent,
+    AirlineFastTicketsComponent,
+    AirlineFlightsListComponent,
   ],
   entryComponents: [
     LogInComponent

@@ -13,6 +13,7 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
   @Input() back: string;
   @Input() ret: Date;
   @Input() num: number;
+  @Input() classType: string;
   backStr: string;
   
   flights: Flight[];
