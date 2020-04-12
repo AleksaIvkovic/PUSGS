@@ -60,7 +60,8 @@ const routes: Routes = [
       {path: 'add-vehicle', component: VehicleManagerComponent},
       {path: ':idvh/details', component: VehicleDetailsComponent},
       {path: ':idvh/edit', component: VehicleManagerComponent},
-    ]}
+    ]},
+    {path: 'user-profile', component: UserAuthentificationComponent}
   ]},
   {path: 'user-authentification', component: UserAuthentificationComponent}
 ];

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { LogInComponent } from '../../log-in/log-in.component';
 
 @Component({
   selector: 'app-header',
@@ -7,9 +9,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private logInDialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  onLogIn() {
+    let dialogRef = this.logInDialog.open(
+      LogInComponent
+    );
+
+    dialogRef.afterClosed()
+    .subscribe(
+      result => {
+        console.log(result);
+    })
   }
 
 }
