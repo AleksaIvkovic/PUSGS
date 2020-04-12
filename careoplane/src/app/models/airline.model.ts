@@ -1,6 +1,7 @@
 import { Flight } from './flight.model';
 import { StringifyOptions } from 'querystring';
 import { Seat } from './seat.model';
+import { FastTicket } from './fast-ticket.model';
 
 export class Airline {
     constructor(
@@ -13,6 +14,7 @@ export class Airline {
         public flights: Flight[] = new Array<Flight>(),
         public picture: string = "",
         public rating: number = null,
-        public destinations: string[] = []){
+        public destinations: string[] = [],
+        public fastTickets: FastTicket[] = []){
     }
 }

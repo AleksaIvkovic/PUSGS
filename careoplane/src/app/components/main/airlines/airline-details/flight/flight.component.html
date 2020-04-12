@@ -45,6 +45,9 @@
                     reserve
                 </a>
             </div>
+            <div mat-line>
+                Price: {{price}}
+            </div>
             <div mat-line *ngIf="showLink">
                 <a [routerLink]="[backStr, flight.id, 'edit-fligh']" routerLinkActive="active">
                     edit

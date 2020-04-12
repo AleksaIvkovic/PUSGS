@@ -74,6 +74,10 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.router.navigate(['../../',this.name,'edit'], { relativeTo: this.activeRoute });
   }
 
+  fastTickets(): void{
+    this.router.navigate(['fast-tickets'], { relativeTo: this.activeRoute });
+  }
+
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;

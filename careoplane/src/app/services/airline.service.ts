@@ -23,6 +23,11 @@ export class AirlineService {
   flightsChanged = new Subject<Flight[]>()
   ticketsChanged = new Subject<any>();
   emptyTickets = new Subject<any>();
+  classType = new Subject<string>();
+
+  public updateClassType(newClass: string){
+    this.classType.next(newClass);
+  }
 
   public updateTickes(tickets: any){
     this.ticketsChanged.next(tickets);

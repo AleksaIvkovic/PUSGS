@@ -2,15 +2,15 @@
     let f of flights|
     filter:flight.destination:'origin' |
     filter:flight.origin:'destination' |
-    priceFilter:num:'seats' |
+    priceFilter:num:classType|
     dateFilter: ret
     ">
-    From
+    To
     <app-flight 
     [back]="'one'"
     [flight]="flight" [showLink]="false"></app-flight>
     <br/>
-    To
+    From
     <app-flight
     [back]="'one'"
     [flight]="f" [showLink]="false"></app-flight>

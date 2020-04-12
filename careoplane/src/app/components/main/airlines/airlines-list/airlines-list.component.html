@@ -1,6 +1,6 @@
 <div class="container testimonial-group">
   <div class="row text-center">
-      <div *ngFor="let airline of airlines" id="pictureDiv">
+      <div *ngFor="let airline of airlines" id="pictureDiv" matTooltip="{{airline.name}}">
           <a [routerLink]="['../',airline.name, 'details']">
               <app-airline [airline]="airline"></app-airline>
           </a>
@@ -22,11 +22,21 @@
     <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
       <mat-form-field appearance="fill">
         <mat-label>From</mat-label>
-        <input matInput formControlName="origin">
+        <input matInput formControlName="origin" [matAutocomplete]="auto1">
+        <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete">
+          <mat-option *ngFor="let city of filteredOptionsOrigin | async" [value]="city">
+            {{city}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>To</mat-label>
-        <input matInput formControlName="destination">
+        <input matInput formControlName="destination" [matAutocomplete]="auto2">
+        <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete">
+          <mat-option *ngFor="let city of filteredOptionsDestination | async" [value]="city">
+            {{city}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Choose a departure date</mat-label>
@@ -48,6 +58,12 @@
         <mat-radio-button value="one way">one way</mat-radio-button>
         <mat-radio-button value="round trip">round trip</mat-radio-button>
         <mat-radio-button value="multi-city">multi-city</mat-radio-button>
+      </mat-radio-group>
+      <mat-radio-group aria-label="Select an option" formControlName="classType">
+        <mat-radio-button value="any">any</mat-radio-button>
+        <mat-radio-button value="first">first</mat-radio-button>
+        <mat-radio-button value="business">business</mat-radio-button>
+        <mat-radio-button value="economy">economy</mat-radio-button>
       </mat-radio-group>
       <button mat-raised-button type="submit" [disabled]="!searchForm.valid">Search</button>
     </form>
@@ -105,7 +121,7 @@
   filter:origin:'origin' | 
   filter:destination:'destination' | 
   orderBy:sortBy:sortWay |
-  priceFilter:num:'seats' |
+  priceFilter:num:classType |
   filter:airlineName:'airlineName' |
   dateFilter: departure">
     <app-flight 
@@ -120,14 +136,15 @@
   filter:origin:'origin' | 
   filter:destination:'destination' | 
   orderBy:sortBy:sortWay |
-  priceFilter:num:'seats' |
+  priceFilter:num:classType |
   filter:airlineName:'airlineName' |
   dateFilter: departure">
     <app-return-flight 
     [back]="'one'"
     [flight]="flight"
     [ret] = "ret"
-    [num] = "num"></app-return-flight>
+    [num] = "num"
+    [classType] = "classType"></app-return-flight>
     <mat-divider></mat-divider>
   </div>
 </mat-list>

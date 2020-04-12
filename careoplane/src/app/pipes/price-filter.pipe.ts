@@ -1,50 +1,36 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { Flight } from '../models/flight.model';
 
 @Pipe({
   name: 'priceFilter'
 })
 export class PriceFilterPipe implements PipeTransform {
 
-  transform(value: any, filterNum: number, propName: string): any {
+  transform(value: Flight[], filterNum: number, classType: string): any {
     if(!filterNum || value.length === 0){
       return value;
     }
 
     const res = [];
 
-
-    if (propName === 'connections') {
-      for (const item of value) {
-        if (item[propName].length <= filterNum) {
-          res.push(item);
-        }
-      }
-    } 
-    else if(propName === 'seats')
-    {
-      for(const item of value){
-        let counter = 0;
-        for(const seat of item['seats']){
-          if(!seat['occupied'])
-          {
+    for(const item of value){
+      let counter = 0;
+      for(const seat of item.seats){
+        if(!seat.occupied && seat.discount == 0)
+        {
+          if(classType !== 'any' && seat.type === classType){
+            counter++;
+          }
+          else{
             counter++;
           }
         }
-        if(counter >= filterNum){
-          res.push(item);
-        }
       }
-    }
-    else {
-      for (const item of value) 
-      {
-        if (item[propName] <= filterNum) {
-          res.push(item);
-        }
+      if(counter >= filterNum){
+        res.push(item);
       }
     }
 
     return res;
   }
-
 }
