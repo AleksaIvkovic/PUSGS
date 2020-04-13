@@ -11,7 +11,7 @@
                     <div class="col-md-5">
                         <mat-form-field appearance="fill" style="width: 200px;">
                             <mat-label>Username *</mat-label>
-                            <input 
+                            <input
                                 matInput
                                 name="username"
                                 [formControlName]="'username'"
@@ -24,7 +24,7 @@
                     <div class="col-md-5">
                         <mat-form-field appearance="fill" style="width: 200px;">
                             <mat-label>Email *</mat-label>
-                            <input 
+                            <input
                                 matInput
                                 placeholder="address@example.com"
                                 name="email"
@@ -34,10 +34,43 @@
                         </mat-form-field>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" *ngIf="isEdit">
+                    <div class="col-md-5">
+                        <button
+                            [hidden]="isChangePassword"
+                            mat-raised-button 
+                            color="primary"
+                            type="button"
+                            (click)='isChangePassword = true'>
+                            Change Password
+                        </button>
+                    </div>
+                </div>
+                <div class="row" [hidden]="!isChangePassword" *ngIf="isEdit">
                     <div class="col-md-5">
                         <mat-form-field appearance="fill" style="width: 200px;">
-                            <mat-label>Password *</mat-label>
+                            <mat-label>Old Password *</mat-label>
+                            <input
+                                matInput 
+                                [type]="hide3 ? 'password' : 'text'"
+                                name="password"
+                                id="password">
+                                <button 
+                                    mat-icon-button 
+                                    type="button"
+                                    matSuffix 
+                                    (click)="hide3 = !hide3" 
+                                    [attr.aria-label]="'Hide password'" 
+                                    [attr.aria-pressed]="hide3">
+                                    <mat-icon>{{hide3 ? 'visibility_off' : 'visibility'}}</mat-icon>
+                                </button>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row" [hidden]="!isChangePassword">
+                    <div class="col-md-5">
+                        <mat-form-field appearance="fill" style="width: 200px;">
+                            <mat-label>{{isChangePassword ? 'New Password *' : 'Password *'}}</mat-label>
                             <input
                                 matInput 
                                 [type]="hide1 ? 'password' : 'text'"
@@ -56,7 +89,7 @@
                         </mat-form-field>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" [hidden]="!isChangePassword">
                     <div class="col-md-5">
                         <mat-form-field appearance="fill" style="width: 200px;">
                             <mat-label>Confirm Password *</mat-label>
@@ -136,22 +169,41 @@
         <div class="row">
             <div class="col-md-2">
                 <button 
+                    *ngIf="!isProfile"
                     style="margin-left: 225px;"
                     mat-raised-button 
                     class="btn-success"
                     type="submit">
                     Register
                 </button>
+                <button 
+                    *ngIf="isProfile && isEdit"
+                    style="margin-left: 225px;"
+                    mat-raised-button 
+                    class="btn-success"
+                    type="submit">
+                    Save
+                </button>
+                <button 
+                    *ngIf="isProfile && !isEdit"
+                    style="margin-left: 225px;"
+                    mat-raised-button 
+                    color="primary"
+                    type="button"
+                    (click)="onEdit()">
+                    Edit Info
+                </button>
             </div>
-            <!-- <div class="col-md-2">
+            <div class="col-md-2">
                 <button
+                    *ngIf="isEdit"
                     mat-raised-button 
                     color='warn'
                     type="button"
                     (click)="onCancel()">
                     Cancel
                 </button>
-            </div> -->
+            </div>
         </div>
     </form>
 </div>
