@@ -1,3 +1,5 @@
+import { VehicleReservation } from './vehicle-reservation.model';
+
 export class User {
     constructor(
         public username: string,
@@ -7,5 +9,6 @@ export class User {
         public surname: string,
         public city: string,
         public phoneNumber: string,
+        public vehicleReservations: VehicleReservation[] = []
     ) {}
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { RentACar } from '../models/rent-a-car.model';
 import { Vehicle } from '../models/vehicle.model';
 import { Subject, Observable } from 'rxjs';
+import { VehicleReservation } from '../models/vehicle-reservation.model';
 
 @Injectable({
     providedIn: 'root'
@@ -27,7 +28,7 @@ export class RentACarService {
     ];
     
     private rentACars: RentACar[] = [
-        new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad, Serbia', 'Description 1', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()]), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, '', 0.5, [new Date()]), new Vehicle('FAP', 'Truck', 2, 2014, 200, '', 0.5, [new Date()]),], ['Novi Sad']),
+        new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad, Serbia', 'Description 1', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()], true), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, '', 0.5, [new Date()], true), new Vehicle('FAP', 'Truck', 2, 2014, 200, '', 0.5, [new Date()]),], ['Novi Sad']),
         new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad, Serbia', 'Description 2', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()]), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad', 'Beograd']),
         new RentACar('INEX', 'Micurinova 68A, Novi Sad, Serbia', 'Description 3', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
         new RentACar('Union', 'Brankova 12, Beograd, Serbia', 'Description 4', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Beograd']),
@@ -37,6 +38,7 @@ export class RentACarService {
     rentACarsChanged = new Subject<RentACar[]>();
     vehicleListChanged = new Subject<Vehicle[]>();
     rentACarChanged = new Subject<RentACar>();
+    reservationMade = new Subject<any>();
 
     newVehicleListChanged = new Subject<Vehicle[]>();
     newVehicles: Vehicle[] = [];
@@ -129,10 +131,16 @@ export class RentACarService {
         return true;
     }
 
-    editRentACar(rentACarName: string, newAddress: string, newDescription: string, newLocations: string[]) {
+    editRentACar(rentACarName: string, newAddress: string, newDescription: string, newCarPrice: number, newVanPrice: number, newTruckPrice: number, newLocations: string[]) {
         let indexRentACar = this.rentACars.indexOf(this.getRentACarByName(rentACarName));
         this.rentACars[indexRentACar].address = newAddress;
         this.rentACars[indexRentACar].description = newDescription;
+        this.rentACars[indexRentACar].prices[0] = newCarPrice;
+        this.rentACars[indexRentACar].pricelist['Car'] = newCarPrice;
+        this.rentACars[indexRentACar].prices[1] = newVanPrice;
+        this.rentACars[indexRentACar].pricelist['Van'] = newVanPrice;
+        this.rentACars[indexRentACar].prices[2] = newTruckPrice;
+        this.rentACars[indexRentACar].pricelist['Truck'] = newTruckPrice;
         this.rentACars[indexRentACar].locations = newLocations;
         this.rentACarsChanged.next(this.rentACars.slice());
     }
@@ -169,6 +177,18 @@ export class RentACarService {
         this.rentACars[index].vehicles[vehicleIndex].location = newLocation;
         this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
         this.rentACarChanged.next(this.rentACars[index]);
+    }
+
+    reserveVehicle(rentACar: RentACar, vehicleIndex: number, reservation: VehicleReservation) {
+        let index = this.getRentACarIndex(rentACar);
+        for (let i = 0; i < reservation.numOfDays; i++) {
+            let day = new Date();
+            day.setDate(reservation.fromDate.getDate() + i);
+            this.rentACars[index].vehicles[vehicleIndex].unavailableDates.push(day);
+        }
+        this.rentACarChanged.next(this.rentACars[index]);
+        this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
+        this.reservationMade.next();
     }
 
     editTempVehicle(vehicleIndex: number, newBrand: string, newSeats: number, newPrice: number, newLocation: string) {

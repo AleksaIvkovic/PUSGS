@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { Admin } from '../models/admin.model';
 import { Subject } from 'rxjs';
+import { VehicleReservation } from '../models/vehicle-reservation.model';
 
 @Injectable({
     providedIn: 'root'
@@ -127,5 +128,9 @@ export class UserService {
         this.users[index].phoneNumber = newPhone;
         this.loggedInUser = this.users[index];
         this.loggedInUserChanged.next(this.users[index]);
+    }
+
+    addVehicleReservation(reservation: VehicleReservation) {
+        this.loggedInUser.vehicleReservations.push(reservation);
     }
 }

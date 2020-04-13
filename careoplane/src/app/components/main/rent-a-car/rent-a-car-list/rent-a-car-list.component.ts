@@ -20,7 +20,7 @@ export class RentACarListComponent implements OnInit, OnDestroy {
   
   rentACars: RentACar[];
   dataSource;
-  displayedColumns: string[] = ['name', 'locations', 'rating'];
+  displayedColumns: string[] = ['name', 'locations', 'rating', 'details'];
   subscription: Subscription;
   filteredName: string = '';
   filteredLocation: string = '';

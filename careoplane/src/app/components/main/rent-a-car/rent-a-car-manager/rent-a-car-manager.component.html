@@ -88,7 +88,42 @@
                 </mat-form-field>
             </div>
             <div class="col-md-5">
-                MAPA IDE OVDE
+                <div class="row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Price for car</mat-label>
+                        <input 
+                            matInput
+                            name="car" 
+                            type="number" 
+                            [formControlName]="'car'"
+                            id="car"
+                            [min]="0">
+                    </mat-form-field>
+                </div>
+                <div class="row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Price for van</mat-label>
+                        <input 
+                            matInput
+                            name="van" 
+                            type="number" 
+                            [formControlName]="'van'"
+                            id="van"
+                            [min]="0">
+                    </mat-form-field>
+                </div>
+                <div class="row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Price for truck</mat-label>
+                        <input 
+                            matInput
+                            name="truck" 
+                            type="number" 
+                            [formControlName]="'truck'"
+                            id="truck"
+                            [min]="0">
+                    </mat-form-field>
+                </div>
             </div>
         </div>
         <hr>

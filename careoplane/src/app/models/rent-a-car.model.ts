@@ -7,16 +7,14 @@ export class RentACar {
         public description: string,
         public vehicles: Vehicle[] = [],
         public locations: string[] = [],
-        public rating: number = 0.7,
+        public rating: number = 0,
+        public prices: number[] = [0, 0, 0],
         public pricelist: { [service: string] : number; } = {}) {
-            pricelist['Car'] = 100;
-            pricelist['Van'] = 200;
-            pricelist['Truck'] = 300;
+            pricelist['Car'] = prices[0];
+            pricelist['Van'] = prices[1];
+            pricelist['Truck'] = prices[2];
 
             let location: string = this.address.split(',')[1];
             this.vehicles.forEach(v => v.location = location.substr(1));
-            // for (let vehicle of this.vehicles) {
-            //     vehicle.location = this.address.split(',')[1];
-            // }
         }
 }
