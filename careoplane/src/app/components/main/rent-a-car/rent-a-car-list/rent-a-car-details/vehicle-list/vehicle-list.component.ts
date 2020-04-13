@@ -94,6 +94,26 @@ export class VehicleListComponent implements OnInit, OnDestroy {
         this.onCancelSearch();
       }
     );
+      this.rentACarService.onSaleClicked
+      .subscribe(
+        (isClicked: boolean) => {
+          this.manageVehicleLists(this.rentACar.vehicles.slice());
+          if (isClicked) {
+            this.searchedVehicles = this.saleVehicles;
+            this.dataSource = this.saleVehicles;
+            this.length = this.saleVehicles.length;
+          } else {
+            this.searchedVehicles = this.normalVehicles;
+            this.dataSource = this.normalVehicles;
+            this.length = this.normalVehicles.length;
+          }
+          
+          this.dataSource.paginator = this.paginator;
+          // this.length = this.rentACar.vehicles.length;
+         
+          this.iterator();
+        }
+      );
 
       this.subscription = this.route.params
       .subscribe(

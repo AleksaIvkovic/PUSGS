@@ -39,6 +39,7 @@ export class RentACarService {
     vehicleListChanged = new Subject<Vehicle[]>();
     rentACarChanged = new Subject<RentACar>();
     reservationMade = new Subject<any>();
+    onSaleClicked = new Subject<boolean>();
 
     newVehicleListChanged = new Subject<Vehicle[]>();
     newVehicles: Vehicle[] = [];
