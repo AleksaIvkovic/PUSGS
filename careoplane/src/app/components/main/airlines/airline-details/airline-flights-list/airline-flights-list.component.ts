@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Flight } from 'src/app/models/flight.model';
 import { Subscription, Observable } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -13,8 +13,8 @@ import { Airline } from 'src/app/models/airline.model';
 })
 export class AirlineFlightsListComponent implements OnInit {
   flights: Flight[];
-  airline: Airline;
-
+  @Input() airline: Airline;
+  @Input() admin: boolean;
   typeControl: FormControl = new FormControl('one way', Validators.required);
   retControl: FormControl = new FormControl(null);
   departureControl: FormControl = new FormControl(null, Validators.required);
@@ -50,7 +50,6 @@ export class AirlineFlightsListComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
 
-    this.airline = this.airlineService.getCurrentAirline();
     this.flights = this.airline.flights;
 
     for(let city of this.airline.destinations){

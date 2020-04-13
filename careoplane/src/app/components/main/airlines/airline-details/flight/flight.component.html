@@ -1,59 +1,105 @@
 <div class="row">
-    <div class="col-md-6">
-        <mat-list>
-            <mat-list-item>
-                <div mat-line>
-                    <a [routerLink]="[backStr,flight.airlineName, 'details']">
-                        {{flight.airlineName}}
-                    </a>
-                </div>
-                <div mat-line>
-                    Origin: {{flight.origin}}
-                </div>
-                <div mat-line>
-                    Destination : {{flight.destination}}
-                </div>
-                <div mat-line>
-                    Departure : {{flight.departure | date}}
-                </div>
-                <div mat-line>
-                    Arrival : {{flight.arrival | date}}
-                </div>
-                <div mat-line>
-                    Duration : {{flight.durationHours}} h {{flight.durationMinutes}} min
-                </div>
-                <div mat-line>
-                    Distance : {{flight.distance}}
-                </div>
-            </mat-list-item>
-        </mat-list>
+    <div class="col-md-1 flight">
+        <div class="mat-h2">
+            <a [routerLink]="[backStr,flight.airlineName, 'details']">
+                {{flight.airlineName}}
+            </a>
+        </div>
     </div>
-    <div class="col-md-6">   
-    <mat-list>
-        <mat-list-item>
-            <div mat-line>
-                num of connections: {{flight.conCount}}
+    <div class="col-md-2 flight">
+        <div class="mat-h3">
+            {{flight.origin}}
+        </div>
+        <div class="mat-h3">
+            {{flight.departure | date:'short'}}
+        </div>
+    </div>
+    <div class="col-md-4 flight">
+        <div class="mat-body-strong">
+            {{flight.durationHours}} h {{flight.durationMinutes}} min ({{flight.distance}} km)
+        </div>
+        <div class="row">
+            <div class="col-md-2  flight">
+                <mat-icon>flight_takeoff</mat-icon>
             </div>
-            <div mat-line>
-                Connections:
-                <div mat-line *ngFor="let con of flight.connections">
-                    {{con}}
+            <div class="col-md-8 flight">
+                <hr style="border: 1px solid black;"/>
+            </div>
+            <div class="col-md-2 flight">
+                <mat-icon>flight_land</mat-icon>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md" *ngIf="flight.conCount === 0">
+                <div class="mat-small">
+                    Direct
                 </div>
             </div>
-            <div mat-line *ngIf="showLink">
-                <a [routerLink]="[backStr,flight.airlineName, flight.id,classType, 'reservation']" routerLinkActive="active">
-                    reserve
-                </a>
+            <div class="col-md" *ngIf="flight.conCount !== 0">
+                <div class="mat-small">
+                    {{flight.conCount}} Stops
+                </div>
             </div>
-            <div mat-line>
-                Price: {{price}}
+            <div class="col-md" *ngFor="let connection of flight.connections">
+                <div class="mat-small">
+                    {{connection}}
+                </div>
             </div>
-            <div mat-line *ngIf="showLink">
-                <a [routerLink]="[backStr, flight.id, 'edit-fligh']" routerLinkActive="active">
-                    edit
-                </a>
+        </div>
+    </div>
+    <div class="col-md-2 flight">
+        <div class="mat-h3">
+            {{flight.destination}}
+        </div>
+        <div class="mat-h3">
+            {{flight.arrival | date:'short'}}
+        </div>
+    </div>
+    <div class="col-md-3 flight">
+        <div class="mat-h3" *ngIf="classType !== 'any' && fastTicket == null">
+            {{price | currency: 'EUR'}}
+        </div>
+        <div class="mat-h3" *ngIf="classType === 'any' && fastTicket == null">
+            {{flight.pricess[0] | currency: 'EUR'}} - {{flight.pricess[2] | currency: 'EUR'}}
+        </div>
+        <div class="row" *ngIf="fastTicket != null">
+            <div class="col-md">
+                <div class="mat-h3">
+                    <del>{{fastTicket.seat.price | currency: 'EUR'}}</del>
+                </div>
             </div>
-        </mat-list-item>
-    </mat-list>
-</div>
+            <div class="col-md">
+                <div class="mat-h3" >
+                    <strong style="color: #E91E63;">{{fastTicket.newPrice | currency: 'EUR'}}</strong>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md">
+                <button mat-raised-button color="primary" (click)="Reserve()" *ngIf="!admin && fastTicket == null">
+                    Reserve
+                </button>
+            </div>
+            <div class="col-md">
+                <button mat-raised-button color="primary" (click)="Edit()" *ngIf="admin && fastTicket == null">
+                    Edit
+                </button>
+            </div>
+            <div class="col-md">
+                <button mat-raised-button color="primary" (click)="EditFastReservation()" *ngIf="admin && fastTicket != null">
+                    Edit
+                </button>
+            </div>
+            <div class="col-md">
+                <button mat-mini-fab color="warn" (click)="DeleteFastReservation()" *ngIf="fastTicket != null && admin">
+                    X
+                </button>
+            </div>
+            <div class="col-md">
+                <button mat-raised-button color="primary" (click)="FastReservation()" *ngIf="fastTicket != null && !admin">
+                    Reserve
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

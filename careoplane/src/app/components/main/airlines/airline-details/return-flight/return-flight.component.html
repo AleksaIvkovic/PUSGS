@@ -8,12 +8,12 @@
     To
     <app-flight 
     [back]="'one'"
-    [flight]="flight" [showLink]="false"></app-flight>
+    [flight]="flight" [admin]="admin"></app-flight>
     <br/>
     From
     <app-flight
     [back]="'one'"
-    [flight]="f" [showLink]="false"></app-flight>
+    [flight]="f" [admin]="admin"></app-flight>
     <div mat-line>
         <a [routerLink]="[backStr,flight.airlineName, flight.id,f.airlineName,f.id,classType,'reservation']" routerLinkActive="active">
             reserve

@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Flight } from 'src/app/models/flight.model';
 import { AirlineService } from 'src/app/services/airline.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FastTicket } from 'src/app/models/fast-ticket.model';
 
 @Component({
   selector: 'app-flight',
@@ -9,13 +11,14 @@ import { AirlineService } from 'src/app/services/airline.service';
 })
 export class FlightComponent implements OnInit {
   @Input() flight: Flight;
+  @Input() fastTicket: FastTicket = null;
   @Input() back: string;
-  @Input() showLink:boolean;
-  classType: string = 'any';
+  @Input() admin:boolean;
+  @Input() classType: string = 'any';
 
   backStr: string;
-  price: string;
-  constructor(private airlineSerice: AirlineService) { }
+  price: any;
+  constructor(private airlineService: AirlineService, private router: Router, private activeRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     if(this.back == 'one'){
@@ -30,45 +33,56 @@ export class FlightComponent implements OnInit {
       }
     }
 
-    this.airlineSerice.classType.subscribe(newClass => {
+    if(this.fastTicket){
+      this.flight = this.fastTicket.flight;
+    }
+
+    this.airlineService.classType.subscribe(newClass => {
       this.classType = newClass;
 
-      if(this.classType === 'any')
-      {
-        this.price = this.flight.pricess[2] + '-' + this.flight.pricess[0];
+      if(this.classType === 'first'){
+        this.price = this.flight.pricess[0];
       }
       else{
-        if(this.classType === 'first'){
-          this.price = this.flight.pricess[0].toString();
+        if(this.classType === 'business'){
+          this.price = this.flight.pricess[1];
         }
         else{
-          if(this.classType === 'business'){
-            this.price = this.flight.pricess[1].toString();
-          }
-          else{
-            this.price = this.flight.pricess[2].toString();
-          }
+          this.price = this.flight.pricess[2];
         }
       }
     });
 
-    if(this.classType === 'any')
-      {
-        this.price = this.flight.pricess[2] + '-' + this.flight.pricess[0];
+    if(this.classType === 'first'){
+      this.price = this.flight.pricess[0].toString();
+    }
+    else{
+      if(this.classType === 'business'){
+        this.price = this.flight.pricess[1].toString();
       }
       else{
-        if(this.classType === 'first'){
-          this.price = this.flight.pricess[0].toString();
-        }
-        else{
-          if(this.classType === 'business'){
-            this.price = this.flight.pricess[1].toString();
-          }
-          else{
-            this.price = this.flight.pricess[2].toString();
-          }
-        }
+        this.price = this.flight.pricess[2].toString();
       }
+    }
   }
 
+  Edit(){
+    this.router.navigate([this.backStr,'airline-profile',this.flight.id,'edit-flight'],{relativeTo:this.activeRoute})
+  }
+
+  Reserve(){
+    this.router.navigate([this.backStr,this.flight.id,this.classType,'reservation'],{relativeTo:this.activeRoute})
+  }
+
+  FastReservation(){
+    this.fastTicket.seat.occupied = true;
+  }
+
+  EditFastReservation(){
+
+  }
+
+  DeleteFastReservation(){
+    
+  }
 }

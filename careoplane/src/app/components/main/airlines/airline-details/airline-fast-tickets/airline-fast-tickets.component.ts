@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { AirlineService } from 'src/app/services/airline.service';
 import { ActivatedRoute } from '@angular/router';
+import { Airline } from 'src/app/models/airline.model';
+import { Seat } from 'src/app/models/seat.model';
 
 @Component({
   selector: 'app-airline-fast-tickets',
@@ -8,12 +10,12 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./airline-fast-tickets.component.css']
 })
 export class AirlineFastTicketsComponent implements OnInit {
+  @Input() airline: Airline;
+  @Input() back: string;
+  @Input() admin: boolean;
 
-  constructor(private airlineService: AirlineService, private activeRoute: ActivatedRoute) { }
+  constructor() { }
   
-
   ngOnInit(): void {
-
   }
-
 }

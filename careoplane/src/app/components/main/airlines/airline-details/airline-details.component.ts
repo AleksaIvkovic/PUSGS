@@ -54,8 +54,6 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
           this.airline = this.airlineService.getAirline(this.name);
       }
     );
-    
-    console.log(this.airline);
   }
 
   mapInitializer() {
@@ -71,10 +69,6 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   onEdit(): void{
     this.router.navigate(['../../',this.name,'edit'], { relativeTo: this.activeRoute });
-  }
-
-  fastTickets(): void{
-    this.router.navigate(['fast-tickets'], { relativeTo: this.activeRoute });
   }
 
   add(event: MatChipInputEvent): void {

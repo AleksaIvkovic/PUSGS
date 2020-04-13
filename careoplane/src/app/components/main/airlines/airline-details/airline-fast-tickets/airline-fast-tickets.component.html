@@ -1,7 +1,10 @@
 <mat-list>
-    <mat-list-item >
-        <div mat-line>
-
-        </div>
-    </mat-list-item>
-</mat-list>
+    <div  *ngFor="let fastTicket of airline.fastTickets">
+        <app-flight *ngIf="!fastTicket.seat.occupied"
+        [fastTicket]="fastTicket"
+        [back]="'three'"
+        [admin]="admin"></app-flight>
+        <br/>        
+        <mat-divider></mat-divider>
+    </div>
+</mat-list> 
