@@ -22,7 +22,12 @@ export class FlightComponent implements OnInit {
         this.backStr = '../';
     }
     else{
-      this.backStr = '../../'
+      if(this.back == 'two'){
+        this.backStr = '../../';
+      }
+      else{
+        this.backStr = '../../../';
+      }
     }
 
     this.airlineSerice.classType.subscribe(newClass => {

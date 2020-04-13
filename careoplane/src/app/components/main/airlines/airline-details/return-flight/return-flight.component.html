@@ -15,7 +15,7 @@
     [back]="'one'"
     [flight]="f" [showLink]="false"></app-flight>
     <div mat-line>
-        <a [routerLink]="[backStr,flight.airlineName, flight.id,f.airlineName,f.id,'reservation']" routerLinkActive="active">
+        <a [routerLink]="[backStr,flight.airlineName, flight.id,f.airlineName,f.id,classType,'reservation']" routerLinkActive="active">
             reserve
         </a>
     </div>

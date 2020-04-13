@@ -42,7 +42,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(private geocodingService: GeoCodingServiceService,private router: Router,private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
-    this.paramsSub = this.activeRoute.params.subscribe(
+    this.activeRoute.params.subscribe(
       (params: Params) => {
           if(params['id']){
             this.name = params['id'];
@@ -67,7 +67,6 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnDestroy(): void {
-    this.paramsSub.unsubscribe();
   }
 
   onEdit(): void{

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { Flight } from 'src/app/models/flight.model';
@@ -17,10 +17,11 @@ export class FlightReservationComponent implements OnInit, OnDestroy {
   secondFormGroup: FormGroup;
   flight1: Flight;
   tickets = [] as any;
-  passengers: number = 1;
+  passengers: number = 3;
   checked: boolean = true;
+  classType: string;
 
-  constructor(private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
+  constructor(private router: Router, private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
 
   public checkTickets(): void{
     if(this.tickets != []){
@@ -40,6 +41,7 @@ export class FlightReservationComponent implements OnInit, OnDestroy {
     this.activeRoute.params.subscribe(
       (params: Params) => {
           this.flight1 = this.airlineService.getFlight(+params['fid']);
+          this.classType = params['type']
       }
     );
 
@@ -62,4 +64,10 @@ export class FlightReservationComponent implements OnInit, OnDestroy {
     this.paramsSub.unsubscribe();
   }
 
+  Done(){
+    for(let ticket of this.tickets.seatstoStore){
+      this.flight1.seats[ticket].occupied = true;
+    }
+    this.router.navigate(['../../../../', 'list'], {relativeTo: this.activeRoute});
+  }
 }

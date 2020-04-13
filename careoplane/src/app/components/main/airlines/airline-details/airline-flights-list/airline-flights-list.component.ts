@@ -13,7 +13,6 @@ import { Airline } from 'src/app/models/airline.model';
 })
 export class AirlineFlightsListComponent implements OnInit {
   flights: Flight[];
-  flightsSubscription: Subscription;
   airline: Airline;
 
   typeControl: FormControl = new FormControl('one way', Validators.required);
@@ -78,7 +77,6 @@ export class AirlineFlightsListComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.flightsSubscription.unsubscribe();
   }
 
   private initForm() {

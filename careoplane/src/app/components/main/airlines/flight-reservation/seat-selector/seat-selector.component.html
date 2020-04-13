@@ -8,9 +8,9 @@
           </div>
           <div *ngFor="let seatobj of seatrow.seats">
               <div class="seat-item seat-space" style="color:white ; background-color:white" *ngIf="seatobj.seatLabel == ''">  &nbsp; </div>
-              <div tooltip="Seat : {{seatobj.seatLabel}} | Price : {{seatobj.price}}Rs" placement="top"
-              [ngClass]="{ 'seat-item' : true , 'seat-available' : seatobj.status == 'available' ,'seat-booked' : seatobj.status == 'booked' ,'seat-unavailable' : seatobj.status == 'unavailable' }" 
-                (click)="selectSeat(seatobj)" *ngIf="(seatobj.status == 'available' || seatobj.status == 'booked' )&& seatobj.seatLabel != ''" style="text-align: center">{{seatobj.seatNo}}</div>
+              <div tooltip="Seat : {{seatobj.seatLabel}} | Price : {{seatobj.price | currency}}" placement="top"
+              [ngClass]="{ 'seat-item' : true , 'seat-available' : seatobj.status == 'available' ,'seat-booked' : seatobj.status == 'booked' ,'seat-unavailable' : seatobj.status == 'unavailable', 'seat-sale': seatobj.status == 'sale' }" 
+                (click)="selectSeat(seatobj)" *ngIf="(seatobj.status == 'available' || seatobj.status == 'booked' || seatobj.status === 'sale')&& seatobj.seatLabel != ''" style="text-align: center">{{seatobj.seatNo}}</div>
                 
               <div tooltip="Seat not available" placement="top"
               [ngClass]="{ 'seat-item' : true , 'seat-unavailable' : true }" 
@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<div  class="container">
+<div  class="container" *ngIf="!admin">
   <div class="col-lg-12 summary-bar">
       <div class="col-lg-4" >
               <div>

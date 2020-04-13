@@ -3,6 +3,7 @@ import { Flight } from 'src/app/models/flight.model';
 import { Airline } from 'src/app/models/airline.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Subject } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-seat-selector',
@@ -11,6 +12,9 @@ import { Subject } from 'rxjs';
 })
 export class SeatSelectorComponent implements OnInit {
   @Input() flight: Flight;
+  @Input() type:string = 'any';
+  @Input() admin: boolean = false;
+
   airline: Airline;
 
   private seatConfig: any = null;
@@ -32,8 +36,10 @@ export class SeatSelectorComponent implements OnInit {
   
 
   title = 'seat-chart-generator';
+  rowLength: number;
+  lastSeat: any;
 
-  constructor(private airlineService: AirlineService){
+  constructor(private airlineService: AirlineService,private router: Router, private activeRoute: ActivatedRoute){
   }
 
   private seatConfigFun(){
@@ -41,12 +47,12 @@ export class SeatSelectorComponent implements OnInit {
     let temp = [] as  any;
     let count = 1;
     let row:string = "";
-    let rowLength = 0;
+    this.rowLength = 0;
     for(let k = 0;k < this.airline.seatingArrangement.length;k++)
     {
       for(let q = 0;q < this.airline.seatingArrangement[k];q++){
         row += "g";
-        rowLength++;
+        this.rowLength++;
       }
       if(k != this.airline.seatingArrangement.length - 1){
         row +="_";
@@ -90,6 +96,7 @@ export class SeatSelectorComponent implements OnInit {
     });
     //Process a simple bus layout
     this.airline = this.airlineService.getAirline(this.flight.airlineName);
+    
 
     this.seatConfigFun();
     this.processSeatChart(this.seatConfig);
@@ -97,12 +104,26 @@ export class SeatSelectorComponent implements OnInit {
 
   public processSeatChart ( map_data : any[] )
   {
-      let myCounter: number = 0;
+      let start:number = 0;
+      let end: number = map_data.length;
+
+      if(this.type === 'first'){
+        end = this.airline.segments[0];
+      }
+      else if(this.type === 'business'){
+        start = this.airline.segments[0]
+        end = this.airline.segments[0] + this.airline.segments[1];
+      }
+      else if(this.type ==='economy'){
+        start = this.airline.segments[0] + this.airline.segments[1];
+      }
+
+      let myCounter: number = start * this.rowLength;
       let chars: string[] = ['','A','B','C','D','E','F','G','H','I','J'];
       if( map_data.length > 0 )
       {
         var seatNoCounter = 1;
-        for (let __counter = 0; __counter < map_data.length; __counter++) {
+        for (let __counter = start; __counter < end; __counter++) {
           var row_label = "";
           var item_map = map_data[__counter].seat_map;
 
@@ -132,10 +153,23 @@ export class SeatSelectorComponent implements OnInit {
             }
             var totalItemCounter = 1;
             seatValArr.forEach(item => {
+              let status: string;
+              if(this.flight.seats[myCounter].occupied || this.flight.seats[myCounter].discount != 0){
+                if(this.admin && this.flight.seats[myCounter].discount != 0){
+                  status = 'sale';
+                }
+                else{
+                  status = 'unavailable';
+                }
+              }
+              else{
+                  status = 'available';
+              }
+
               var seatObj = {
                 "key" : myCounter, //sam racunaj
                 "price" : map_data[__counter]["seat_price"],
-                "status" : "available" // podesiti da se iscitava
+                "status" : status
               };
                
               if( item != '_')
@@ -209,27 +243,45 @@ export class SeatSelectorComponent implements OnInit {
 
   public selectSeat( seatObject : any )
   {
-    console.log( "Seat to block: " , seatObject );
-    if(seatObject.status == "available")
-    {
-      seatObject.status = "booked";
-      this.cart.selectedSeats.push(seatObject.seatLabel);
-      this.cart.seatstoStore.push(seatObject.key);
-      this.cart.totalamount += seatObject.price;
-
-    }
-    else if( seatObject.status = "booked" )
-    {
-      seatObject.status = "available";
-      var seatIndex = this.cart.selectedSeats.indexOf(seatObject.seatLabel);
-      if( seatIndex > -1)
+    if(!this.admin){
+      console.log( "Seat to block: " , seatObject );
+      if(seatObject.status == "available")
       {
-        this.cart.selectedSeats.splice(seatIndex , 1);
-        this.cart.seatstoStore.splice(seatIndex , 1);
-        this.cart.totalamount -= seatObject.price;
+        seatObject.status = "booked";
+        this.cart.selectedSeats.push(seatObject.seatLabel);
+        this.cart.seatstoStore.push(seatObject.key);
+        this.cart.totalamount += seatObject.price;
+  
       }
-      
+      else if( seatObject.status = "booked" )
+      {
+        seatObject.status = "available";
+        var seatIndex = this.cart.selectedSeats.indexOf(seatObject.seatLabel);
+        if( seatIndex > -1)
+        {
+          this.cart.selectedSeats.splice(seatIndex , 1);
+          this.cart.seatstoStore.splice(seatIndex , 1);
+          this.cart.totalamount -= seatObject.price;
+        }
+        
+      }
+      this.airlineService.ticketsChanged.next(this.cart);
     }
-    this.airlineService.ticketsChanged.next(this.cart);
+    else{
+      if(seatObject.status == "available" || seatObject.status == "sale")
+      {
+        if(this.lastSeat){
+          if(this.flight.seats[this.lastSeat.key].discount == 0){
+            this.lastSeat.status = "available";
+          }
+          else{
+            this.lastSeat.status = "sale";
+          }
+        }
+        this.lastSeat = seatObject;
+        seatObject.status = "booked";
+        this.router.navigate([seatObject.key,'seat'],{relativeTo:this.activeRoute}); 
+      }
+    }
   }
 }

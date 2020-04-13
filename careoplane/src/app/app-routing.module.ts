@@ -22,6 +22,9 @@ import { RentACarManagerComponent } from './components/main/rent-a-car/rent-a-ca
 import { UserAuthentificationComponent } from './components/user-authentification/user-authentification.component';
 import { AirlineFastTicketsComponent } from './components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
 import { AirlineFlightsListComponent } from './components/main/airlines/airline-details/airline-flights-list/airline-flights-list.component';
+import { SeatsEditComponent } from './components/main/airlines/flight-edit/seats-edit/seats-edit.component';
+import { SeatDetailsComponent } from './components/main/airlines/flight-edit/seat-details/seat-details.component';
+import { SeatStarterComponent } from './components/main/airlines/flight-edit/seat-starter/seat-starter.component';
 
 
 const routes: Routes = [
@@ -36,7 +39,7 @@ const routes: Routes = [
         {path: 'list', component: AirlineFlightsListComponent},
         {path: ':fast-tickets', component: AirlineFastTicketsComponent},
       ]},
-      {path: ':alid/:fid/reservation', component: FlightReservationComponent},
+      {path: ':alid/:fid/:type/reservation', component: FlightReservationComponent},
       {path: ':alid1/:fid1/:alid2/:fid2/reservation', component: FlightReservationComponent}
     ]},
     {path: 'rent-a-car', component: RentACarComponent, children: [
@@ -58,9 +61,11 @@ const routes: Routes = [
       {path: ':alid/details', component: AirlineDetailsComponent},
       {path: ':alid/edit', component: AirlineEditComponent},
       {path: 'new', component: AirlineEditComponent},
-      {path: ':fid/edit-fligh', component: FlightEditComponent},
+      {path: ':fid/edit-flight', component: SeatsEditComponent, children:[
+        {path: '', component:SeatStarterComponent, pathMatch:'full'},
+        {path: ':id/seat', component: SeatDetailsComponent}
+      ]},
       {path: 'add-flight', component: FlightEditComponent},
-      
     ]},
     {path: 'new-rent-a-car-profile', component: RentACarManagerComponent, children: [
       {path: 'add-vehicle', component: VehicleManagerComponent},

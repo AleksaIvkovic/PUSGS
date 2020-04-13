@@ -4,6 +4,8 @@ import { Subject } from 'rxjs';
 import { Airline } from '../models/airline.model';
 import { Flight } from '../models/flight.model';
 import { Seat } from '../models/seat.model';
+import { FastTicket } from '../models/fast-ticket.model';
+import { AirlineFastTicketsComponent } from '../components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
 
 @Injectable({
   providedIn: 'root'
@@ -77,7 +79,7 @@ export class AirlineService {
 
             for(let j = 0;j < airline.segments[i];j++){
               for(let k= 0;k < sum;k++){
-                flight.seats.push(new Seat(airline.name,flight.id,count + ' ' + characters[k],type));
+                flight.seats.push(new Seat(airline.name,flight.id,count + ' ' + characters[k],type,false,flight.pricess[i],0));
               }
               count++;
             }
@@ -159,6 +161,21 @@ export class AirlineService {
     }
   }
 
+  changeSeatDiscount(seat: Seat) {
+    let airline = this.getAirline(seat.airlineName);
+    if(seat.discount != 0){
+      airline.fastTickets.push(new FastTicket(seat,this.getFlight(seat.FlightId)));
+    }
+    else{
+      for(let fastTicket of airline.fastTickets){
+        if(fastTicket.seat.id === seat.id){
+          airline.fastTickets.splice(airline.fastTickets.indexOf(fastTicket),1);
+          return;
+        }
+      }
+    }
+  }
+
   generateSeats(flight: Flight) {
     for(let airline of this.airlines){
       
@@ -186,7 +203,7 @@ export class AirlineService {
 
           for(let j = 0;j < airline.segments[i];j++){
             for(let k= 0;k < sum;k++){
-              flight.seats.push(new Seat(airline.name,flight.id,count + ' ' + characters[k],type));
+              flight.seats.push(new Seat(airline.name,flight.id,count + ' ' + characters[k],type,false,flight.pricess[i]));
             }
             count++;
           }

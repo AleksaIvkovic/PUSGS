@@ -2,8 +2,10 @@ $seat-available-bg: white;
 $seat-available-color: #a0a0a0;
 $seat-booked-bg: #3F51B5;
 $seat-booked-color: white;
-$seat-unavailable-bg: #E91E63;
+$seat-unavailable-bg: rgb(52, 54, 54);
 $seat-unavailable-color: white;
+$seat-sale-bg: #E91E63;
+$seat-sale-color: white;
 
 .badge-primary
 {
@@ -53,6 +55,19 @@ $seat-unavailable-color: white;
     color: $seat-available-color;
     background-color: $seat-available-bg;
     border: 1px solid $seat-available-color;
+}
+.seat-sale
+{
+    color: $seat-sale-color;
+    background-color: $seat-sale-bg;
+    font-weight: bolder;
+    border: 1px solid $seat-sale-color;
+}
+.seat-sale:hover
+{
+    color: $seat-sale-color;
+    background-color: $seat-sale-bg;
+    border: 1px solid $seat-sale-color;
 }
 .seat-unavailable
 {

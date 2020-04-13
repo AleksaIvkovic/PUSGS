@@ -87,6 +87,9 @@ import { UserAuthentificationComponent } from './components/user-authentificatio
 import { LogInComponent } from './components/log-in/log-in.component';
 import { AirlineFastTicketsComponent } from './components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
 import { AirlineFlightsListComponent } from './components/main/airlines/airline-details/airline-flights-list/airline-flights-list.component';
+import { SeatsEditComponent } from './components/main/airlines/flight-edit/seats-edit/seats-edit.component';
+import { SeatDetailsComponent } from './components/main/airlines/flight-edit/seat-details/seat-details.component';
+import { SeatStarterComponent } from './components/main/airlines/flight-edit/seat-starter/seat-starter.component';
 
 @NgModule({
   declarations: [
@@ -125,6 +128,9 @@ import { AirlineFlightsListComponent } from './components/main/airlines/airline-
     LogInComponent,
     AirlineFastTicketsComponent,
     AirlineFlightsListComponent,
+    SeatsEditComponent,
+    SeatDetailsComponent,
+    SeatStarterComponent,
   ],
   entryComponents: [
     LogInComponent

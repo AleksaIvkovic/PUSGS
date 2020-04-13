@@ -1,7 +1,7 @@
 <mat-horizontal-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="firstFormGroup">
     <ng-template matStepLabel>Choose seats</ng-template>
-    <app-seat-selector [flight]="flight1"></app-seat-selector>
+    <app-seat-selector [flight]="flight1" [type]="classType"></app-seat-selector>
     <button mat-button matStepperNext color="primary" [disabled]="checked">Next</button>
   </mat-step>
   <mat-step [stepControl]="secondFormGroup">
@@ -15,6 +15,7 @@
     <div>
       <button mat-button matStepperPrevious>Back</button>
       <button mat-button (click)="stepper.reset(); Reset()">Reset</button>
+      <button mat-raised-button color="primary" (click)="Done()"> Done </button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>
