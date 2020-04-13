@@ -20,8 +20,9 @@ export class UserAuthentificationComponent implements OnInit {
 
   isProfile = false;
   isEdit = false;
-  loggedInUser: User;
+  loggedInUser: any;
   isChangePassword = false;
+  isAdmin = false;
 
   constructor(
     private userService: UserService,
@@ -38,7 +39,8 @@ export class UserAuthentificationComponent implements OnInit {
     );
     if (this.router.url.includes('main')) {
       this.isProfile = true;
-      this.loggedInUser = this.userService.getMockUpUser();
+      this.loggedInUser = this.userService.getLoggedInUser();
+      this.isAdmin = this.loggedInUser.type !== undefined ? true : false;
     } else {
       this.isChangePassword = true;
     }

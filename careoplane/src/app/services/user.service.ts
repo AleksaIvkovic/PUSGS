@@ -19,25 +19,48 @@ export class UserService {
         '123456789'
     );
 
-    private loggedInUser: User = this.user;
-
-    private users: User[] = [
-        this.user
-    ];
-
-    private rentACarAdmin: Admin = new Admin(
-        'admin@gmail.com',
+    private rentACarAdminWithCompany: Admin = new Admin(
+        'admin123',
+        'admin1@gmail.com',
         'admin',
         'rent-a-car',
         'UNI LINE TTR'
     );
 
+    private rentACarAdminWithoutCompany: Admin = new Admin(
+        'admin456',
+        'admin2@gmail.com',
+        'admin',
+        'rent-a-car',
+        ''
+    );
+
+    private loggedInUser: any = this.user;
+    // private loggedInUser;
+
+    private users: User[] = [
+        this.user
+    ];
+
+    private admins: Admin[] = [
+        this.rentACarAdminWithCompany,
+        this.rentACarAdminWithoutCompany
+    ];
+
     getMockUpUser(): User {
         return this.user;
     }
 
+    getLoggedInUser() {
+        return this.loggedInUser;
+    }
+
+    getLoggedInUsername() {
+        return this.loggedInUser.username;
+    }
+
     getMockUpRentACarAdmin(): Admin {
-        return this.rentACarAdmin;
+        return this.loggedInUser;
     }
 
     logIn(usermail: string, password: string): boolean {
@@ -49,10 +72,30 @@ export class UserService {
         for (let user of this.users) {
             if (isMail) {
                 if (user.email === usermail && user.password === password) {
+                    this.loggedInUser = user;
+                    this.loggedInUserChanged.next(this.loggedInUser);
                     return true;
                 }
             } else {
                 if (user.username === usermail && user.password === password) {
+                    this.loggedInUser = user;
+                    this.loggedInUserChanged.next(this.loggedInUser);
+                    return true;
+                }
+            }
+        }
+
+        for (let admin of this.admins) {
+            if (isMail) {
+                if (admin.email === usermail && admin.password === password) {
+                    this.loggedInUser = admin;
+                    this.loggedInUserChanged.next(this.loggedInUser);
+                    return true;
+                }
+            } else {
+                if (admin.username === usermail && admin.password === password) {
+                    this.loggedInUser = admin;
+                    this.loggedInUserChanged.next(this.loggedInUser);
                     return true;
                 }
             }
@@ -60,8 +103,16 @@ export class UserService {
         return false;
     }
 
+    logOut() {
+        this.loggedInUser = null;
+    }
+
     registerUser(newUser: User): boolean {
-        //Provera da li je slobodan username
+        for (let user of this.users) {
+            if (user.username === newUser.username) {
+                return false;
+            }
+        }
         this.loggedInUser = newUser; //Ovo je samo privremeno, mora prvo da potvrdi preko mejla
         return true;
     }

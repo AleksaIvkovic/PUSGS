@@ -87,6 +87,7 @@ import { UserAuthentificationComponent } from './components/user-authentificatio
 import { LogInComponent } from './components/log-in/log-in.component';
 import { AirlineFastTicketsComponent } from './components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
 import { AirlineFlightsListComponent } from './components/main/airlines/airline-details/airline-flights-list/airline-flights-list.component';
+import { DropdownDirective } from './directives/dropdown.directive';
 
 @NgModule({
   declarations: [
@@ -125,6 +126,7 @@ import { AirlineFlightsListComponent } from './components/main/airlines/airline-
     LogInComponent,
     AirlineFastTicketsComponent,
     AirlineFlightsListComponent,
+    DropdownDirective,
   ],
   entryComponents: [
     LogInComponent

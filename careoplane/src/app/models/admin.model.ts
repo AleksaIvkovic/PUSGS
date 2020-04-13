@@ -1,7 +1,8 @@
 export class Admin {
     constructor(
+        public username: string,
         public email: string,
-        public pass: string,
+        public password: string,
         public type: string,
         public company: any = ''
     ) {}
