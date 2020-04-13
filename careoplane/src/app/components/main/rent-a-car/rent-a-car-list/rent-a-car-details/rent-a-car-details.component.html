@@ -28,9 +28,18 @@
         <table>
             <tr>
                 <th>Price List</th>
-                <td *ngFor="let price of rentACar.pricelist.items">
-                    {{price}}
-                </td>
+            </tr>
+            <tr>
+                <td>Rent A Car</td>
+                <td>€{{rentACar.prices[0]}}.00</td>
+            </tr>
+            <tr>
+                <td>Rent A Van</td>
+                <td>€{{rentACar.prices[1]}}.00</td>
+            </tr>
+            <tr>
+                <td>Rent A Truck</td>
+                <td>€{{rentACar.prices[2]}}.00</td>
             </tr>
         </table>
     </div>
@@ -49,6 +58,17 @@
             (click)="onAddVehicle()">
             Add Vehicle
         </button>
+        <button
+            style="margin-top: 10px; width: 100px;"
+            mat-raised-button 
+            color="primary"
+            (click)="onSale()">
+            {{isOnSaleClicked ? 'Regular' : 'On Sale'}}
+        </button>
+        <!-- <mat-radio-group [(ngModel)]="vehicleType">
+            <mat-radio-button value="regular">Regular Vehicles</mat-radio-button>
+            <mat-radio-button value="sale">Vehicles On Sale</mat-radio-button>
+          </mat-radio-group> -->
     </div>
 </div>
 <hr *ngIf="!isAdmin">

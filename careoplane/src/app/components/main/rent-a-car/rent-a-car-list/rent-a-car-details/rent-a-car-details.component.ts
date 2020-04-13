@@ -14,6 +14,8 @@ import { Vehicle } from 'src/app/models/vehicle.model';
 export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() admin: Admin;
   isAdmin: boolean = false;
+  vehicleType = 'regular';
+  isOnSaleClicked = false;
 
   @ViewChild('mapContainer', {static: false}) gmap: ElementRef;
   map: google.maps.Map;
@@ -78,6 +80,12 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
   onAddVehicle() {
     this.router.navigate(['/main/rent-a-car-profile/add-vehicle']);
+  }
+
+  onSale() {
+    this.isOnSaleClicked = !this.isOnSaleClicked;
+    this.router.navigate(['/main/rent-a-car-profile']);
+    this.rentACarService.onSaleClicked.next(this.isOnSaleClicked);
   }
 
   ngAfterViewInit() {

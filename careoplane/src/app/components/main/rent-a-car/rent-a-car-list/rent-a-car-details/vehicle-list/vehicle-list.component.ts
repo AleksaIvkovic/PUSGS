@@ -20,7 +20,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
   @Input() isAdmin: boolean = false;
 
   dataSource;
-  displayedColumns: string[] = ['brand', 'year', 'type', 'seats', 'price', 'rating'];
+  displayedColumns: string[] = ['brand', 'year', 'type', 'seats', 'price', 'rating', 'details'];
 
   vehicleTypes = [];
   type: string = 'Any';
@@ -46,6 +46,9 @@ export class VehicleListComponent implements OnInit, OnDestroy {
 
   vehicleListSubscription: Subscription;
 
+  normalVehicles: Vehicle[];
+  saleVehicles: Vehicle[];
+
   constructor(
     private rentACarService: RentACarService,
     private route: ActivatedRoute,
@@ -56,8 +59,10 @@ export class VehicleListComponent implements OnInit, OnDestroy {
       this.rentACarService.newVehicleListChanged.
       subscribe(
         (vehicles: Vehicle[]) => {
-          this.dataSource = vehicles;
-          this.searchedVehicles = vehicles;
+          this.manageVehicleLists(vehicles);
+          //Provera da li treba da se prikazuju na snizenju ili obicna
+          this.dataSource = this.normalVehicles;
+          this.searchedVehicles = this.normalVehicles;
         }
       );
     } else {
@@ -73,10 +78,39 @@ export class VehicleListComponent implements OnInit, OnDestroy {
       this.vehicleListSubscription = this.rentACarService.vehicleListChanged
       .subscribe(
         (vehicles: Vehicle[]) => {
-          this.searchedVehicles = vehicles;
-          this.dataSource = vehicles;
+          this.manageVehicleLists(vehicles);
+          //Provera da li treba da se prikazuju na snizenju ili obicna
+          this.searchedVehicles = this.normalVehicles;
+          this.dataSource = this.normalVehicles;
           this.dataSource.paginator = this.paginator;
-          this.length = this.rentACar.vehicles.length;
+          // this.length = this.rentACar.vehicles.length;
+          this.length = this.normalVehicles.length;
+          this.iterator();
+        }
+      );
+      this.rentACarService.reservationMade
+    .subscribe(
+      () => {
+        this.onCancelSearch();
+      }
+    );
+      this.rentACarService.onSaleClicked
+      .subscribe(
+        (isClicked: boolean) => {
+          this.manageVehicleLists(this.rentACar.vehicles.slice());
+          if (isClicked) {
+            this.searchedVehicles = this.saleVehicles;
+            this.dataSource = this.saleVehicles;
+            this.length = this.saleVehicles.length;
+          } else {
+            this.searchedVehicles = this.normalVehicles;
+            this.dataSource = this.normalVehicles;
+            this.length = this.normalVehicles.length;
+          }
+          
+          this.dataSource.paginator = this.paginator;
+          // this.length = this.rentACar.vehicles.length;
+         
           this.iterator();
         }
       );
@@ -85,18 +119,26 @@ export class VehicleListComponent implements OnInit, OnDestroy {
       .subscribe(
         (params: Params) => {
           this.vehicleTypes = this.rentACarService.getVehicleTypes();
-          this.searchedVehicles = this.rentACar.vehicles.slice();
-          this.dataSource = this.rentACar.vehicles.slice();
+          this.manageVehicleLists(this.rentACar.vehicles.slice());
+          // this.searchedVehicles = this.rentACar.vehicles.slice();
+          this.searchedVehicles = this.normalVehicles.slice();
+          // this.dataSource = this.rentACar.vehicles.slice();
+          this.dataSource = this.normalVehicles.slice();
           this.dataSource.paginator = this.paginator;
-          this.length = this.rentACar.vehicles.length;
+          // this.length = this.rentACar.vehicles.length;
+          this.length = this.normalVehicles.length;
           this.iterator();
         }
       );
 
-      this.searchedVehicles = this.rentACar.vehicles.slice();
-      this.dataSource = this.rentACar.vehicles.slice();
+      this.manageVehicleLists(this.rentACar.vehicles.slice());
+      // this.searchedVehicles = this.rentACar.vehicles.slice();
+      this.searchedVehicles = this.normalVehicles.slice();
+      // this.dataSource = this.rentACar.vehicles.slice();
+      this.dataSource = this.normalVehicles.slice();
       this.dataSource.sort = this.sort;
-      this.length = this.rentACar.vehicles.length;
+      // this.length = this.rentACar.vehicles.length;
+      this.length = this.normalVehicles.length;
       this.iterator();
     }
   }
@@ -133,10 +175,11 @@ export class VehicleListComponent implements OnInit, OnDestroy {
     this.rentACarService.doNextOnReserve(this.searchForm.value['pickerPickUp'], this.searchForm.value['pickUpLocation'], this.searchForm.value['pickerReturn'], this.searchForm.value['returnToLocation']);
     this.searchPerformed = true;
     // const searchedVehicles: Vehicle[] = this.rentACar.vehicles.slice();
-    this.searchedVehicles = this.rentACar.vehicles.slice();
+    // this.searchedVehicles = this.rentACar.vehicles.slice();
+    this.searchedVehicles = this.normalVehicles.slice();
     let indexesToRemove: number[] = [];
 
-    for (let vehicle of this.rentACar.vehicles) {
+    for (let vehicle of this.normalVehicles) { //this.rentACar.vehicles
       if (this.searchForm.value['pickUpLocation'] !== 'Any') {
         if (!vehicle.location.toLowerCase().includes(this.searchForm.value['pickUpLocation'].toLowerCase())) {
           indexesToRemove.push(this.searchedVehicles.indexOf(vehicle));
@@ -186,11 +229,14 @@ export class VehicleListComponent implements OnInit, OnDestroy {
       'pickerReturn': this.returnDateFormControl,
       'type': this.vehicleTypes[0]
     });
-    this.searchedVehicles = this.rentACar.vehicles.slice();
+    // this.searchedVehicles = this.rentACar.vehicles.slice();
+    this.searchedVehicles = this.normalVehicles.slice();
     this.searchForm.markAsPristine();
-    this.dataSource = this.rentACar.vehicles.slice();
+    // this.dataSource = this.rentACar.vehicles.slice();
+    this.dataSource = this.normalVehicles.slice();
     this.dataSource.paginator = this.paginator;
-    this.length = this.rentACar.vehicles.length;
+    // this.length = this.rentACar.vehicles.length;
+    this.length = this.normalVehicles.length;
     this.iterator();
   }
 
@@ -228,6 +274,18 @@ export class VehicleListComponent implements OnInit, OnDestroy {
 
   compare(a: number | string, b: number | string, isAsc: boolean) {
     return (a <= b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  manageVehicleLists(allVehicles: Vehicle[]) {
+    this.normalVehicles = [];
+    this.saleVehicles = [];
+    for (let vehicle of allVehicles) {
+      if (vehicle.isOnSale) {
+        this.saleVehicles.push(vehicle);
+      } else {
+        this.normalVehicles.push(vehicle);
+      }
+    }
   }
 
   ngOnDestroy() {

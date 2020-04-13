@@ -53,6 +53,9 @@ export class RentACarManagerComponent implements OnInit {
       'state': this.isEdit ?  new FormControl(this.rentACar.address.split(',')[2].substr(1), Validators.required) : new FormControl(null, Validators.required),
       'description': this.isEdit ?  new FormControl(this.rentACar.description, Validators.required) : new FormControl(null, Validators.required),
       'locations': this.isEdit ?  new FormControl(null, Validators.required) : new FormControl(null, Validators.required),
+      'car': this.isEdit ?  new FormControl(this.rentACar.prices[0], Validators.required) : new FormControl(null, Validators.required),
+      'van': this.isEdit ?  new FormControl(this.rentACar.prices[1], Validators.required) : new FormControl(null, Validators.required),
+      'truck': this.isEdit ?  new FormControl(this.rentACar.prices[2], Validators.required) : new FormControl(null, Validators.required),
     });
     if (this.isEdit) {
       for (let location of this.rentACar.locations) {
@@ -97,6 +100,9 @@ export class RentACarManagerComponent implements OnInit {
         this.rentACar.name,
         this.locationOfRentACar,
         this.addForm.value['description'],
+        this.addForm.value['car'],
+        this.addForm.value['van'],
+        this.addForm.value['truck'],
         this.locations
       );
       this._snackBar.open('Information updated successfully', 'OK', {
