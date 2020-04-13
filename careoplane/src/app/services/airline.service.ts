@@ -15,7 +15,7 @@ export class AirlineService {
   ];
 
   private flight1: Flight = new Flight("Jat","Belgrade","New York",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 12, 2500, ["Paris","Belgrade"],0);
-  private flight2: Flight = new Flight("Jat","Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 16, 12, 2500, ["BB", "DD"],1);
+  private flight2: Flight = new Flight("Jat","Paris","Belgrade",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0),16, 12, 2500, ["New York"],1);
   private flight3: Flight = new Flight("Lufthansa","Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 18, 12, 2500, ["BB"],2);
   private flight4: Flight = new Flight("Lufthansa","Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 15, 12, 2500, ["BB", "DD", "CC", "EE"],3);
   
