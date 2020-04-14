@@ -15,7 +15,7 @@ export class FlightComponent implements OnInit {
   @Input() back: string;
   @Input() admin:boolean;
   @Input() classType: string = 'any';
-
+  @Input() roundTrip: boolean = false;
   backStr: string;
   price: any;
   constructor(private airlineService: AirlineService, private router: Router, private activeRoute: ActivatedRoute) { }

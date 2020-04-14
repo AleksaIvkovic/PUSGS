@@ -94,6 +94,7 @@ import { DropdownDirective } from './directives/dropdown.directive';
 import { VehicleTabListComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-tab-list/vehicle-tab-list.component';
 import { ReservationsComponent } from './components/main/reservations/reservations.component';
 import { ReservationListComponent } from './components/main/reservations/reservation-list/reservation-list.component';
+import { AdminFlightsComponent } from './components/main/airlines/airline-details/admin-flights/admin-flights.component';
 
 @NgModule({
   declarations: [
@@ -139,6 +140,7 @@ import { ReservationListComponent } from './components/main/reservations/reserva
     VehicleTabListComponent,
     ReservationsComponent,
     ReservationListComponent,
+    AdminFlightsComponent,
   ],
   entryComponents: [
     LogInComponent

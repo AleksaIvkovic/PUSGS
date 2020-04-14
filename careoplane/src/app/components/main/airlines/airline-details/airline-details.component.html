@@ -1,42 +1,91 @@
 <div class="row">
-    <div class="col-md-6">
-        <h1>{{airline.name}}</h1>
-        <p>{{airline.address}}</p>
-        <p>{{airline.description}}</p>
-    </div>
-    <div class="col-md-6">
-        <div #mapContainer id="map"></div>
-        <button
-            mat-raised-button 
-            color="primary"
-            (click)="onEdit()"
-            *ngIf="admin">
-            Edit Info
-        </button>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-2">
+                <img class="images" src={{airline.picture}} alt={{airline.name}}>
+            </div>
+            <div class="col-md-10">
+                <div class="row" style="height: 75px;">
+                    <div class="col-md-8">
+                        <div class="mat-display-2">
+                            {{airline.name}}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mat-h2">
+                            Rating {{airline.rating}} / 5
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="height: 250px;">
+                    <div class="col-md-6">
+                        <div class="mat-h2">
+                            {{airline.description}}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row" style="height: 225px;">
+                            <div class="col-md-12">
+                                <div #mapContainer id="map"></div>
+                            </div>
+                        </div>
+                        <div class="row" style="height: 25;">
+                            <div class="col-md-12">
+                                <div class="mat-h2">
+                                    {{airline.address}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="row" *ngIf="admin">
-    <mat-form-field class="example-chip-list" appearance="fill">
-        <mat-chip-list #chipList aria-label="Destnations">
-          <mat-chip *ngFor="let destination of airline.destinations"
-                   [removable]="removable" (removed)="remove(destination)" color="accent">
-            {{destination}}
-            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-          </mat-chip>
-          <input placeholder="New destination..."
-                 [matChipInputFor]="chipList"
-                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                 [matChipInputAddOnBlur]="addOnBlur"
-                 (matChipInputTokenEnd)="add($event)">
-        </mat-chip-list>
-      </mat-form-field>
+
+<br/>
+<br/>
+
+<div  *ngIf="admin">
+    <hr/>
+    <div class="row">
+        <div class="col-md-2">
+            <button
+            mat-raised-button 
+            color="primary"
+            (click)="onEdit()">
+            Edit Info
+            </button>
+        </div>
+        <div class="col-md-10">
+            <mat-form-field class="example-chip-list" appearance="fill" style="width: 100%;">
+                <mat-chip-list #chipList aria-label="Destnations">
+                  <mat-chip *ngFor="let destination of airline.destinations"
+                           [removable]="removable" (removed)="remove(destination)" color="accent">
+                    {{destination}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                  </mat-chip>
+                  <input placeholder="New destination..."
+                         [matChipInputFor]="chipList"
+                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                         [matChipInputAddOnBlur]="addOnBlur"
+                         (matChipInputTokenEnd)="add($event)">
+                </mat-chip-list>
+              </mat-form-field>
+        </div>
+    </div>
+    <hr/>
+    <br/>
+    <br/>
 </div>
 
 <mat-tab-group>
     <mat-tab label="Flights">
         <div class="example-large-box mat-elevation-z4">
-            <app-airline-flights-list [airline]="airline" [admin]="admin">
+            <app-airline-flights-list style="width: 100%;" [airline]="airline" [admin]="admin" *ngIf="!admin">
             </app-airline-flights-list>
+            <app-admin-flights style="width: 100%;" [airline]="airline" [admin]="admin" *ngIf="admin">
+            </app-admin-flights>
         </div>
     </mat-tab>
     <mat-tab label="Cheap Tickets">

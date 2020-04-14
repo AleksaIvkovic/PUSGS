@@ -72,24 +72,24 @@
                 [formGroupName]="i"
                 style="margin-top: 10px;"
                 cdkDrag>
-                <div class="col-xs-8">
+                <div class="col-md-8">
                   <mat-form-field appearance="fill">
                     <mat-label>Number of seats in row {{i + 1}}</mat-label>
                         <input matInput type="number" [min]="1" [formControlName]="'seat'">
                     </mat-form-field>
                 </div>
-                <div class="col-xs-2" >
+                <div class="col-md-2" >
                   <button type="button" class="drag-handle" mat-icon-button cdkDragHandle>
                     <mat-icon>unfold_more</mat-icon>
                   </button>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-md-2">
                   <button mat-mini-fab (click)="onDeleteConnection(i)" color="warn">X</button>
                 </div>
               </div>
               <hr>
               <div class="row">
-                <div class="col-xs-12">
+                <div class="col-md-12">
                   <button mat-raised-button color="accent" type="button" (click)="onAddConnection()">Add seats</button>
                 </div>
               </div>

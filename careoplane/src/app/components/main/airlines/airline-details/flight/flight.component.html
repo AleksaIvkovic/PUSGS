@@ -1,8 +1,8 @@
 <div class="row">
-    <div class="col-md-1 flight">
-        <div class="mat-h2">
+    <div class="col-md-1">
+        <div matTooltip="{{flight.airlineName}}"> 
             <a [routerLink]="[backStr,flight.airlineName, 'details']">
-                {{flight.airlineName}}
+                <app-airline [name]="flight.airlineName"></app-airline>
             </a>
         </div>
     </div>
@@ -75,28 +75,28 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md">
-                <button mat-raised-button color="primary" (click)="Reserve()" *ngIf="!admin && fastTicket == null">
+            <div class="col-md text-center">
+                <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="Reserve()" *ngIf="!admin && fastTicket == null && !roundTrip">
                     Reserve
                 </button>
             </div>
-            <div class="col-md">
-                <button mat-raised-button color="primary" (click)="Edit()" *ngIf="admin && fastTicket == null">
+            <div class="col-md text-center">
+                <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="Edit()" *ngIf="admin && fastTicket == null">
                     Edit
                 </button>
             </div>
-            <div class="col-md">
-                <button mat-raised-button color="primary" (click)="EditFastReservation()" *ngIf="admin && fastTicket != null">
+            <div class="col-md text-center">
+                <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="EditFastReservation()" *ngIf="admin && fastTicket != null">
                     Edit
                 </button>
             </div>
-            <div class="col-md">
-                <button mat-mini-fab color="warn" (click)="DeleteFastReservation()" *ngIf="fastTicket != null && admin">
+            <div class="col-md text-center">
+                <button mat-mini-fab color="warn" style="margin: 0 auto;" (click)="DeleteFastReservation()" *ngIf="fastTicket != null && admin">
                     X
                 </button>
             </div>
-            <div class="col-md">
-                <button mat-raised-button color="primary" (click)="FastReservation()" *ngIf="fastTicket != null && !admin">
+            <div class="col-md text-center">
+                <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="FastReservation()" *ngIf="fastTicket != null && !admin">
                     Reserve
                 </button>
             </div>

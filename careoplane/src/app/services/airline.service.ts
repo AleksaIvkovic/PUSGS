@@ -20,7 +20,8 @@ export class AirlineService {
   private flight2: Flight = new Flight("Jat","Paris","Belgrade",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0),16, 12, 2500, ["New York"],1);
   private flight3: Flight = new Flight("Lufthansa","Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 18, 12, 2500, ["BB"],2);
   private flight4: Flight = new Flight("Lufthansa","Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 15, 12, 2500, ["BB", "DD", "CC", "EE"],3);
-  
+  private flight5: Flight = new Flight("Jat","New York","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 12, 2500, ["Paris","Belgrade"],4);
+
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
   ticketsChanged = new Subject<any>();
@@ -43,7 +44,8 @@ export class AirlineService {
     this.flight1,
     this.flight2,
     this.flight3,
-    this.flight4
+    this.flight4,
+    this.flight5
   ];
   
   constructor() {
@@ -71,10 +73,10 @@ export class AirlineService {
               type = "first";
             }
             else if(i == 1){
-              type == "bussines";
+              type = "business";
             }
             else{
-              type == "economy";
+              type = "economy";
             }
 
             for(let j = 0;j < airline.segments[i];j++){
@@ -90,6 +92,7 @@ export class AirlineService {
 
     this.airlines[0].flights.push(this.flight1);
     this.airlines[0].flights.push(this.flight2);
+    this.airlines[0].flights.push(this.flight5);
     this.airlines[0].picture = "https://seeklogo.com/images/J/JAT_Jugoslovenski_Aero_Transport-logo-04390D0687-seeklogo.com.png";
     this.airlines[1].flights.push(this.flight3);
     this.airlines[1].flights.push(this.flight4);
@@ -195,10 +198,10 @@ export class AirlineService {
             type = "first";
           }
           else if(i == 1){
-            type == "bussines";
+            type = "business";
           }
           else{
-            type == "economy";
+            type = "economy";
           }
 
           for(let j = 0;j < airline.segments[i];j++){

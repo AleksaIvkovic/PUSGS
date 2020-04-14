@@ -7,138 +7,170 @@
       </div>
   </div>
 </div>
-
+<br/>
+<br/>
 <mat-accordion>
   <mat-expansion-panel [expanded]="exs">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Search
+        <mat-icon>search</mat-icon>
       </mat-panel-title>
       <mat-panel-description>
-        Basics
+        {{origin}} - {{destination}}
       </mat-panel-description>
     </mat-expansion-panel-header>
-
     <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
-      <mat-form-field appearance="fill">
-        <mat-label>From</mat-label>
-        <input matInput formControlName="origin" [matAutocomplete]="auto1">
-        <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete">
-          <mat-option *ngFor="let city of filteredOptionsOrigin | async" [value]="city">
-            {{city}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>To</mat-label>
-        <input matInput formControlName="destination" [matAutocomplete]="auto2">
-        <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete">
-          <mat-option *ngFor="let city of filteredOptionsDestination | async" [value]="city">
-            {{city}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Choose a departure date</mat-label>
-        <input matInput [matDatepicker]="picker1"  [formControlName]="'departure'" [min]="minDateDep">
-        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-        <mat-datepicker #picker1></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Choose a return date</mat-label>
-        <input matInput [matDatepicker]="picker2" [formControlName]="'ret'" [min]="minDateRet" [disabled]="travelType !== 'round trip'">
-        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Passengers</mat-label>
-        <input matInput type="number" formControlName="num">
-      </mat-form-field>
-      <mat-radio-group aria-label="Select an option" formControlName="type" [(ngModel)]="travelType">
-        <mat-radio-button value="one way">one way</mat-radio-button>
-        <mat-radio-button value="round trip">round trip</mat-radio-button>
-        <mat-radio-button value="multi-city">multi-city</mat-radio-button>
-      </mat-radio-group>
-      <mat-radio-group aria-label="Select an option" formControlName="classType">
-        <mat-radio-button value="any">any</mat-radio-button>
-        <mat-radio-button value="first">first</mat-radio-button>
-        <mat-radio-button value="business">business</mat-radio-button>
-        <mat-radio-button value="economy">economy</mat-radio-button>
-      </mat-radio-group>
-      <button mat-raised-button type="submit" [disabled]="!searchForm.valid">Search</button>
+      <div class="row">
+        <div class="col-md-3 text-center">
+          <mat-form-field appearance="fill">
+            <mat-label>From</mat-label>
+            <input matInput formControlName="origin" [matAutocomplete]="auto1">
+            <mat-autocomplete autoActiveFirstOption #auto1="matAutocomplete">
+              <mat-option *ngFor="let city of filteredOptionsOrigin | async" [value]="city">
+                {{city}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 text-center">
+          <mat-form-field appearance="fill">
+            <mat-label>To</mat-label>
+            <input matInput formControlName="destination" [matAutocomplete]="auto2">
+            <mat-autocomplete autoActiveFirstOption #auto2="matAutocomplete">
+              <mat-option *ngFor="let city of filteredOptionsDestination | async" [value]="city">
+                {{city}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 text-center">
+          <mat-form-field appearance="fill">
+            <mat-label>Choose a departure date</mat-label>
+            <input matInput [matDatepicker]="picker1"  [formControlName]="'departure'" [min]="minDateDep">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 text-center">
+          <mat-form-field appearance="fill">
+            <mat-label>Choose a return date</mat-label>
+            <input matInput [matDatepicker]="picker2" [formControlName]="'ret'" [min]="minDateRet" [disabled]="travelType !== 'round trip'">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3 text-center">
+          <mat-form-field appearance="fill">
+            <mat-label>Passengers</mat-label>
+            <input matInput type="number" formControlName="num">
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 text-center">
+          <mat-form-field appearance="fill">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="type" [(ngModel)]="travelType">
+              <mat-option value="one way">one way</mat-option>
+              <mat-option value="round trip">round trip</mat-option>
+              <mat-option value="multi-city">multi-city</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 text-center">
+          <mat-form-field appearance="fill">
+            <mat-label>Class</mat-label>
+            <mat-select formControlName="classType">
+              <mat-option value="any"s>any</mat-option>
+              <mat-option value="first">first</mat-option>
+              <mat-option value="business">business</mat-option>
+              <mat-option value="economy">economy</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3 text-center">
+          <button mat-raised-button type="submit" [disabled]="!searchForm.valid">Search</button>
+        </div>
+      </div>
     </form>
   </mat-expansion-panel>
+  <br/>
   <mat-expansion-panel [expanded]="exf" *ngIf="search || twoWay">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Filter
+        <mat-icon>filter_list</mat-icon>
       </mat-panel-title>
       <mat-panel-description>
-        Filter
       </mat-panel-description>
     </mat-expansion-panel-header>
 
-    <mat-form-field>
-      <mat-label>Airline</mat-label>
-      <mat-select [(ngModel)]="airlineName">
-        <mat-option>All</mat-option>
-        <mat-option *ngFor="let airline of airlines" [value]="airline.name">
-          {{airline.name}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    
-    <mat-form-field>
-      <mat-label>Sort by</mat-label>
-      <mat-select [(ngModel)]="sortBy">
-        <mat-option [value]="'price'" selected="true">
-          Price
-        </mat-option>
-        <mat-option [value]="'airlineName'">
-          Airline name
-        </mat-option>
-        <mat-option [value]="'duration'">
-          Duration
-        </mat-option>
-        <mat-option [value]="'conCount'">
-          Number of connections
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-      <mat-slide-toggle
-          [color]="'Accent'"
-          [(ngModel)]=sortWay>
-        <p *ngIf="!sortWay">Increasing</p>
-        <p *ngIf="sortWay">Declining</p>
-      </mat-slide-toggle>
+    <div class="row">
+      <div class="col-md text-center">
+        <mat-form-field  appearance="fill">
+          <mat-label>Airline</mat-label>
+          <mat-select [(ngModel)]="airlineName">
+            <mat-option>All</mat-option>
+            <mat-option *ngFor="let airline of airlines" [value]="airline.name">
+              {{airline.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md text-center">
+        <mat-form-field  appearance="fill">
+          <mat-label>Sort by</mat-label>
+          <mat-select [(ngModel)]="sortBy">
+            <mat-option [value]="'price'" selected="true">
+              Price
+            </mat-option>
+            <mat-option [value]="'airlineName'">
+              Airline name
+            </mat-option>
+            <mat-option [value]="'duration'">
+              Duration
+            </mat-option>
+            <mat-option [value]="'conCount'">
+              Number of connections
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md text-center">
+        <mat-slide-toggle [color]="'Accent'" [(ngModel)]=sortWay>
+          <p *ngIf="!sortWay">Increasing</p>
+          <p *ngIf="sortWay">Declining</p>
+        </mat-slide-toggle>
+      </div>
+    </div>
   </mat-expansion-panel>
 </mat-accordion>
 
-<hr/>
+<br/>
+<br/>
 
 <mat-list *ngIf="search">
   <div *ngFor="let flight of flights| 
-  filter:origin:'origin' | 
-  filter:destination:'destination' | 
-  orderBy:sortBy:sortWay |
+  filter:origin:'origin':false | 
+  filter:destination:'destination':false | 
+  orderBy:sortBy:sortWay:false |
   priceFilter:num:classType |
-  filter:airlineName:'airlineName' |
-  dateFilter: departure">
+  filter:airlineName:'airlineName':false |
+  dateFilter: departure:false">
     <app-flight 
     [back]="'one'"
     [flight]="flight"
-    [admin]="false"></app-flight> 
+    [admin]="false" [classType] = "classType"></app-flight> 
     <mat-divider></mat-divider>
   </div>
 </mat-list>
 <mat-list *ngIf="twoWay">
   <div *ngFor="let flight of flights| 
-  filter:origin:'origin' | 
-  filter:destination:'destination' | 
-  orderBy:sortBy:sortWay |
+  filter:origin:'origin':false | 
+  filter:destination:'destination':false | 
+  orderBy:sortBy:sortWay:false |
   priceFilter:num:classType |
-  filter:airlineName:'airlineName' |
-  dateFilter: departure">
+  filter:airlineName:'airlineName':false |
+  dateFilter: departure:false">
     <app-return-flight 
     [back]="'one'"
     [flight]="flight"
@@ -146,7 +178,9 @@
     [num] = "num"
     [classType] = "classType"
     [admin]= "false"></app-return-flight>
+    <br/>
     <mat-divider></mat-divider>
+    <br/>
   </div>
 </mat-list>
   

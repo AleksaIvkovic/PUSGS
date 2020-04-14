@@ -1,18 +1,16 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { AirlineService } from 'src/app/services/airline.service';
-import { ActivatedRoute } from '@angular/router';
 import { Airline } from 'src/app/models/airline.model';
-import { Seat } from 'src/app/models/seat.model';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { FormGroup, FormControl } from '@angular/forms';
+import { AirlineService } from 'src/app/services/airline.service';
 import { startWith, map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-airline-fast-tickets',
-  templateUrl: './airline-fast-tickets.component.html',
-  styleUrls: ['./airline-fast-tickets.component.css']
+  selector: 'app-admin-flights',
+  templateUrl: './admin-flights.component.html',
+  styleUrls: ['./admin-flights.component.css']
 })
-export class AirlineFastTicketsComponent implements OnInit {
+export class AdminFlightsComponent implements OnInit {
   @Input() airline: Airline;
   @Input() back: string;
   @Input() admin: boolean;

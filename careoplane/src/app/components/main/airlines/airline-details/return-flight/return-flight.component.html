@@ -1,22 +1,23 @@
 <div *ngFor="
     let f of flights|
-    filter:flight.destination:'origin' |
-    filter:flight.origin:'destination' |
+    filter:flight.destination:'origin':false |
+    filter:flight.origin:'destination':false |
     priceFilter:num:classType|
-    dateFilter: ret
+    dateFilter: ret:false
     ">
-    To
     <app-flight 
     [back]="'one'"
-    [flight]="flight" [admin]="admin"></app-flight>
+    [flight]="flight" [admin]="admin" [roundTrip]="true" [classType]="classType"></app-flight>
     <br/>
-    From
+    <br/>
     <app-flight
     [back]="'one'"
-    [flight]="f" [admin]="admin"></app-flight>
-    <div mat-line>
-        <a [routerLink]="[backStr,flight.airlineName, flight.id,f.airlineName,f.id,classType,'reservation']" routerLinkActive="active">
-            reserve
-        </a>
+    [flight]="f" [admin]="admin" [roundTrip]="true" [classType]="classType"></app-flight>
+    <div class="row">
+        <div class="col-md-2 offset-10 text-center">
+            <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="Reserve()">
+                Reserve
+            </button>
+        </div>
     </div>
 </div>

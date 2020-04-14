@@ -1,5 +1,5 @@
 #map {
-    height: 250px;
+    height: 100%;
     width: 100%;
    }
 
@@ -12,7 +12,8 @@ padding: 16px;
 border-radius: 8px;
 }
 
-.example-large-box {
-height: fit-content;
-width: 95%;
-}
+img {
+    height: 150px;
+    width: 150px;
+    -o-object-fit: contain;
+  }
