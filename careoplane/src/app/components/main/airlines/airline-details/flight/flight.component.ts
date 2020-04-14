@@ -67,7 +67,11 @@ export class FlightComponent implements OnInit {
   }
 
   Edit(){
-    this.router.navigate([this.backStr,'airline-profile',this.flight.id,'edit-flight'],{relativeTo:this.activeRoute})
+    this.router.navigate([this.backStr,'airline-profile',this.flight.id,'edit-flight'],{relativeTo:this.activeRoute});
+  }
+
+  EditSeats(){
+    this.router.navigate([this.backStr,'airline-profile',this.flight.id,'edit-seats'],{relativeTo:this.activeRoute});
   }
 
   Reserve(){
@@ -79,7 +83,7 @@ export class FlightComponent implements OnInit {
   }
 
   EditFastReservation(){
-
+    this.router.navigate([this.backStr,'airline-profile',this.fastTicket.flight.id,'edit-seats',this.fastTicket.seat.id,'seat'],{relativeTo:this.activeRoute});
   }
 
   DeleteFastReservation(){

@@ -68,6 +68,6 @@ export class FlightReservationComponent implements OnInit, OnDestroy {
     for(let ticket of this.tickets.seatstoStore){
       this.flight1.seats[ticket].occupied = true;
     }
-    this.router.navigate(['../../../../', 'list'], {relativeTo: this.activeRoute});
+    this.router.navigate(['../../../', 'list'], {relativeTo: this.activeRoute});
   }
 }

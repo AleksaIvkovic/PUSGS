@@ -6,6 +6,8 @@ import { AirlineService } from 'src/app/services/airline.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-airline-edit',
@@ -20,7 +22,10 @@ export class AirlineEditComponent implements OnInit {
   edit: boolean 
   addressValid: boolean = false;
   group: FormGroup;
-  
+  visible = true;
+  removable = true;
+  addOnBlur = true;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService,private geocoderService: GeoCodingServiceService) { }
 
@@ -169,5 +174,33 @@ export class AirlineEditComponent implements OnInit {
       }
     }
     return null;
+  }
+
+  add(event: MatChipInputEvent): void {
+    const input = event.input;
+    const value = event.value;
+
+    if ((value || '').trim()) {
+      this.airline.destinations.push(value.trim());
+    }
+
+    if (input) {
+      input.value = '';
+    }
+
+    this.airlineService.editAirline(this.airline);
+  }
+
+  remove(destination: string): void {
+    const index = this.airline.destinations.indexOf(destination);
+
+    if (index >= 0) {
+      this.airline.destinations.splice(index, 1);
+      this.airlineService.editAirline(this.airline);
+    }
+  }
+
+  Cancel(){
+    this.router.navigate(['../../',this.airline.name,'details'],{relativeTo : this.activeRoute});
   }
 }

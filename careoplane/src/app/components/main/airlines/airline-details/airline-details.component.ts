@@ -1,14 +1,11 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
 /// <reference types=”@types/googlemaps” />
 
 import { Airline } from 'src/app/models/airline.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Subscription } from 'rxjs';
 import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
-import { MatChipInputEvent } from '@angular/material/chips';
-import {COMMA, ENTER, DASH} from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-airline-details',
@@ -33,11 +30,6 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   map: google.maps.Map;
   mapOptions: google.maps.MapOptions;
   marker: google.maps.Marker;
-
-  visible = true;
-  removable = true;
-  addOnBlur = true;
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(private geocodingService: GeoCodingServiceService,private router: Router,private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
 
@@ -69,29 +61,5 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
 
   onEdit(): void{
     this.router.navigate(['../../',this.name,'edit'], { relativeTo: this.activeRoute });
-  }
-
-  add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
-
-    if ((value || '').trim()) {
-      this.airline.destinations.push(value.trim());
-    }
-
-    if (input) {
-      input.value = '';
-    }
-
-    this.airlineService.editAirline(this.airline);
-  }
-
-  remove(destination: string): void {
-    const index = this.airline.destinations.indexOf(destination);
-
-    if (index >= 0) {
-      this.airline.destinations.splice(index, 1);
-      this.airlineService.editAirline(this.airline);
-    }
   }
 }

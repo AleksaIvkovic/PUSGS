@@ -60,7 +60,7 @@
             {{price | currency: 'EUR'}}
         </div>
         <div class="mat-h3" *ngIf="classType === 'any' && fastTicket == null">
-            {{flight.pricess[0] | currency: 'EUR'}} - {{flight.pricess[2] | currency: 'EUR'}}
+            {{flight.pricess[2] | currency: 'EUR'}} - {{flight.pricess[0] | currency: 'EUR'}}
         </div>
         <div class="row" *ngIf="fastTicket != null">
             <div class="col-md">
@@ -75,31 +75,24 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md text-center">
-                <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="Reserve()" *ngIf="!admin && fastTicket == null && !roundTrip">
-                    Reserve
-                </button>
-            </div>
-            <div class="col-md text-center">
-                <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="Edit()" *ngIf="admin && fastTicket == null">
-                    Edit
-                </button>
-            </div>
-            <div class="col-md text-center">
-                <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="EditFastReservation()" *ngIf="admin && fastTicket != null">
-                    Edit
-                </button>
-            </div>
-            <div class="col-md text-center">
-                <button mat-mini-fab color="warn" style="margin: 0 auto;" (click)="DeleteFastReservation()" *ngIf="fastTicket != null && admin">
-                    X
-                </button>
-            </div>
-            <div class="col-md text-center">
-                <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="FastReservation()" *ngIf="fastTicket != null && !admin">
-                    Reserve
-                </button>
-            </div>
+            <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="Reserve()" *ngIf="!admin && fastTicket == null && !roundTrip">
+                Reserve
+            </button>
+            <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="FastReservation()" *ngIf="fastTicket != null && !admin">
+                Reserve
+            </button>
+            <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="Edit()" *ngIf="admin && fastTicket == null">
+                Edit flight
+            </button>
+            <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="EditSeats()" *ngIf="admin && fastTicket == null">
+                Edit seats
+            </button>
+            <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="EditFastReservation()" *ngIf="admin && fastTicket != null">
+                Edit
+            </button>
+            <button mat-mini-fab color="warn" style="margin: 0 auto;" (click)="DeleteFastReservation()" *ngIf="fastTicket != null && admin">
+                X
+            </button>
         </div>
     </div>
 </div>
