@@ -41,8 +41,10 @@ export class HeaderComponent implements OnInit {
     .subscribe(
       (result) => {
         if (result !== "false") {
-          //redirekcija na odredjenu stranicu ulogovanog korisnika
           this.user = this.userService.getLoggedInUser();
+          if (this.user === undefined) {
+            return;
+          }
           this.checkUser();
         }
     })

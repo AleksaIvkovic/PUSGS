@@ -132,19 +132,30 @@ export class UserService {
                 return false;
             }
         }
+        this.users.push(newUser);
         this.loggedInUser = newUser; //Ovo je samo privremeno, mora prvo da potvrdi preko mejla
         return true;
     }
 
-    updateUser(username: string, newEmail: string, newPassword: string, newName: string, newSurname: string, newCity: string, newPhone: string) {
+    checkPassword(password: string) {
+        return password === this.loggedInUser.password;
+    }
+
+    updateUser(username: string, newEmail: string, newName: string, newSurname: string, newCity: string, newPhone: string) {
         let index = this.users.indexOf(this.loggedInUser);
         this.users[index].email = newEmail;
-        this.users[index].password = newPassword;
+        // this.users[index].password = newPassword;
         this.users[index].name = newName;
         this.users[index].surname = newSurname;
         this.users[index].city = newCity;
         this.users[index].phoneNumber = newPhone;
         this.loggedInUser = this.users[index];
+        this.loggedInUserChanged.next(this.users[index]);
+    }
+
+    updatePassword(newPassword: string) {
+        let index = this.users.indexOf(this.loggedInUser);
+        this.users[index].password = newPassword;
         this.loggedInUserChanged.next(this.users[index]);
     }
 
