@@ -61,7 +61,13 @@ export class HeaderComponent implements OnInit {
         }
       } else if (this.user.type === 'airline') {
         this.isAirlineAdmin = true;
-        // Provera da li ima kompaniju
+        if(this.user.company === ''){
+          this.router.navigate(['main/airline-profile/new']);
+          this.isNewAdmin = true;
+        }
+        else{
+          this.router.navigate(['main/airline-profile',this.user.company,'details']);
+        }
       }
     } else {
       this.router.navigate(['/main']);

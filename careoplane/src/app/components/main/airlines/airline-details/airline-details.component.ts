@@ -62,4 +62,8 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   onEdit(): void{
     this.router.navigate(['../../',this.name,'edit'], { relativeTo: this.activeRoute });
   }
+
+  Back(){
+    this.router.navigate(['../../','list'], { relativeTo: this.activeRoute }); 
+  }
 }

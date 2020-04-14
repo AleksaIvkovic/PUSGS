@@ -36,6 +36,22 @@ export class UserService {
         ''
     );
 
+    private airlineAdminWithComapny: Admin = new Admin(
+        'jaty',
+        'jaty@gmail.com',
+        'admin',
+        'airline',
+        'Jat'
+    )
+
+    private airlineAdminWithoutComapny: Admin = new Admin(
+        'lufty',
+        'lufty@gmail.com',
+        'admin',
+        'airline',
+        ''
+    )
+
     private loggedInUser: any;
     // private loggedInUser;
 
@@ -45,7 +61,9 @@ export class UserService {
 
     private admins: Admin[] = [
         this.rentACarAdminWithCompany,
-        this.rentACarAdminWithoutCompany
+        this.rentACarAdminWithoutCompany,
+        this.airlineAdminWithComapny,
+        this.airlineAdminWithoutComapny
     ];
 
     getMockUpUser(): User {
