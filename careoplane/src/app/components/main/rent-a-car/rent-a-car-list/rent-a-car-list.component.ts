@@ -138,12 +138,13 @@ export class RentACarListComponent implements OnInit, OnDestroy {
   }
 
   onCancelSearch() {
-    this.searchForm.setValue({
+    this.searchForm.patchValue({
       'name': 'Any',
       'locations': 'Any',
       'pickerPickUp': null,
       'pickerReturn': null,
     });
+    this.minReturnDate = new Date();
     this.searchedRentACars = this.rentACars.slice();
     this.searchForm.markAsPristine();
     this.searchPerformed = false;

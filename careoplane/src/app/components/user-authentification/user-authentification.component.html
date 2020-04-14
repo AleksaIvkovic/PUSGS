@@ -16,7 +16,10 @@
                                 name="username"
                                 [formControlName]="'username'"
                                 id="username">
-                                <mat-icon matSuffix>person</mat-icon>
+                            <mat-icon matSuffix>person</mat-icon>
+                            <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
+                                Username is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -30,7 +33,10 @@
                                 name="email"
                                 [formControlName]="'email'"
                                 id="email">
-                                <mat-icon matSuffix>email</mat-icon>
+                            <mat-icon matSuffix>email</mat-icon>
+                            <mat-error *ngIf="registerForm.controls['email'].hasError('required')">
+                                Email is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -52,6 +58,7 @@
                             <mat-label>Old Password *</mat-label>
                             <input
                                 matInput 
+                                [formControlName]="'oldPassword'"
                                 [type]="hide3 ? 'password' : 'text'"
                                 name="password"
                                 id="password">
@@ -64,6 +71,9 @@
                                     [attr.aria-pressed]="hide3">
                                     <mat-icon>{{hide3 ? 'visibility_off' : 'visibility'}}</mat-icon>
                                 </button>
+                            <!-- <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
+                                Old password is <strong>required</strong>
+                            </mat-error> -->
                         </mat-form-field>
                     </div>
                 </div>
@@ -86,6 +96,9 @@
                                     [attr.aria-pressed]="hide1">
                                     <mat-icon>{{hide1 ? 'visibility_off' : 'visibility'}}</mat-icon>
                                 </button>
+                            <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
+                                Password is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -108,6 +121,13 @@
                                     [attr.aria-pressed]="hide2">
                                     <mat-icon>{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
                                 </button>
+                            <mat-error *ngIf="registerForm.controls['confirmPassword'].hasError('required')">
+                                Password confirmation is <strong>required</strong>
+                            </mat-error>
+                            <mat-error *ngIf="registerForm.get('confirmPassword').errors && 
+                            registerForm.get('confirmPassword').errors.ConfirmPassword">
+                                Passwords do <strong>not</strong> match
+                            </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -123,6 +143,9 @@
                                 name="name"
                                 [formControlName]="'name'"
                                 id="name">
+                            <mat-error *ngIf="registerForm.controls['name'].hasError('required')">
+                                Name is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -135,6 +158,9 @@
                                 name="surname"
                                 [formControlName]="'surname'"
                                 id="surname">
+                            <mat-error *ngIf="registerForm.controls['surname'].hasError('required')">
+                                Surname is <strong>required</strong>
+                            </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -148,6 +174,9 @@
                                 [formControlName]="'city'"
                                 id="city">
                             <mat-icon matSuffix>home</mat-icon>
+                        <mat-error *ngIf="registerForm.controls['city'].hasError('required')">
+                            City is <strong>required</strong>
+                        </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -161,6 +190,9 @@
                                 [formControlName]="'phone'"
                                 id="phone">
                             <mat-icon matSuffix>phone</mat-icon>
+                        <mat-error *ngIf="registerForm.controls['phone'].hasError('required')">
+                            Phone number is <strong>required</strong>
+                        </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -170,6 +202,7 @@
             <div class="col-md-2">
                 <button 
                     *ngIf="!isProfile"
+                    [disabled]="registerForm.invalid"
                     style="margin-left: 225px;"
                     mat-raised-button 
                     class="btn-success"
@@ -178,6 +211,7 @@
                 </button>
                 <button 
                     *ngIf="isProfile && isEdit"
+                    [disabled]="registerForm.invalid || !registerForm.dirty"
                     style="margin-left: 225px;"
                     mat-raised-button 
                     class="btn-success"

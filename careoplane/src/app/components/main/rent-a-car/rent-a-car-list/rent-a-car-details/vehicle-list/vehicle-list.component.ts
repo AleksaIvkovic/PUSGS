@@ -244,13 +244,14 @@ export class VehicleListComponent implements OnInit, OnDestroy {
 
   onCancelSearch() {
     this.searchPerformed = false;
-    this.searchForm.setValue({
+    this.searchForm.patchValue({
       'pickUpLocation': this.pickUpLocations[0],
       'pickerPickUp': this.pickUpDateFormControl,
       'returnToLocation': this.returnToLocations[0],
       'pickerReturn': this.returnDateFormControl,
       'type': this.vehicleTypes[0]
     });
+    this.minReturnDate = new Date();
     // this.searchedVehicles = this.rentACar.vehicles.slice();
     this.searchedVehicles = this.normalVehicles.slice();
     this.searchForm.markAsPristine();

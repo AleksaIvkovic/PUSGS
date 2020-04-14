@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from 'src/app/services/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-log-in',
@@ -17,7 +18,8 @@ export class LogInComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {usermail: string, password: string},
     private dialogRef:MatDialogRef<LogInComponent>,
-    private userService: UserService
+    private userService: UserService,
+    private _snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -35,10 +37,15 @@ export class LogInComponent implements OnInit {
     if (this.userService.logIn(this.logInForm.value['usermail'], this.logInForm.value['password'])) {
       this.dialogRef.close();
     } else {
+      this._snackBar.open('Wrong email/username or password', 'OK', {
+        duration: 5000,
+      });
       this.logInForm.patchValue({
         usermail: '',
         password: ''
       });
+      this.logInForm.markAsPristine();
+      this.logInForm.markAsUntouched();
     }
   }
 

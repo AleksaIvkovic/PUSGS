@@ -19,6 +19,7 @@
             </div>
             <div class="col-md-2">
                 <mat-form-field appearance="fill">
+                    <mat-label>Pick up date</mat-label>
                     <input 
                         matInput 
                         [matDatepicker]="pickerPickUp" 
@@ -28,6 +29,9 @@
                         [min]="minPickUpDate">
                     <mat-datepicker-toggle matSuffix [for]="pickerPickUp"></mat-datepicker-toggle>
                     <mat-datepicker #pickerPickUp></mat-datepicker>
+                    <mat-error *ngIf="pickUpDateFormControl.invalid">
+                        Pick up date is <strong>required</strong>
+                    </mat-error>
                 </mat-form-field>
             </div>
             <div class="col-md-2">
@@ -45,6 +49,7 @@
             </div>
             <div class="col-md-2">
                 <mat-form-field appearance="fill">
+                    <mat-label>Return date</mat-label>
                     <input 
                         matInput 
                         [matDatepicker]="pickerReturn" 
@@ -54,6 +59,12 @@
                         [min]="minReturnDate">
                     <mat-datepicker-toggle matSuffix [for]="pickerReturn"></mat-datepicker-toggle>
                     <mat-datepicker #pickerReturn></mat-datepicker>
+                    <mat-error *ngIf="searchForm.controls['pickerReturn'].hasError('required')">
+                        Return date is <strong>required</strong>
+                    </mat-error>
+                    <mat-error *ngIf="returnDateFormControl.invalid">
+                        Return date must be greater or equal to pick up date
+                    </mat-error>
                 </mat-form-field>
             </div>
             <div class="col-md-2">
@@ -71,7 +82,7 @@
             </div>
             <div class="col-md-2">
                 <button 
-                    [disabled]="!searchForm.get('pickerPickUp').valid && !searchForm.get('pickerReturn').valid"
+                    [disabled]="!searchForm.valid"
                     mat-raised-button 
                     style="width: 150px; height: 50px; margin-top: -20px;"
                     type="submit">

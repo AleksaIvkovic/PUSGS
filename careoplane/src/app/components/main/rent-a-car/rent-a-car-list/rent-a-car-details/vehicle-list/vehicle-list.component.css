@@ -2,6 +2,10 @@ table {
     width: 100%;
 }  
 
+button:disabled {
+    cursor: not-allowed;
+}
+
 mat-form-field {
     width: 150px;
 }

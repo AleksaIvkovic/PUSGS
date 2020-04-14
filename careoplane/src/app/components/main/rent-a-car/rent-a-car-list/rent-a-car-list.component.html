@@ -29,6 +29,7 @@
             </div>
             <div class="col-md-2">
                 <mat-form-field appearance="fill">
+                    <mat-label>Pick up date</mat-label>
                     <input 
                         matInput 
                         [matDatepicker]="pickerPickUp" 
@@ -42,6 +43,7 @@
             </div>
             <div class="col-md-2">
                 <mat-form-field appearance="fill">
+                    <mat-label>Return date</mat-label>
                     <input 
                         matInput 
                         [matDatepicker]="pickerReturn" 
@@ -51,11 +53,14 @@
                         [min]="minReturnDate">
                     <mat-datepicker-toggle matSuffix [for]="pickerReturn"></mat-datepicker-toggle>
                     <mat-datepicker #pickerReturn></mat-datepicker>
+                    <mat-error *ngIf="returnDateFormControl.invalid">
+                        Return date must be greater or equal than pick up date
+                    </mat-error>
                 </mat-form-field>
             </div>
             <div class="col-md-2">
                 <button 
-                    [disabled]="!searchForm.dirty"
+                    [disabled]="!searchForm.dirty || searchForm.invalid"
                     mat-raised-button 
                     style="width: 150px; height: 50px; margin-top: -20px;"
                     type="submit">

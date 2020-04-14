@@ -2,6 +2,10 @@ div {
     background-color: black;
 }
 
+button:disabled {
+    cursor: not-allowed;
+}
+
 div.scroll { 
     height: 460px; 
     overflow-x: hidden; 
