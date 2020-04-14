@@ -57,7 +57,7 @@ export class RentACarListComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.rentACars = this.rentACarService.getMockUp();
+    this.rentACars = this.rentACarService.getRentACars();
     this.searchedRentACars = this.rentACars.slice();
     this.dataSource = this.rentACars.slice();
     this.dataSource.sort = this.sort;

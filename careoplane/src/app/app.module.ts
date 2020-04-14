@@ -92,6 +92,8 @@ import { SeatDetailsComponent } from './components/main/airlines/flight-edit/sea
 import { SeatStarterComponent } from './components/main/airlines/flight-edit/seat-starter/seat-starter.component';
 import { DropdownDirective } from './directives/dropdown.directive';
 import { VehicleTabListComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-tab-list/vehicle-tab-list.component';
+import { ReservationsComponent } from './components/main/reservations/reservations.component';
+import { ReservationListComponent } from './components/main/reservations/reservation-list/reservation-list.component';
 
 @NgModule({
   declarations: [
@@ -135,6 +137,8 @@ import { VehicleTabListComponent } from './components/main/rent-a-car/rent-a-car
     SeatStarterComponent,
     DropdownDirective,
     VehicleTabListComponent,
+    ReservationsComponent,
+    ReservationListComponent,
   ],
   entryComponents: [
     LogInComponent

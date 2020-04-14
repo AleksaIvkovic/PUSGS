@@ -84,7 +84,7 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
   onSale() {
     this.isOnSaleClicked = !this.isOnSaleClicked;
-    this.router.navigate(['/main/rent-a-car-profile']);
+    //this.router.navigate(['/main/rent-a-car-profile']);
     this.rentACarService.onSaleClicked.next(this.isOnSaleClicked);
   }
 

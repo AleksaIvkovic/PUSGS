@@ -14,7 +14,7 @@
         </tr>
         <tr>
             <th>Price</th>
-            <td>{{ (rentACar.pricelist[vehicle.type] + vehicle.pricePerDay * numOfDays) | currency: 'EUR':true }}</td>
+            <td>{{ (vehicle.isOnSale ? (rentACar.pricelist[vehicle.type] + (vehicle.pricePerDay - (vehicle.pricePerDay*discount/100)) * numOfDays) : (rentACar.pricelist[vehicle.type] + vehicle.pricePerDay * numOfDays)) | currency: 'EUR':true }}</td>
         </tr>
         <tr class="last">
             <td>

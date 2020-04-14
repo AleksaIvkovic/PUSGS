@@ -194,9 +194,8 @@
                     Edit Info
                 </button>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2" *ngIf="isEdit">
                 <button
-                    *ngIf="isEdit"
                     mat-raised-button 
                     color='warn'
                     type="button"

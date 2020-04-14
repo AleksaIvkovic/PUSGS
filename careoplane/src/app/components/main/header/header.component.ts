@@ -64,7 +64,7 @@ export class HeaderComponent implements OnInit {
         // Provera da li ima kompaniju
       }
     } else {
-
+      this.router.navigate(['/main']);
     }
   }
 

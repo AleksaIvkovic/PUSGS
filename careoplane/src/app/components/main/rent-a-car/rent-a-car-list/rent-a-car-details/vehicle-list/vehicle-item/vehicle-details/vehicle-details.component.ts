@@ -22,7 +22,9 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   adminVehicleId: number;
   isAdmin: boolean = false;
+  isLoggedIn: boolean = false;
   rentACar: RentACar;
+  discount = this.rentACarService.discount;
 
   // displayedColumns: string[] = ['brand', 'year', 'type', 'seats', 'price', 'location', 'rating'];
 
@@ -35,6 +37,7 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.isLoggedIn = this.userService.getLoggedInUser() === undefined ? false : true;
     this.subscription = this.route.params
     .subscribe(
       (params: Params) => {
@@ -48,8 +51,8 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
           if (this.router.url.includes('new')) {
             this.vehicle = this.rentACarService.newVehicles[this.adminVehicleId];
           } else {
-            this.rentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
-            this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.userService.getMockUpRentACarAdmin().company, this.adminVehicleId);
+            this.rentACar = this.rentACarService.getRentACarByName(this.userService.getLoggedInUser().company);
+            this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.userService.getLoggedInUser().company, this.adminVehicleId);
           }
           this.isAdmin = true;
         }
@@ -78,6 +81,11 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
       duration: 5000,
     });
     this.router.navigate(['../../'], {relativeTo: this.route});
+  }
+
+  onSwapVehicle() {
+    let index = +this.router.url.split('/')[3];
+    this.rentACarService.swapVehicleList(this.rentACar, index);
   }
 
   ngOnDestroy() {

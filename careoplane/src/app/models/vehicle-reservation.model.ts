@@ -8,6 +8,7 @@ export class VehicleReservation {
         public toDate: Date,
         public toLocation: string,
         public numOfDays: number,
-        public price: number
+        public price: number,
+        public type = 'vehicle'
     ) {}
 }

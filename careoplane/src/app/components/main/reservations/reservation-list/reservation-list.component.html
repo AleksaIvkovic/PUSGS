@@ -1,0 +1,16 @@
+<!-- <div class="row">
+    <div *ngFor="let reservation of reservationList">
+        {{ reservation.type }}
+    </div>
+</div> -->
+
+<div class="container testimonial-group">
+    <div class="row text-center">
+        <div *ngFor="let reservation of reservationList">
+            <!-- <a [routerLink]="['../',airline.name, 'details']">
+                <app-airline [airline]="airline"></app-airline>
+            </a> -->
+            {{ reservation.type }}
+        </div>
+    </div>
+  </div>

@@ -15,6 +15,10 @@ export class RentACar {
             pricelist['Truck'] = prices[2];
 
             let location: string = this.address.split(',')[1];
-            this.vehicles.forEach(v => v.location = location.substr(1));
+            this.vehicles.forEach(
+                v => {
+                    v.location = location.substr(1);
+                    v.rentACar = name;
+                });
         }
 }

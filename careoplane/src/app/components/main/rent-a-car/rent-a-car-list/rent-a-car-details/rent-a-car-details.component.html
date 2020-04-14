@@ -43,8 +43,9 @@
             </tr>
         </table>
     </div>
-    <div class="col-md-1" *ngIf="isAdmin">
+    <div class="col-md-1">
         <button
+            *ngIf="isAdmin"
             style="width: 100px;"
             mat-raised-button 
             color="primary"
@@ -52,6 +53,7 @@
             Edit Info
         </button>
         <button
+            *ngIf="isAdmin"
             style="margin-top: 10px; width: 100px;"
             mat-raised-button 
             color="primary"

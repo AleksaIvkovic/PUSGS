@@ -8,6 +8,7 @@ export class Vehicle {
         public location: string = '',
         public rating: number = 0,
         public unavailableDates: Date[] = [],
-        public isOnSale: boolean = false
+        public isOnSale: boolean = false,
+        public rentACar: string = ''
     ) {}
 }

@@ -24,6 +24,7 @@ export class VehicleReserveComponent implements OnInit, OnDestroy {
   returnDate;
   returnLocation;
   numOfDays = 1;
+  discount = this.rentACarService.discount;
 
   constructor(
     private userService: UserService,

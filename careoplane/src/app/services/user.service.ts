@@ -36,7 +36,7 @@ export class UserService {
         ''
     );
 
-    private loggedInUser: any = this.user;
+    private loggedInUser: any;
     // private loggedInUser;
 
     private users: User[] = [
@@ -131,6 +131,6 @@ export class UserService {
     }
 
     addVehicleReservation(reservation: VehicleReservation) {
-        this.loggedInUser.vehicleReservations.push(reservation);
+        this.loggedInUser.reservations.push(reservation);
     }
 }

@@ -25,6 +25,7 @@ import { AirlineFlightsListComponent } from './components/main/airlines/airline-
 import { SeatsEditComponent } from './components/main/airlines/flight-edit/seats-edit/seats-edit.component';
 import { SeatDetailsComponent } from './components/main/airlines/flight-edit/seat-details/seat-details.component';
 import { SeatStarterComponent } from './components/main/airlines/flight-edit/seat-starter/seat-starter.component';
+import { ReservationsComponent } from './components/main/reservations/reservations.component';
 
 
 const routes: Routes = [
@@ -72,7 +73,8 @@ const routes: Routes = [
       {path: ':idvh/details', component: VehicleDetailsComponent},
       {path: ':idvh/edit', component: VehicleManagerComponent},
     ]},
-    {path: 'user-profile', component: UserAuthentificationComponent}
+    {path: 'user-profile', component: UserAuthentificationComponent},
+    {path: 'reservations', component: ReservationsComponent}
   ]},
   {path: 'user-authentification', component: UserAuthentificationComponent}
 ];

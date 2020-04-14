@@ -18,7 +18,7 @@
         </tr>
         <tr>
             <th>Price Per Day</th>
-            <td>{{ vehicle.pricePerDay | currency: 'EUR':true }}</td>
+            <td>{{ (vehicle.isOnSale ? vehicle.pricePerDay - (vehicle.pricePerDay*discount/100) : vehicle.pricePerDay) | currency: 'EUR':true }}</td>
         </tr>
         <tr>
             <th>Location</th>
@@ -35,12 +35,21 @@
                     mat-raised-button 
                     color="warn"
                     (click)="onRemoveVehicle()">
-                    Remove Vehicle
+                    Remove
                 </button>
             </td>
             <td>
                 <button 
-                    *ngIf="!isAdmin"
+                    *ngIf="isAdmin"
+                    mat-raised-button 
+                    color="accent"
+                    (click)="onSwapVehicle()">
+                    Swap List
+                </button>
+            </td>
+            <td>
+                <button 
+                    *ngIf="!isAdmin && isLoggedIn"
                     mat-raised-button 
                     color="primary"
                     (click)="onReserve()">
@@ -52,7 +61,7 @@
                     color="primary"
                     type="button"
                     (click)="onEditVehicle()">
-                    Edit Vehicle
+                    Edit
                 </button>
             </td>
         </tr>
