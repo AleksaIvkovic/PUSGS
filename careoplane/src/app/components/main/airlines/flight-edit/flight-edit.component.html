@@ -1,5 +1,7 @@
 <form [formGroup]="group" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="fill">
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field appearance="fill">
         <mat-label>Origin</mat-label>
         <mat-select [formControlName]="'origin'">
           <mat-option *ngFor="let destination of airline.destinations" [value]="destination">
@@ -7,7 +9,8 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <br>
+    </div>
+    <div class="col-md-3">
       <mat-form-field appearance="fill">
         <mat-label>Destination</mat-label>
         <mat-select [formControlName]="'destination'">
@@ -16,56 +19,72 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-    <br>
-    <mat-form-field appearance="fill">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field appearance="fill">
         <mat-label>Departure date and time</mat-label>
         <input matInput type="datetime" [formControlName]="'departure'">
-    </mat-form-field>
-    <br>
-    <mat-form-field appearance="fill">
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field appearance="fill">
         <mat-label>Arrival date and time</mat-label>
         <input matInput type="datetime" [formControlName]="'arrival'">
-    </mat-form-field>
-    <br>
-    <mat-form-field appearance="fill">
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md">
+      <mat-form-field appearance="fill">
         <mat-label>Distance</mat-label>
         <input matInput type="number" [formControlName]="'distance'" min="1">
-    </mat-form-field>
-    <br>
-      <div class="row">
-        <div class="col-xs-12" formArrayName="connectionsForm" cdkDropList (cdkDropListDropped)="drop($event)">
-          <div
-            class="row"
-            *ngFor="let connectionControl of getList(); let i = index"
-            [formGroupName]="i"
-            style="margin-top: 10px;"
-            cdkDrag>
-            <div class="col-xs-8">
-              <mat-form-field appearance="fill">
-                <mat-label>Origin</mat-label>
-                <mat-select [formControlName]="'city'">
-                  <mat-option *ngFor="let destination of airline.destinations" [value]="destination">
-                    {{destination}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div class="col-xs-2" >
-              <button type="button" class="drag-handle" mat-icon-button cdkDragHandle>
-                <mat-icon>unfold_more</mat-icon>
-              </button>
-            </div>
-            <div class="col-xs-2">
-              <button mat-mini-fab (click)="onDeleteConnection(i)" color="warn">X</button>
-            </div>
-          </div>
-          <hr>
-          <div class="row">
-            <div class="col-xs-12">
-              <button mat-raised-button color="accent" type="button" (click)="onAddConnection()">Add connection</button>
-            </div>
-          </div>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-7" formArrayName="connectionsForm" cdkDropList (cdkDropListDropped)="drop($event)">
+      <div
+        class="row"
+        *ngFor="let connectionControl of getList(); let i = index"
+        [formGroupName]="i"
+        style="margin-top: 10px;"
+        cdkDrag>
+        <div class="col-md-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Connection</mat-label>
+            <mat-select [formControlName]="'city'">
+              <mat-option *ngFor="let destination of airline.destinations" [value]="destination">
+                {{destination}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-1" >
+          <button type="button" class="drag-handle" mat-icon-button cdkDragHandle>
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </div>
+        <div class="col-md-1">
+          <button mat-mini-fab (click)="onDeleteConnection(i)" color="warn">X</button>
         </div>
       </div>
-    <button mat-raised-button color="primary" type="submit"  [disabled]="!group.valid">Submit</button>
+      <br/>
+      <div class="row">
+        <div class="col-md-3">
+          <button mat-raised-button color="accent" type="button" (click)="onAddConnection()">Add Connection</button>
+        </div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col-md-3">
+          <button mat-raised-button color="warn" type="button" (click)="Cancel()">Cancel</button>
+        </div>
+        <div class="col-md-3">
+          <button mat-raised-button color="primary" type="submit"  [disabled]="!group.valid">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </form>  

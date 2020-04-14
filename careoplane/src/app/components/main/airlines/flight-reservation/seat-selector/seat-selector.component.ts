@@ -120,6 +120,8 @@ export class SeatSelectorComponent implements OnInit {
 
       let myCounter: number = start * this.rowLength;
       let chars: string[] = ['','A','B','C','D','E','F','G','H','I','J'];
+      let classes: string[] = ['First','Business','Economy'];
+      let classCounter: number = 0;
       if( map_data.length > 0 )
       {
         var seatNoCounter = 1;
@@ -128,16 +130,8 @@ export class SeatSelectorComponent implements OnInit {
           var item_map = map_data[__counter].seat_map;
 
           //Get the label name and price
-          row_label = "Row "+item_map[0].seat_label + " - ";
-          if( item_map[ item_map.length - 1].seat_label != " " )
-          {
-            row_label += item_map[ item_map.length - 1].seat_label;
-          }
-          else
-          {
-            row_label += item_map[ item_map.length - 2].seat_label;
-          }
-          row_label += " : € " + map_data[__counter].seat_price;
+          row_label = classes[classCounter];
+          classCounter++;
           
           item_map.forEach(map_element => {
             var mapObj = {

@@ -4,7 +4,7 @@ import {COMMA, ENTER, DASH} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Flight } from 'src/app/models/flight.model';
 import { Airline } from 'src/app/models/airline.model';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AirlineService } from 'src/app/services/airline.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
@@ -26,7 +26,7 @@ export class FlightEditComponent implements OnInit {
   minDepartureDate = new Date();
   edit: boolean;
 
-  constructor(private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
+  constructor(private router: Router, private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
     this.minArrivalDate = new Date();
@@ -98,6 +98,8 @@ export class FlightEditComponent implements OnInit {
     }
     
     this.airlineService.EditFlight(this.flight);
+
+    this.router.navigate(['../../'],{relativeTo: this.activeRoute});
   }
 
   checkDepartureDate(control: FormControl): {[s: string]: boolean} 
@@ -153,5 +155,9 @@ export class FlightEditComponent implements OnInit {
 
   getList(){
     return (<FormArray>this.group.get('connectionsForm')).controls
+  }
+
+  Cancel(){
+    this.router.navigate(['../../'],{relativeTo: this.activeRoute});
   }
 }

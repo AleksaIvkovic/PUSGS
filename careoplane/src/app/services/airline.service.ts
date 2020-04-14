@@ -12,15 +12,17 @@ import { AirlineFastTicketsComponent } from '../components/main/airlines/airline
 })
 export class AirlineService {
   private airlines: Airline[] = [
-    new Airline("Jat","Beograd","Manji jaci bolji",[2,1.5,1],[3,3],[1,1,2],[],"",1,["Belgrade","Paris","New York"]),
-    new Airline("Lufthansa","Berlin","Sehr gut",[4,3,2],[2,4,2],[5,10,40],[],"",1,["Belgrade","Paris","New York"]),
+    new Airline("WizzAir","31 Oxford street, London, UK", "Why wait for a perfecr moment to travel, with us, every moment is perfect",
+  [0.5,0.35,0.25],[2,4,2],[3,5,10],[],"",1,["Berlin","Rome","Belgrade","New York","Paris"],[]),
+    new Airline("Jat","Beograd","Still going strong",[0.2,0.1,0.05],[3,3],[1,1,15],[],
+    "",1,["Belgrade","Paris","New York","London","Rome"]),
   ];
 
-  private flight1: Flight = new Flight("Jat","Belgrade","New York",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 12, 2500, ["Paris","Belgrade"],0);
-  private flight2: Flight = new Flight("Jat","Paris","Belgrade",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0),16, 12, 2500, ["New York"],1);
-  private flight3: Flight = new Flight("Lufthansa","Belgrade","Moscow",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,14,23,22,0), 18, 12, 2500, ["BB"],2);
-  private flight4: Flight = new Flight("Lufthansa","Moscow","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 15, 12, 2500, ["BB", "DD", "CC", "EE"],3);
-  private flight5: Flight = new Flight("Jat","New York","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,5,14,23,22,0), 20, 12, 2500, ["Paris","Belgrade"],4);
+  private flight1: Flight = new Flight("Jat","Belgrade","New York",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,16,23,22,0), 20, 12, 2000, ["Paris","London"],0);
+  private flight2: Flight = new Flight("Jat","Paris","Belgrade",new Date(2020,3,25,14,23,22,0), new Date(2020,3,25,18,23,22,0),16, 12, 1200, ["Rome"],1);
+  private flight3: Flight = new Flight("WizzAir","Berlin","Belgrade",new Date(2020,4,6,14,23,22,0), new Date(2020,4,6,16,23,22,0), 18, 12, 1300, ["Rome"],2);
+  private flight4: Flight = new Flight("WizzAir","Rome","Berlin",new Date(2020,4,12,14,23,22,0), new Date(2020,4,12,15,23,22,0), 15, 12, 2800, ["Paris", "Belgrade"],3);
+  private flight5: Flight = new Flight("Jat","New York","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,15,19,23,22,0), 20, 12, 2900, ["London","Paris"],4);
 
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
@@ -90,13 +92,13 @@ export class AirlineService {
       }
     }
 
-    this.airlines[0].flights.push(this.flight1);
-    this.airlines[0].flights.push(this.flight2);
-    this.airlines[0].flights.push(this.flight5);
-    this.airlines[0].picture = "https://seeklogo.com/images/J/JAT_Jugoslovenski_Aero_Transport-logo-04390D0687-seeklogo.com.png";
-    this.airlines[1].flights.push(this.flight3);
-    this.airlines[1].flights.push(this.flight4);
-    this.airlines[1].picture="https://www.logo-designer.co/wp-content/uploads/2018/02/2018-new-lufthansa-logo-design-airplane-livery.png";
+    this.airlines[1].flights.push(this.flight1);
+    this.airlines[1].flights.push(this.flight2);
+    this.airlines[1].flights.push(this.flight5);
+    this.airlines[1].picture = "https://seeklogo.com/images/J/JAT_Jugoslovenski_Aero_Transport-logo-04390D0687-seeklogo.com.png";
+    this.airlines[0].flights.push(this.flight3);
+    this.airlines[0].flights.push(this.flight4);
+    this.airlines[0].picture="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wizz_Air_logo.svg/1280px-Wizz_Air_logo.svg.png";
   }
   
   getAirlines(){
@@ -143,7 +145,7 @@ export class AirlineService {
   }
 
   getCurrentAirline(): Airline {
-    return this.airlines[0];
+    return this.airlines[1];
   }
 
   EditFlight(flight: Flight) {

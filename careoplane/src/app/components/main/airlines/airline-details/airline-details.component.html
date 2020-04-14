@@ -57,22 +57,6 @@
             Edit Info
             </button>
         </div>
-        <div class="col-md-10">
-            <mat-form-field class="example-chip-list" appearance="fill" style="width: 100%;">
-                <mat-chip-list #chipList aria-label="Destnations">
-                  <mat-chip *ngFor="let destination of airline.destinations"
-                           [removable]="removable" (removed)="remove(destination)" color="accent">
-                    {{destination}}
-                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                  </mat-chip>
-                  <input placeholder="New destination..."
-                         [matChipInputFor]="chipList"
-                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                         [matChipInputAddOnBlur]="addOnBlur"
-                         (matChipInputTokenEnd)="add($event)">
-                </mat-chip-list>
-              </mat-form-field>
-        </div>
     </div>
     <hr/>
     <br/>

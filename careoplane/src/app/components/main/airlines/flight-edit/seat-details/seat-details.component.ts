@@ -41,6 +41,10 @@ export class SeatDetailsComponent implements OnInit {
     this.seatForm.controls['price'].disable({onlySelf: true});
   }
 
+  Cancel(){
+    this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+  }
+
   Change(){
     this.seat.discount = this.seatForm.controls['discount'].value;
     this.airlineService.changeSeatDiscount(this.seat);

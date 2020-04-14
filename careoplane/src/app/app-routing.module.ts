@@ -59,10 +59,12 @@ const routes: Routes = [
     ]},
     {path: 'rent-a-car-profile/edit', component: RentACarManagerComponent},
     {path: 'airline-profile', component: AirlineProfileComponent, children:[
+      {path: '', redirectTo: 'Jat/details', pathMatch: 'full'},
       {path: ':alid/details', component: AirlineDetailsComponent},
       {path: ':alid/edit', component: AirlineEditComponent},
       {path: 'new', component: AirlineEditComponent},
-      {path: ':fid/edit-flight', component: SeatsEditComponent, children:[
+      {path: ':fid/edit-flight', component: FlightEditComponent},
+      {path: ':fid/edit-seats', component: SeatsEditComponent, children:[
         {path: '', component:SeatStarterComponent, pathMatch:'full'},
         {path: ':id/seat', component: SeatDetailsComponent}
       ]},
