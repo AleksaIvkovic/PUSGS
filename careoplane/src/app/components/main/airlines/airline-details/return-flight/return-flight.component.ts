@@ -41,4 +41,8 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.flightsSubscription.unsubscribe();
   }
+
+  Reserve(){
+    
+  }
 }
