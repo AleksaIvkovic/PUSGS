@@ -41,7 +41,15 @@
         </div>
         <div class="col-md-5">
             <mat-form-field appearance="fill">
+                <mat-label>Year</mat-label>
                 <input 
+                    matInput
+                    name="year" 
+                    type="number" 
+                    [formControlName]="'year'"
+                    id="year"
+                    [min]="1900">
+                <!-- <input 
                     matInput 
                     [matDatepicker]="pickerYear" 
                     placeholder="Year"
@@ -49,7 +57,7 @@
                     [formControlName]="'pickerYear'"
                     [max]="maxYear">
                 <mat-datepicker-toggle matSuffix [for]="pickerYear"></mat-datepicker-toggle>
-                <mat-datepicker #pickerYear></mat-datepicker>
+                <mat-datepicker #pickerYear></mat-datepicker> -->
             </mat-form-field>
         </div>
     </div>

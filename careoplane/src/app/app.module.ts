@@ -95,6 +95,7 @@ import { VehicleTabListComponent } from './components/main/rent-a-car/rent-a-car
 import { ReservationsComponent } from './components/main/reservations/reservations.component';
 import { ReservationListComponent } from './components/main/reservations/reservation-list/reservation-list.component';
 import { AdminFlightsComponent } from './components/main/airlines/airline-details/admin-flights/admin-flights.component';
+import { ReservationItemComponent } from './components/main/reservations/reservation-list/reservation-item/reservation-item.component';
 
 @NgModule({
   declarations: [
@@ -141,6 +142,7 @@ import { AdminFlightsComponent } from './components/main/airlines/airline-detail
     ReservationsComponent,
     ReservationListComponent,
     AdminFlightsComponent,
+    ReservationItemComponent,
   ],
   entryComponents: [
     LogInComponent
