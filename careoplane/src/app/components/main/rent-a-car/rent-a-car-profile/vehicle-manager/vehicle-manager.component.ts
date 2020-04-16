@@ -73,7 +73,7 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
   initForm() {
     this.addForm = new FormGroup({
       'brand': this.isEdit ? new FormControl(this.vehicle.brand, Validators.required) : new FormControl(null, Validators.required),
-      'pickerYear': new FormControl(null, Validators.required),
+      'year': new FormControl(null, Validators.required),
       'type': this.isEdit ? new FormControl(this.vehicleTypes[this.indexType], Validators.required) : new FormControl(null, Validators.required),
       'seats': this.isEdit ? new FormControl(this.vehicle.numOfSeats, Validators.required) : new FormControl(null, Validators.required),
       'price': this.isEdit ? new FormControl(this.vehicle.pricePerDay, Validators.required) : new FormControl(null, Validators.required),
@@ -83,13 +83,13 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if (!this.isEdit) {
-      let year = <Date>this.addForm.value['pickerYear'];
+      // let year = <Date>this.addForm.value['pickerYear'];
     
       let vehicle = new Vehicle(
         this.addForm.value['brand'], 
         this.addForm.value['type'],
         this.addForm.value['seats'],
-        year.getFullYear(),
+        this.addForm.value['year'],
         this.addForm.value['price'],
         this.addForm.value['location']
       );
