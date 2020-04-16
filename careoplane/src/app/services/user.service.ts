@@ -3,6 +3,7 @@ import { User } from '../models/user.model';
 import { Admin } from '../models/admin.model';
 import { Subject } from 'rxjs';
 import { VehicleReservation } from '../models/vehicle-reservation.model';
+import { FlightReservation } from '../models/flight-reservation.model';
 
 @Injectable({
     providedIn: 'root'
@@ -159,7 +160,7 @@ export class UserService {
         this.loggedInUserChanged.next(this.users[index]);
     }
 
-    addVehicleReservation(reservation: VehicleReservation) {
+    addReservation(reservation: any){
         this.loggedInUser.reservations.push(reservation);
     }
 }

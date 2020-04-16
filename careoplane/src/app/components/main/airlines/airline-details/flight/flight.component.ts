@@ -16,6 +16,7 @@ export class FlightComponent implements OnInit {
   @Input() admin:boolean;
   @Input() classType: string = 'any';
   @Input() roundTrip: boolean = false;
+  @Input() passengers: number;
   backStr: string;
   price: any;
   constructor(private airlineService: AirlineService, private router: Router, private activeRoute: ActivatedRoute) { }
@@ -67,15 +68,15 @@ export class FlightComponent implements OnInit {
   }
 
   Edit(){
-    this.router.navigate([this.backStr,'airline-profile',this.flight.id,'edit-flight'],{relativeTo:this.activeRoute});
+    this.router.navigate(['../',this.flight.id,'edit-flight'],{relativeTo:this.activeRoute});
   }
 
   EditSeats(){
-    this.router.navigate([this.backStr,'airline-profile',this.flight.id,'edit-seats'],{relativeTo:this.activeRoute});
+    this.router.navigate(['../',this.flight.id,'edit-seats'],{relativeTo:this.activeRoute});
   }
 
   Reserve(){
-    this.router.navigate([this.backStr,this.flight.id,this.classType,'reservation'],{relativeTo:this.activeRoute})
+    this.router.navigate([this.backStr,this.flight.id,this.classType,this.passengers,'reservation'],{relativeTo:this.activeRoute});
   }
 
   FastReservation(){
@@ -83,7 +84,8 @@ export class FlightComponent implements OnInit {
   }
 
   EditFastReservation(){
-    this.router.navigate([this.backStr,'airline-profile',this.fastTicket.flight.id,'edit-seats',this.fastTicket.seat.id,'seat'],{relativeTo:this.activeRoute});
+    let id = this.flight.seats.indexOf(this.fastTicket.seat);
+    this.router.navigate(['../',this.fastTicket.flight.id,'edit-seats',id,'seat'],{relativeTo:this.activeRoute});
   }
 
   DeleteFastReservation(){

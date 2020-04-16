@@ -8,13 +8,56 @@
   <mat-step [stepControl]="firstFormGroup">
     <ng-template matStepLabel>Choose seats</ng-template>
     <app-seat-selector [flight]="flight1" [type]="classType"></app-seat-selector>
-    <button mat-button matStepperNext color="primary" [disabled]="checked">Next</button>
+    <button mat-button matStepperNext color="primary" [disabled]="checked" >Next</button>
   </mat-step>
+  
   <mat-step [stepControl]="secondFormGroup">
     <ng-template matStepLabel>Enter passenger/s information</ng-template>
+      <form [formGroup]="secondFormGroup">
+        <div formArrayName="passengersControl">
+          <div *ngFor="let passenger of getList(); let i = index" [formGroupName]="i">
+            <div class="row">
+              <div class="col-md">
+                <mat-form-field appearance="fill">
+                  <mat-label>Seat</mat-label>
+                  <input matInput [disabled]="true" [formControlName]="'id'">
+                </mat-form-field>
+              </div>
+              <div class="col-md">
+                <mat-form-field appearance="fill">
+                  <mat-label>Username</mat-label>
+                  <input matInput [formControlName]="'username'">
+                </mat-form-field>
+              </div>
+              <div class="col-md">
+                <div class="mat-h3">OR</div>
+              </div>
+              <div formGroupName="full name">
+                <div class="row">
+                  <div class="col-md">
+                    <mat-form-field appearance="fill">
+                      <mat-label>Name</mat-label>
+                      <input matInput [formControlName]="'name'">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md">
+                    <mat-form-field appearance="fill">
+                      <mat-label>Surname</mat-label>
+                      <input matInput [formControlName]="'surname'">
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>  
+            </div>
+          </div>
+        </div>
+      </form>
+
+
       <button mat-button matStepperPrevious>Back</button>
-      <button mat-button matStepperNext color="primary">Next</button>
+      <button mat-button matStepperNext color="primary" [disabled]="CheckSecondStep()">Next</button>
   </mat-step>
+
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
     <p>You are now done.</p>

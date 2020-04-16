@@ -6,6 +6,8 @@ import { Airline } from 'src/app/models/airline.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Subscription } from 'rxjs';
 import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
+import { UserService } from 'src/app/services/user.service';
+import { Admin } from 'src/app/models/admin.model';
 
 @Component({
   selector: 'app-airline-details',
@@ -31,7 +33,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   mapOptions: google.maps.MapOptions;
   marker: google.maps.Marker;
 
-  constructor(private geocodingService: GeoCodingServiceService,private router: Router,private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
+  constructor(private userService: UserService, private geocodingService: GeoCodingServiceService,private router: Router,private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe(
@@ -40,7 +42,8 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
             this.name = params['id'];
           }
           else{
-            this.name = params['alid'];
+            let admin: Admin = <Admin>this.userService.getLoggedInUser();
+            this.name = admin.company;
             this.admin = true;
           }
           this.airline = this.airlineService.getAirline(this.name);
@@ -60,7 +63,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onEdit(): void{
-    this.router.navigate(['../../',this.name,'edit'], { relativeTo: this.activeRoute });
+    this.router.navigate(['../edit'], { relativeTo: this.activeRoute });
   }
 
   Back(){

@@ -65,6 +65,11 @@
         <div class="row" *ngIf="fastTicket != null">
             <div class="col-md">
                 <div class="mat-h3">
+                    Seat: {{fastTicket.seat.id}}
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="mat-h3">
                     <del>{{fastTicket.seat.price | currency: 'EUR'}}</del>
                 </div>
             </div>

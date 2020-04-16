@@ -8,6 +8,8 @@ import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.ser
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { Admin } from 'src/app/models/admin.model';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-airline-edit',
@@ -27,19 +29,17 @@ export class AirlineEditComponent implements OnInit {
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  constructor(private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService,private geocoderService: GeoCodingServiceService) { }
+  constructor(private userService: UserService, private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService,private geocoderService: GeoCodingServiceService) { }
 
   ngOnInit(): void {
-    this.activeRoute.params.subscribe((params:Params)=>{
-      if(params['alid'])
-      {
-        this.airline = this.airlineService.getAirline(params['alid']);
-        this.edit = true;
-      }
-      else{
-        this.airline = new Airline();
-      }
-    });
+    if(this.router.url.includes('edit')){
+      let admin: Admin = <Admin>this.userService.getLoggedInUser();
+      this.airline = this.airlineService.getAirline(admin.company);
+      this.edit = true;
+    }
+    else{
+      this.airline = new Airline();
+    }
 
     this.addressControl = new FormControl(this.airline.address,Validators.required);
     this.nameControl = new FormControl(this.airline.name,[Validators.required,this.verifyName.bind(this)]);
@@ -130,7 +130,7 @@ export class AirlineEditComponent implements OnInit {
     else{
       this.airlineService.editAirline(this.airline);
     }
-    this.router.navigate(['../../',this.airline.name,'details'],{relativeTo : this.activeRoute});
+    this.router.navigate(['../../'],{relativeTo : this.activeRoute});
   }
 
   onAddConnection(){
@@ -201,6 +201,6 @@ export class AirlineEditComponent implements OnInit {
   }
 
   Cancel(){
-    this.router.navigate(['../../',this.airline.name,'details'],{relativeTo : this.activeRoute});
+    this.router.navigate(['../../'],{relativeTo : this.activeRoute});
   }
 }

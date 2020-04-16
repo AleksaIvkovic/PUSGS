@@ -2,6 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Flight } from 'src/app/models/flight.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Subscription } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-return-flight',
@@ -20,7 +21,7 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
   flights: Flight[];
   flightsSubscription: Subscription;
 
-  constructor(private airlineService: AirlineService) { }
+  constructor(private airlineService: AirlineService, private router: Router, private activeRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.flightsSubscription = this.airlineService.flightsChanged.subscribe(
@@ -42,7 +43,9 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
     this.flightsSubscription.unsubscribe();
   }
 
-  Reserve(){
-    
+  public Reserve(id1: number, id2: number){
+    let flights = [id1.toString(),id2.toString()];
+
+    this.router.navigate([this.backStr,flights,this.classType,this.num,'reservation'],{relativeTo:this.activeRoute})
   }
 }

@@ -61,10 +61,10 @@
   </div>
   <div class="row">
     <div class="col-md-3">
-      <mat-label>Numberof rows per class</mat-label>
+      <mat-label>Price per class</mat-label>
     </div>
     <div class="col-md-3">
-      <mat-label>Seatin arrangement per row</mat-label>
+      <mat-label>Number of rows per class</mat-label>
     </div>
   </div>
   <div class="row">
@@ -108,6 +108,9 @@
         <input matInput type="number" [min]="1" [formControlName]="'rowsEconomyClass'">
     </mat-form-field>
     </div>
+  </div>
+  <div class="mat-h4">
+    Number of seats per column
   </div>
   <div class="row">
     <div class="col-md-7" formArrayName="seats" cdkDropList (cdkDropListDropped)="drop($event)">

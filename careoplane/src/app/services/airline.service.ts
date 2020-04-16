@@ -6,6 +6,7 @@ import { Flight } from '../models/flight.model';
 import { Seat } from '../models/seat.model';
 import { FastTicket } from '../models/fast-ticket.model';
 import { AirlineFastTicketsComponent } from '../components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
+import { FlightReservation } from '../models/flight-reservation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,13 @@ export class AirlineService {
   ticketsChanged = new Subject<any>();
   emptyTickets = new Subject<any>();
   classType = new Subject<string>();
+  ticketDone = new Subject<string>();
+
+  public reservations: FlightReservation[] = []
+
+  public ticketDoneChange(){
+    this.ticketDone.next('');
+  }
 
   public updateClassType(newClass: string){
     this.classType.next(newClass);
@@ -83,7 +91,7 @@ export class AirlineService {
 
             for(let j = 0;j < airline.segments[i];j++){
               for(let k= 0;k < sum;k++){
-                flight.seats.push(new Seat(airline.name,flight.id,count + ' ' + characters[k],type,false,flight.pricess[i],0));
+                flight.seats.push(new Seat(airline.name,flight.id,count + characters[k],type,false,flight.pricess[i],0));
               }
               count++;
             }
@@ -208,7 +216,7 @@ export class AirlineService {
 
           for(let j = 0;j < airline.segments[i];j++){
             for(let k= 0;k < sum;k++){
-              flight.seats.push(new Seat(airline.name,flight.id,count + ' ' + characters[k],type,false,flight.pricess[i]));
+              flight.seats.push(new Seat(airline.name,flight.id,count + characters[k],type,false,flight.pricess[i]));
             }
             count++;
           }

@@ -35,13 +35,9 @@ const routes: Routes = [
     {path: 'airlines', component: AirlinesComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: AirlinesListComponent},
-      {path: ':id/details', component: AirlineDetailsComponent, children: [
-        {path: '', redirectTo: 'list', pathMatch: 'full'},
-        {path: 'list', component: AirlineFlightsListComponent},
-        {path: ':fast-tickets', component: AirlineFastTicketsComponent},
-      ]},
-      {path: ':fid/:type/reservation', component: FlightReservationComponent},
-      {path: ':fid1/:fid2/reservation', component: FlightReservationComponent}
+      {path: ':id/details', component: AirlineDetailsComponent},
+      {path: ':fid/:type/:passengers/reservation', component: FlightReservationComponent},
+      {path: ':fid1/:fid2/:type/:passengers/reservation', component: FlightReservationComponent}
     ]},
     {path: 'rent-a-car', component: RentACarComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
@@ -59,9 +55,9 @@ const routes: Routes = [
     ]},
     {path: 'rent-a-car-profile/edit', component: RentACarManagerComponent},
     {path: 'airline-profile', component: AirlineProfileComponent, children:[
-      {path: '', redirectTo: 'Jat/details', pathMatch: 'full'},
-      {path: ':alid/details', component: AirlineDetailsComponent},
-      {path: ':alid/edit', component: AirlineEditComponent},
+      {path: '', redirectTo: 'details', pathMatch: 'full'},
+      {path: 'details', component: AirlineDetailsComponent},
+      {path: 'edit', component: AirlineEditComponent},
       {path: 'new', component: AirlineEditComponent},
       {path: ':fid/edit-flight', component: FlightEditComponent},
       {path: ':fid/edit-seats', component: SeatsEditComponent, children:[

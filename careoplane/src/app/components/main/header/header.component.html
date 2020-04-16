@@ -1,11 +1,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="height: 50px;">
-  <a routerLink="airlines" class="navbar-brand">Careoplane</a>
+  <a routerLink="main/airlines" class="navbar-brand">Careoplane</a>
   <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
           <li routerLinkActive="active" class="nav-item" *ngIf="!isAirlineAdmin && !isRentACarAdmin"><a class="nav-link with-icon" routerLink="main/airlines"><mat-icon>airplanemode_active</mat-icon> Airlines</a></li>
           <li routerLinkActive="active" class="nav-item" *ngIf="!isAirlineAdmin && !isRentACarAdmin"><a class="nav-link with-icon" routerLink="main/rent-a-car"><mat-icon>directions_car</mat-icon> Rent A Car</a></li>
           <li routerLinkActive="active" class="nav-item" *ngIf="isRentACarAdmin && !isNewAdmin"><a class="nav-link" routerLink="main/rent-a-car-profile">Rent A Car Profile</a></li>
-          <li routerLinkActive="active" class="nav-item" *ngIf="isAirlineAdmin && !isNewAdmin"><a class="nav-link" routerLink="main/airline-profile/Jat/details">Airline Profile</a></li>
+          <li routerLinkActive="active" class="nav-item" *ngIf="isAirlineAdmin && !isNewAdmin"><a class="nav-link" routerLink="main/airline-profile/details">Airline Profile</a></li>
           <!-- <li routerLinkActive="active" class="nav-item"><a class="nav-link" routerLink="main/reservations">Reservations</a></li> -->
           <!-- <li routerLinkActive="active" class="nav-item"><a class="nav-link" routerLink="main/new-rent-a-car-profile">New Rent A Car Profile</a></li> -->
       </ul>

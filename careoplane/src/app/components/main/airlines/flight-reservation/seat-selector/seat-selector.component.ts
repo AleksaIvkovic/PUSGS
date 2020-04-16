@@ -37,7 +37,8 @@ export class SeatSelectorComponent implements OnInit {
 
   title = 'seat-chart-generator';
   rowLength: number;
-  lastSeat: any;
+  lastSeat: any = null;
+  unselect: boolean = false;
 
   constructor(private airlineService: AirlineService,private router: Router, private activeRoute: ActivatedRoute){
   }
@@ -100,6 +101,21 @@ export class SeatSelectorComponent implements OnInit {
 
     this.seatConfigFun();
     this.processSeatChart(this.seatConfig);
+
+    if(this.router.url.includes('seat')){
+      for(let i = 0; i < this.seatmap.length;i++){
+        for(let j = 0; j < this.seatmap[i].seats.length;j++){
+          if(this.seatmap[i].seats[j].key === +this.router.url.split('/')[5]){
+            this.selectSeat(this.seatmap[i].seats[j]);
+          }
+        }
+      }
+    }
+
+    this.airlineService.ticketDone.subscribe(value => {
+      this.unselect = true;
+      this.selectSeat(this.lastSeat);
+    })
   }
 
   public processSeatChart ( map_data : any[] )
@@ -183,7 +199,6 @@ export class SeatSelectorComponent implements OnInit {
               totalItemCounter++;
               mapObj["seats"].push(seatObj);
             });
-            console.log(" \n\n\n Seat Objects " , mapObj);
             this.seatmap.push( mapObj );
           });
         }
@@ -238,7 +253,6 @@ export class SeatSelectorComponent implements OnInit {
   public selectSeat( seatObject : any )
   {
     if(!this.admin){
-      console.log( "Seat to block: " , seatObject );
       if(seatObject.status == "available")
       {
         seatObject.status = "booked";
@@ -262,7 +276,7 @@ export class SeatSelectorComponent implements OnInit {
       this.airlineService.ticketsChanged.next(this.cart);
     }
     else{
-      if(seatObject.status == "available" || seatObject.status == "sale")
+      if(seatObject.status == "available" || seatObject.status == "booked" || seatObject.status == "sale")
       {
         if(this.lastSeat){
           if(this.flight.seats[this.lastSeat.key].discount == 0){
@@ -272,9 +286,16 @@ export class SeatSelectorComponent implements OnInit {
             this.lastSeat.status = "sale";
           }
         }
+        
+       
         this.lastSeat = seatObject;
-        seatObject.status = "booked";
-        this.router.navigate([seatObject.key,'seat'],{relativeTo:this.activeRoute}); 
+        
+        if(!this.unselect){
+          seatObject.status = "booked";
+        }
+        
+        this.router.navigate([seatObject.key,'seat'],{relativeTo:this.activeRoute});
+        this.unselect = false;
       }
     }
   }

@@ -48,6 +48,7 @@ export class SeatDetailsComponent implements OnInit {
   Change(){
     this.seat.discount = this.seatForm.controls['discount'].value;
     this.airlineService.changeSeatDiscount(this.seat);
+    this.airlineService.ticketDoneChange();
     this.router.navigate(['../../'], {relativeTo: this.activeRoute});
   }
 }

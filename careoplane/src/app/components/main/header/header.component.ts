@@ -68,7 +68,7 @@ export class HeaderComponent implements OnInit {
           this.isNewAdmin = true;
         }
         else{
-          this.router.navigate(['main/airline-profile',this.user.company,'details']);
+          this.router.navigate(['main/airline-profile/details']);
         }
       }
     } else {
