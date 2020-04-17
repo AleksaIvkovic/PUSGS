@@ -10,6 +10,9 @@
                     name="brand"
                     [formControlName]="'brand'"
                     id="brand">
+                    <mat-error *ngIf="addForm.controls['brand'].hasError('required')">
+                        Brand is <strong>required</strong>
+                    </mat-error>
             </mat-form-field>
         </div>
         <div class="col-md-5">
@@ -22,6 +25,9 @@
                     [formControlName]="'seats'"
                     id="seats"
                     [min]="1">
+                    <mat-error *ngIf="addForm.controls['seats'].hasError('required')">
+                        Number of seats is <strong>required</strong>
+                    </mat-error>
             </mat-form-field>
         </div>
     </div>
@@ -37,6 +43,9 @@
                     {{type}}
                     </mat-option>
                 </mat-select>
+                <mat-error *ngIf="addForm.controls['type'].hasError('required')">
+                    Type is <strong>required</strong>
+                </mat-error>
             </mat-form-field>
         </div>
         <div class="col-md-5">
@@ -48,16 +57,12 @@
                     type="number" 
                     [formControlName]="'year'"
                     id="year"
+                    pattern="\d{4}"
+                    maxlength="4"
                     [min]="1900">
-                <!-- <input 
-                    matInput 
-                    [matDatepicker]="pickerYear" 
-                    placeholder="Year"
-                    id="pickerYear"
-                    [formControlName]="'pickerYear'"
-                    [max]="maxYear">
-                <mat-datepicker-toggle matSuffix [for]="pickerYear"></mat-datepicker-toggle>
-                <mat-datepicker #pickerYear></mat-datepicker> -->
+                    <mat-error *ngIf="addForm.controls['year'].hasError('required')">
+                        Year is <strong>required</strong>
+                    </mat-error>
             </mat-form-field>
         </div>
     </div>
@@ -75,6 +80,9 @@
                     min="0">
                 <span matPrefix>€&nbsp;</span>
                 <span matSuffix>.00</span>
+                <mat-error *ngIf="addForm.controls['price'].hasError('required')">
+                    Price per day is <strong>required</strong>
+                </mat-error>
             </mat-form-field>
         </div>
         <div class="col-md-5">
@@ -88,6 +96,9 @@
                     {{location}}
                     </mat-option>
                 </mat-select>
+                <mat-error *ngIf="addForm.controls['location'].hasError('required')">
+                    Location is <strong>required</strong>
+                </mat-error>
             </mat-form-field>
         </div>
     </div>
@@ -104,6 +115,7 @@
         <div class="col-md-5">
             <button 
                 *ngIf="!isEdit"
+                [disabled]="!addForm.valid"
                 mat-raised-button 
                 class="btn-success"
                 type="submit">
@@ -111,6 +123,7 @@
             </button>
             <button 
                 *ngIf="isEdit"
+                [disabled]="!addForm.valid"
                 mat-raised-button 
                 class="btn-success"
                 type="submit">
