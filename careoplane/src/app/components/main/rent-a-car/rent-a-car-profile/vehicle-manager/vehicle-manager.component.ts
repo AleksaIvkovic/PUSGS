@@ -73,7 +73,7 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
   initForm() {
     this.addForm = new FormGroup({
       'brand': this.isEdit ? new FormControl(this.vehicle.brand, Validators.required) : new FormControl(null, Validators.required),
-      'year': new FormControl(null, Validators.required),
+      'year': this.isEdit ? new FormControl(this.vehicle.year, Validators.required) : new FormControl(null, Validators.required),
       'type': this.isEdit ? new FormControl(this.vehicleTypes[this.indexType], Validators.required) : new FormControl(null, Validators.required),
       'seats': this.isEdit ? new FormControl(this.vehicle.numOfSeats, Validators.required) : new FormControl(null, Validators.required),
       'price': this.isEdit ? new FormControl(this.vehicle.pricePerDay, Validators.required) : new FormControl(null, Validators.required),
