@@ -1,9 +1,10 @@
 <a 
-    [routerLink]="['../../../list']"
-    routerLinkActive="active"
-    mat-mini-fab >
-    <mat-icon>arrow_back</mat-icon>
+  [routerLink]="['../../../../']"
+  routerLinkActive="active"
+  mat-mini-fab >
+  <mat-icon>arrow_back</mat-icon>
 </a>
+<br/>  
 <mat-horizontal-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="firstFormGroup">
     <ng-template matStepLabel>Choose seats</ng-template>
@@ -52,7 +53,6 @@
           </div>
         </div>
       </form>
-
 
       <button mat-button matStepperPrevious>Back</button>
       <button mat-button matStepperNext color="primary" [disabled]="CheckSecondStep()">Next</button>

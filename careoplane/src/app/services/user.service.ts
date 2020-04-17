@@ -48,7 +48,7 @@ export class UserService {
                 'Novi Sad',
                 2,
                 300
-            )
+            ),
         ]
     );
 
@@ -84,8 +84,8 @@ export class UserService {
         ''
     )
 
-    private loggedInUser: any;
-    // private loggedInUser: any = this.userWithReservations;
+    //private loggedInUser: any;
+    private loggedInUser: any = this.userWithReservations;
     // private loggedInUser;
 
     private users: User[] = [

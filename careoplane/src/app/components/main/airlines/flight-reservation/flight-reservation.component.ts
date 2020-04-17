@@ -5,6 +5,7 @@ import {FormBuilder, FormGroup, Validators, FormArray, FormControl} from '@angul
 import { Flight } from 'src/app/models/flight.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { FlightReservation } from 'src/app/models/flight-reservation.model';
+import { UserService } from 'src/app/services/user.service';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class FlightReservationComponent implements OnInit {
   checked: boolean = true;
   classType: string;
 
-  constructor(private router: Router, private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
+  constructor(private userService: UserService, private router: Router, private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe(
@@ -71,11 +72,23 @@ export class FlightReservationComponent implements OnInit {
   }
 
   Done(){
+    let reservation: FlightReservation = new FlightReservation(this.flight1.id);
+    
+    let i = 0;
     for(let ticket of this.tickets.seatstoStore){
       this.flight1.seats[ticket].occupied = true;
+      reservation.seats.push(ticket);
+      reservation.people.push({
+        name: (<FormGroup>((<FormGroup>(this.passengersControl.controls[i])).controls['full name'])).controls['name'].value,
+        surname: (<FormGroup>((<FormGroup>(this.passengersControl.controls[i])).controls['full name'])).controls['surname'].value,
+        id: i
+      });
+      i++;
     }
 
-    this.router.navigate(['../../../', 'list'], {relativeTo: this.activeRoute});
+    this.userService.addReservation(reservation);
+
+    this.router.navigate(['../../../../'], {relativeTo: this.activeRoute});
   }
 
   public checkTickets(): void{
