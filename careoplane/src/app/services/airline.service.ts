@@ -181,7 +181,7 @@ export class AirlineService {
     }
     else{
       for(let fastTicket of airline.fastTickets){
-        if(fastTicket.seat.id === seat.id){
+        if(fastTicket.seat.name === seat.name){
           airline.fastTickets.splice(airline.fastTickets.indexOf(fastTicket),1);
           return;
         }

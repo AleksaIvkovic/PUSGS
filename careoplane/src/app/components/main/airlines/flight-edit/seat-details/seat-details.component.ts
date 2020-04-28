@@ -30,7 +30,7 @@ export class SeatDetailsComponent implements OnInit {
 
   initForm(){
     this.seatForm = new FormGroup({
-      'id': new FormControl(this.seat.id),
+      'id': new FormControl(this.seat.name),
       'category': new FormControl(this.seat.type),
       'price': new FormControl(this.seat.price),
       'discount': new FormControl(this.seat.discount, [Validators.required,Validators.min(0)])
