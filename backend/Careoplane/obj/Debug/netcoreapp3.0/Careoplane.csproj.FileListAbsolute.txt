@@ -1,0 +1,5 @@
+C:\Users\Dell\Desktop\fax\4. godina\8 semestar\WEB 2\PUSGS\backend\Careoplane\obj\Debug\netcoreapp3.0\Careoplane.csprojAssemblyReference.cache
+C:\Users\Dell\Desktop\fax\4. godina\8 semestar\WEB 2\PUSGS\backend\Careoplane\obj\Debug\netcoreapp3.0\Careoplane.csproj.CoreCompileInputs.cache
+C:\Users\Dell\Desktop\fax\4. godina\8 semestar\WEB 2\PUSGS\backend\Careoplane\obj\Debug\netcoreapp3.0\Careoplane.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Dell\Desktop\fax\4. godina\8 semestar\WEB 2\PUSGS\backend\Careoplane\obj\Debug\netcoreapp3.0\Careoplane.AssemblyInfoInputs.cache
+C:\Users\Dell\Desktop\fax\4. godina\8 semestar\WEB 2\PUSGS\backend\Careoplane\obj\Debug\netcoreapp3.0\Careoplane.AssemblyInfo.cs
