@@ -24,7 +24,7 @@ namespace Careoplane.Models
 
         public double Rating { get; set; }
 
-        public List<Price> Prices { get; set; }
+        public List<PriceList> Prices { get; set; }
     }
 
     public class Location
@@ -38,7 +38,7 @@ namespace Careoplane.Models
         public RentACar RentACar { get; set; }
     }
 
-    public class Price
+    public class PriceList
     {
         [Key]
         public int PriceId { get; set; }
