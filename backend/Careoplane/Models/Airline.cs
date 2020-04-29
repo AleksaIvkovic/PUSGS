@@ -18,9 +18,9 @@ namespace Careoplane.Models
 
         public IEnumerable<Price> Prices { get; set; }
 
-        public IEnumerable<Integer> SeatingArrangement { get; set; }
+        public IEnumerable<SeatArrangement> SeatingArrangement { get; set; }
 
-        public IEnumerable<Integer> SegmentLength { get; set; }
+        public IEnumerable<Segment> SegmentLength { get; set; }
 
         public IEnumerable<Flight> Flights { get; set; }
 
@@ -55,7 +55,18 @@ namespace Careoplane.Models
         public Airline Airline { get; set; }
     }
 
-    public class Integer
+    public class SeatArrangement
+    {
+        [Key]
+        public int PriceId { get; set; }
+
+        public double Value { get; set; }
+
+        [Required]
+        public Airline Airline { get; set; }
+    }
+
+    public class Segment
     {
         [Key]
         public int PriceId { get; set; }
