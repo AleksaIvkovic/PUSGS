@@ -18,5 +18,13 @@ namespace Careoplane.Database
         public DbSet<Flight> Flights { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<FastTicket> FastTickets { get; set; }
+
+        #region Rent A Car
+
+        public DbSet<RentACar> RentACars { get; set; }
+
+        public DbSet<Vehicle> Vehicles { get; set; }
+
+        #endregion
     }
 }
