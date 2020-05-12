@@ -8509,23 +8509,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Dell\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Aleksandar\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Dell\\Desktop\\fax\\4. godina\\8 semestar\\WEB 2\\PUSGS\\backendd\\Careoplane\\Careoplane\\Careoplane.csproj",
+      "projectUniqueName": "C:\\Users\\Aleksandar\\Desktop\\Aleksandar Sale Djurdjev\\Faks\\4. Godina\\8. Semestar\\PUSGS\\PUSGS\\backendd\\Careoplane\\Careoplane\\Careoplane.csproj",
       "projectName": "Careoplane",
-      "projectPath": "C:\\Users\\Dell\\Desktop\\fax\\4. godina\\8 semestar\\WEB 2\\PUSGS\\backendd\\Careoplane\\Careoplane\\Careoplane.csproj",
-      "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Dell\\Desktop\\fax\\4. godina\\8 semestar\\WEB 2\\PUSGS\\backendd\\Careoplane\\Careoplane\\obj\\",
+      "projectPath": "C:\\Users\\Aleksandar\\Desktop\\Aleksandar Sale Djurdjev\\Faks\\4. Godina\\8. Semestar\\PUSGS\\PUSGS\\backendd\\Careoplane\\Careoplane\\Careoplane.csproj",
+      "packagesPath": "C:\\Users\\Aleksandar\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Aleksandar\\Desktop\\Aleksandar Sale Djurdjev\\Faks\\4. Godina\\8. Semestar\\PUSGS\\PUSGS\\backendd\\Careoplane\\Careoplane\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Aleksandar\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8533,7 +8529,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\Microsoft SDKs\\Azure\\.NET SDK\\v2.9\\packages": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
