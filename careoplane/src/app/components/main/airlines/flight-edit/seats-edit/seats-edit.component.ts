@@ -1,0 +1,31 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Flight } from 'src/app/models/flight.model';
+import { AirlineService } from 'src/app/services/airline.service';
+
+@Component({
+  selector: 'app-seats-edit',
+  templateUrl: './seats-edit.component.html',
+  styleUrls: ['./seats-edit.component.css']
+})
+export class SeatsEditComponent implements OnInit {
+  flight: Flight;
+
+  constructor(private router: Router, private activeRoute: ActivatedRoute, private airlineServie: AirlineService) { }
+
+  ngOnInit(): void {
+    this.activeRoute.params.subscribe((params: Params) => {
+      this.flight = this.airlineServie.getFlight(+params['fid']);
+    });
+  }
+
+  Back(){
+    if(!this.activeRoute.params['id']){
+      this.router.navigate(['../../'],{relativeTo: this.activeRoute});
+    }
+    else{
+      this.router.navigate(['../../../../'],{relativeTo: this.activeRoute});
+    }
+  }
+
+}

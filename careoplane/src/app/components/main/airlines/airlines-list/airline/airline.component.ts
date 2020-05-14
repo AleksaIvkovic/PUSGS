@@ -1,0 +1,21 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { Airline } from 'src/app/models/airline.model';
+import { AirlineService } from 'src/app/services/airline.service';
+
+@Component({
+  selector: 'app-airline',
+  templateUrl: './airline.component.html',
+  styleUrls: ['./airline.component.css']
+})
+export class AirlineComponent implements OnInit {
+  @Input() airline: Airline;
+  @Input() name: string = null;
+  constructor(private airlineService: AirlineService) { }
+
+  ngOnInit(): void {
+    if(this.name !== null){
+      this.airline = this.airlineService.getAirline(this.name);
+    }
+  }
+
+}

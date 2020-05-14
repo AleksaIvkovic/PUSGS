@@ -1,0 +1,155 @@
+<form [formGroup]="group" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-md">
+      <mat-form-field appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput [formControlName]="'name'">
+      </mat-form-field>
+    </div>
+    <div class="col-md">
+      <mat-form-field appearance="fill">
+        <mat-label>Address</mat-label>
+        <input matInput [formControlName]="'address'">
+      </mat-form-field>
+    </div>
+    <div class="col-md">
+      <mat-form-field appearance="fill">
+        <mat-label>City</mat-label>
+        <input matInput>
+      </mat-form-field>
+    </div>
+    <div class="col-md">
+      <mat-form-field appearance="fill">
+        <mat-label>Street</mat-label>
+        <input matInput>
+      </mat-form-field>
+    </div>
+    <div class="col-md">
+      <button
+            mat-raised-button 
+            color="accent"
+            (click)="verifyAddress()">
+            Verify address
+        </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12" style="width: 100%;">
+      <mat-form-field appearance="fill">
+        <mat-label>Description</mat-label>
+        <textarea matInput [formControlName]="'description'" style="width: 100%; height: 150px;"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <mat-form-field class="example-chip-list" appearance="fill" style="width: 100%;">
+        <mat-chip-list #chipList aria-label="Destnations">
+          <mat-chip *ngFor="let destination of airline.destinations"
+                   [removable]="removable" (removed)="remove(destination)" color="accent">
+            {{destination}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="New destination..."
+                 [matChipInputFor]="chipList"
+                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                 [matChipInputAddOnBlur]="addOnBlur"
+                 (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-label>Price per class</mat-label>
+    </div>
+    <div class="col-md-3">
+      <mat-label>Number of rows per class</mat-label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field appearance="fill">
+        <mat-label>First class</mat-label>
+        <input matInput type="number" [min]="1" [formControlName]="'priceFirstClass'">
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field appearance="fill">
+        <mat-label>First class</mat-label>
+        <input matInput type="number" [min]="1" [formControlName]="'rowsFirstClass'">
+    </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field appearance="fill">
+        <mat-label>Business class</mat-label>
+        <input matInput type="number" [min]="1" [formControlName]="'priceBusinessClass'">
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field appearance="fill">
+        <mat-label>Business class</mat-label>
+        <input matInput type="number" [min]="1" [formControlName]="'rowsBusinessClass'">
+    </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3">
+      <mat-form-field appearance="fill">
+        <mat-label>Economy class</mat-label>
+        <input matInput type="number" [min]="1" [formControlName]="'priceEconomyClass'">
+      </mat-form-field>
+    </div>
+    <div class="col-md-3">
+      <mat-form-field appearance="fill">
+        <mat-label>Economy class</mat-label>
+        <input matInput type="number" [min]="1" [formControlName]="'rowsEconomyClass'">
+    </mat-form-field>
+    </div>
+  </div>
+  <div class="mat-h4">
+    Number of seats per column
+  </div>
+  <div class="row">
+    <div class="col-md-7" formArrayName="seats" cdkDropList (cdkDropListDropped)="drop($event)">
+      <div
+        class="row"
+        *ngFor="let seatsControl of getList(); let i = index"
+        [formGroupName]="i"
+        style="margin-top: 10px;"
+        cdkDrag>
+        <div class="col-md-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Number of seats in row {{i + 1}}</mat-label>
+                <input matInput type="number" [min]="1" [formControlName]="'seat'">
+            </mat-form-field>
+        </div>
+        <div class="col-md-1" >
+          <button type="button" class="drag-handle" mat-icon-button cdkDragHandle>
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        </div>
+        <div class="col-md-1">
+          <button mat-mini-fab (click)="onDeleteConnection(i)" color="warn">X</button>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          <button mat-raised-button color="accent" type="button" (click)="onAddConnection()">Add seats</button>
+        </div>
+      </div>
+      <br/>
+      <div class="row">
+        <div class="col-md-3">
+          <button mat-raised-button color="warn" type="button" (click)="Cancel()">Cancel</button>
+        </div>
+        <div class="col-md-3">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!group.valid">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div> 
+</form>  
