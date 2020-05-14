@@ -96,6 +96,7 @@ import { ReservationsComponent } from './components/main/reservations/reservatio
 import { ReservationListComponent } from './components/main/reservations/reservation-list/reservation-list.component';
 import { AdminFlightsComponent } from './components/main/airlines/airline-details/admin-flights/admin-flights.component';
 import { ReservationItemComponent } from './components/main/reservations/reservation-list/reservation-item/reservation-item.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -143,6 +144,7 @@ import { ReservationItemComponent } from './components/main/reservations/reserva
     ReservationListComponent,
     AdminFlightsComponent,
     ReservationItemComponent,
+    HttpClientModule
   ],
   entryComponents: [
     LogInComponent
