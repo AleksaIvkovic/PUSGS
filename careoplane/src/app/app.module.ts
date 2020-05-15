@@ -144,7 +144,6 @@ import { HttpClientModule } from '@angular/common/http';
     ReservationListComponent,
     AdminFlightsComponent,
     ReservationItemComponent,
-    HttpClientModule
   ],
   entryComponents: [
     LogInComponent
@@ -200,7 +199,8 @@ import { HttpClientModule } from '@angular/common/http';
     PortalModule,
     ScrollingModule,
     MatTableFilterModule,
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

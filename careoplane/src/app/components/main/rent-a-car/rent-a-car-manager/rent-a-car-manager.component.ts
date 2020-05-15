@@ -115,18 +115,35 @@ export class RentACarManagerComponent implements OnInit {
         this.locationOfRentACar,
         this.addForm.value['description'],
         [],
-        this.locations
+        this.locations,
+        0,
+        [this.addForm.value['car'], this.addForm.value['van'], this.addForm.value['truck']]
       );
-      if (this.rentACarService.addRentACar(rentACar)) {
-        this.router.navigate(['main/rent-a-car-profile']);
-      } else {
-        this.addForm.patchValue({
-          name: ''
-        }) 
-        this._snackBar.open('Rent a car service with that name already exists', 'OK', {
-          duration: 5000,
-        });
-      }
+
+      this.rentACarService.addRentACar(rentACar).subscribe(
+        response => {
+          this.router.navigate(['main/rent-a-car-profile']);
+        },
+        error => {
+          console.log(error);
+          this.addForm.patchValue({
+            name: ''
+          }) 
+          this._snackBar.open('Rent a car service with that name already exists', 'OK', {
+            duration: 5000,
+          });
+        }
+      )
+      // if (this.rentACarService.addRentACar(rentACar)) {
+      //   this.router.navigate(['main/rent-a-car-profile']);
+      // } else {
+      //   this.addForm.patchValue({
+      //     name: ''
+      //   }) 
+      //   this._snackBar.open('Rent a car service with that name already exists', 'OK', {
+      //     duration: 5000,
+      //   });
+      // }
     }
   }
 

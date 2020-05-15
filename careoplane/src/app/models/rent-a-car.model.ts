@@ -1,7 +1,7 @@
 import { Vehicle } from './vehicle.model';
 
 export class RentACar {
-    constructor(
+    public constructor(
         public name: string, 
         public address: string,
         public description: string,

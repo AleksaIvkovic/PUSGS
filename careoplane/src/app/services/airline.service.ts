@@ -7,7 +7,6 @@ import { Seat } from '../models/seat.model';
 import { FastTicket } from '../models/fast-ticket.model';
 import { AirlineFastTicketsComponent } from '../components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
 import { FlightReservation } from '../models/flight-reservation.model';
-import { Http2ServerRequest } from 'http2';
 
 @Injectable({
   providedIn: 'root'

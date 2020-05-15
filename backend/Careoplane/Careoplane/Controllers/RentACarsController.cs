@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
+using Microsoft.AspNetCore.Cors;
+using Careoplane.TOModels;
 
 namespace Careoplane.Controllers
 {
@@ -78,8 +80,9 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<RentACar>> PostRentACar(RentACar rentACar)
+        public async Task<ActionResult<RentACar>> PostRentACar(TORentACar toRentACar)
         {
+            RentACar rentACar = new RentACar(toRentACar);
             _context.RentACars.Add(rentACar);
             try
             {

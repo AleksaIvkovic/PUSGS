@@ -3,11 +3,16 @@ import { RentACar } from '../models/rent-a-car.model';
 import { Vehicle } from '../models/vehicle.model';
 import { Subject, Observable } from 'rxjs';
 import { VehicleReservation } from '../models/vehicle-reservation.model';
+import { HttpClient } from '@angular/common/http'
 
 @Injectable({
     providedIn: 'root'
 })
 export class RentACarService {
+    constructor(private http: HttpClient) {
+
+    }
+
     vehicleTypes: string[] = [
         'Any',
         'Car',
@@ -81,45 +86,24 @@ export class RentACarService {
         return this.vehicleTypes.slice();
     }
 
-    // getMockUp(): RentACar[] {
-    //     // const vehicles: Vehicle[] = [
-    //     //     new Vehicle('BMW', 'Car', 5, 2019, 200),
-    //     //     new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150),
-    //     //     new Vehicle('FAP', 'Truck', 2, 2014, 200),
-    //     //     new Vehicle('BMW', 'Car', 5, 2016, 220),
-    //     //     new Vehicle('Mercedes-Benz', 'Van', 3, 2018, 180),
-    //     //     new Vehicle('FAP', 'Truck', 2, 2020, 170),
-    //     //     new Vehicle('BMW', 'Car', 5, 2016, 130),
-    //     //     new Vehicle('Mercedes-Benz', 'Van', 3, 2019, 140),
-    //     //     new Vehicle('FAP', 'Truck', 2, 2015, 100),
-    //     // ];
-
-    //     // this.rentACars = [
-    //     //     new RentACar('UNI LINE TTR', 'Bulevar Patrijarha Pavla 17, Novi Sad', 'Description 1', [new Vehicle('BMW','Car', 5, 2019, 200, '', 0.5, [new Date()]), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, '', 0.5, [new Date()]), new Vehicle('FAP', 'Truck', 2, 2014, 200, '', 0.5, [new Date()]),], ['Novi Sad']),
-    //     //     new RentACar('Europcar', 'Bulevar Jase Tomica 2, Novi Sad', 'Description 2', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad', 'Beograd']),
-    //     //     new RentACar('INEX', 'Micurinova 68A, Novi Sad', 'Description 3', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Novi Sad']),
-    //     //     new RentACar('Union', 'Brankova 12, Beograd', 'Description 4', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Beograd']),
-    //     //     new RentACar('Rent A Car 29', 'Vojvode Stepe 29, Indjija', 'Description 5', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Indjija']),
-    //     //     new RentACar('Avis', 'Mose Pijade 18, Pancevo', 'Description 6', [new Vehicle('BMW','Car', 5, 2019, 200), new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150), new Vehicle('FAP', 'Truck', 2, 2014, 200),], ['Pancevo', 'Indjija'])
-    //     // ];
-
-    //     return this.rentACars;
-    // }
-
     getTempVehicle(indexVehicle: number) {
         return this.newVehicles[indexVehicle];
     }
 
-    addRentACar(newRentACar: RentACar): boolean {
+    addRentACar(newRentACar: RentACar) {
         for (let rentACar of this.rentACars) {
             if (rentACar.name.toLocaleLowerCase() === newRentACar.name.toLowerCase()) {
-                return false;
+                return null;
             }
         }
 
         this.rentACars.push(newRentACar);
         this.rentACarsChanged.next(this.rentACars.slice());
-        return true;
+        return this.http
+        .post(
+            'http://localhost:52075/api/RentACars',
+            newRentACar
+        );
     }
 
     editRentACar(rentACarName: string, newAddress: string, newDescription: string, newCarPrice: number, newVanPrice: number, newTruckPrice: number, newLocations: string[]) {

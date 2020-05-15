@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Careoplane.TOModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,13 +19,30 @@ namespace Careoplane.Models
         [Required]
         public string Description { get; set; }
 
-        public List<Vehicle> Vehicles { get; set; }
+        public ICollection<Vehicle> Vehicles { get; set; }
 
-        public List<Location> Locations { get; set; }
+        public ICollection<Location> Locations { get; set; }
 
         public double Rating { get; set; }
 
-        public List<PriceList> Prices { get; set; }
+        public ICollection<PriceList> Prices { get; set; }
+
+        public RentACar() { }
+
+        public RentACar(TORentACar toRentACar)
+        {
+            Name = toRentACar.Name;
+            Address = toRentACar.Address;
+            Description = toRentACar.Description;
+            Rating = toRentACar.Rating;
+            Vehicles = new List<Vehicle>();
+            Locations = new List<Location>();
+            Prices = new List<PriceList>();
+            toRentACar.Vehicles.ToList().ForEach(vehicle => Vehicles.Add(vehicle));
+            toRentACar.Locations.ToList().ForEach(location => Locations.Add(new Location() { LocationValue = location, RentACar = this })) ;
+            toRentACar.Prices.ToList().ForEach(price => Prices.Add(new PriceList()
+            { PriceValue = price, RentACar = this }));
+        }
     }
 
     public class Location
