@@ -143,7 +143,7 @@ import { HttpClientModule } from '@angular/common/http';
     ReservationsComponent,
     ReservationListComponent,
     AdminFlightsComponent,
-    ReservationItemComponent
+    ReservationItemComponent,
   ],
   entryComponents: [
     LogInComponent
