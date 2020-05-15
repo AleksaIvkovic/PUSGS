@@ -7,7 +7,7 @@ import { Seat } from '../models/seat.model';
 import { FastTicket } from '../models/fast-ticket.model';
 import { AirlineFastTicketsComponent } from '../components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
 import { FlightReservation } from '../models/flight-reservation.model';
-import { Http2ServerRequest } from 'http2';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -59,14 +59,14 @@ export class AirlineService {
     this.flight5
   ];
   
-  constructor() {
+  constructor(private http: HttpClient) {
     for(let flight of this.flights){
 
       for(let airline of this.airlines){
       
         if(flight.airlineName == airline.name){
-          for(let i = 0; i < airline.pricess.length; i++){
-            flight.pricess.push(flight.distance * airline.pricess[i]);
+          for(let i = 0; i < airline.prices.length; i++){
+            flight.prices.push(flight.distance * airline.prices[i]);
           }
 
           let count = 1;
@@ -92,7 +92,7 @@ export class AirlineService {
 
             for(let j = 0;j < airline.segments[i];j++){
               for(let k= 0;k < sum;k++){
-                flight.seats.push(new Seat(airline.name,flight.id,count + characters[k],type,false,flight.pricess[i],0));
+                flight.seats.push(new Seat(airline.name,flight.id,count + characters[k],type,false,flight.prices[i],0));
               }
               count++;
             }
@@ -108,6 +108,10 @@ export class AirlineService {
     this.airlines[0].flights.push(this.flight3);
     this.airlines[0].flights.push(this.flight4);
     this.airlines[0].picture="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wizz_Air_logo.svg/1280px-Wizz_Air_logo.svg.png";
+  
+    // this.http.get('http://localhost:52075/api/Airlines').subscribe(responseData => {
+    //   this.airlines = [];    
+    // });
   }
   
   getAirlines(){
@@ -126,10 +130,11 @@ export class AirlineService {
     }
   }
 
-  addAirline(airline: Airline): void {
+  addAirline(airline: Airline) {
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines';
+    return this.http.post(address,airline);
     this.airlines.push(airline);
     this.airlinesChanged.next(this.airlines.slice());
-    
   }
 
   editAirline(airline: Airline) {
@@ -218,7 +223,7 @@ export class AirlineService {
 
           for(let j = 0;j < airline.segments[i];j++){
             for(let k= 0;k < sum;k++){
-              flight.seats.push(new Seat(airline.name,flight.id,count + characters[k],type,false,flight.pricess[i]));
+              flight.seats.push(new Seat(airline.name,flight.id,count + characters[k],type,false,flight.prices[i]));
             }
             count++;
           }

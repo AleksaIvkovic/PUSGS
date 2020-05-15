@@ -42,27 +42,27 @@ export class FlightComponent implements OnInit {
       this.classType = newClass;
 
       if(this.classType === 'first'){
-        this.price = this.flight.pricess[0];
+        this.price = this.flight.prices[0];
       }
       else{
         if(this.classType === 'business'){
-          this.price = this.flight.pricess[1];
+          this.price = this.flight.prices[1];
         }
         else{
-          this.price = this.flight.pricess[2];
+          this.price = this.flight.prices[2];
         }
       }
     });
 
     if(this.classType === 'first'){
-      this.price = this.flight.pricess[0].toString();
+      this.price = this.flight.prices[0].toString();
     }
     else{
       if(this.classType === 'business'){
-        this.price = this.flight.pricess[1].toString();
+        this.price = this.flight.prices[1].toString();
       }
       else{
-        this.price = this.flight.pricess[2].toString();
+        this.price = this.flight.prices[2].toString();
       }
     }
   }

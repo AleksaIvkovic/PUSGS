@@ -65,9 +65,9 @@ export class AirlineEditComponent implements OnInit {
       'name': this.nameControl,
       'address': this.addressControl,
       'description': new FormControl(this.airline.description,Validators.required),
-      'priceFirstClass': new FormControl(this.airline.pricess[0],Validators.required),
-      'priceBusinessClass': new FormControl(this.airline.pricess[1],Validators.required),
-      'priceEconomyClass': new FormControl(this.airline.pricess[2],Validators.required),
+      'priceFirstClass': new FormControl(this.airline.prices[0],Validators.required),
+      'priceBusinessClass': new FormControl(this.airline.prices[1],Validators.required),
+      'priceEconomyClass': new FormControl(this.airline.prices[2],Validators.required),
       'rowsFirstClass': new FormControl(this.airline.segments[0],Validators.required),
       'rowsBusinessClass': new FormControl(this.airline.segments[1],Validators.required),
       'rowsEconomyClass': new FormControl(this.airline.segments[2],Validators.required),
@@ -80,7 +80,7 @@ export class AirlineEditComponent implements OnInit {
   }
 
   verifyAddress(){
-    this.addressValid = this.geocoderService.checkAddress(this.group.controls['address'].value);
+    this.addressValid = true;//this.geocoderService.checkAddress(this.group.controls['address'].value);
   }
 
   verifyName(control:FormControl): {[s: string]: boolean}{
@@ -107,12 +107,13 @@ export class AirlineEditComponent implements OnInit {
       }
     } 
 
+    this.airline.name = this.group.controls['name'].value;
     this.airline.address = this.group.controls['address'].value;
     this.airline.description = this.group.controls['description'].value;
-    this.airline.pricess = [];
-    this.airline.pricess.push(this.group.controls['priceFirstClass'].value);
-    this.airline.pricess.push(this.group.controls['priceBusinessClass'].value);
-    this.airline.pricess.push(this.group.controls['priceEconomyClass'].value);
+    this.airline.prices = [];
+    this.airline.prices.push(this.group.controls['priceFirstClass'].value);
+    this.airline.prices.push(this.group.controls['priceBusinessClass'].value);
+    this.airline.prices.push(this.group.controls['priceEconomyClass'].value);
     this.airline.segments = [];
     this.airline.segments.push(this.group.controls['rowsFirstClass'].value);
     this.airline.segments.push(this.group.controls['rowsBusinessClass'].value);
@@ -125,12 +126,19 @@ export class AirlineEditComponent implements OnInit {
     
     console.log(this.airline);
     if(!this.edit){
-      this.airlineService.addAirline(this.airline);
+      this.airlineService.addAirline(this.airline)
+      .subscribe(
+        responseData => {
+          this.router.navigate(['../../'],{relativeTo : this.activeRoute});
+        },
+        error => {
+          console.log(error);
+        }
+      )
     }
     else{
       this.airlineService.editAirline(this.airline);
     }
-    this.router.navigate(['../../'],{relativeTo : this.activeRoute});
   }
 
   onAddConnection(){

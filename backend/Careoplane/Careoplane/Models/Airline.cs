@@ -16,21 +16,21 @@ namespace Careoplane.Models
 
         public string Description { get; set; }
 
-        public IEnumerable<Price> Prices { get; set; }
+        public ICollection<Price> Prices { get; set; }
 
-        public IEnumerable<SeatArrangement> SeatingArrangement { get; set; }
+        public ICollection<SeatArrangement> SeatingArrangement { get; set; }
 
-        public IEnumerable<Segment> SegmentLength { get; set; }
+        public ICollection<Segment> SegmentLength { get; set; }
 
-        public IEnumerable<Flight> Flights { get; set; }
+        public ICollection<Flight> Flights { get; set; }
 
         public string Image { get; set; }
 
         public double Rating { get; set; }
 
-        public IEnumerable<Destination> Destinations { get; set; }
+        public ICollection<Destination> Destinations { get; set; }
 
-        public IEnumerable<FastTicket> FastTickets { get; set; }
+        public ICollection<FastTicket> FastTickets { get; set; }
     }
 
     public class Destination

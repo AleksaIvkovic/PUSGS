@@ -85,8 +85,8 @@ export class FlightEditComponent implements OnInit {
       this.flight.connections.push(seat.value['city']);
     }
 
-    for(let price of this.airline.pricess){
-      this.flight.pricess.push(price * this.flight.distance);
+    for(let price of this.airline.prices){
+      this.flight.prices.push(price * this.flight.distance);
     }
 
     this.flight.conCount = this.flight.connections.length;

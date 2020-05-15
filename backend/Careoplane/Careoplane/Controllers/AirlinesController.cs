@@ -78,10 +78,10 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        [Route("Add")]
-        public async Task<ActionResult<Airline>> PostAirline(Airline airline)
+        public async Task<ActionResult<Airline>> PostAirline(AirlineTO airline)
         {
-            _context.Airlines.Add(airline);
+            Airline tempAirline = new Airline();
+            _context.Airlines.Add(tempAirline);
             try
             {
                 await _context.SaveChangesAsync();

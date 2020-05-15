@@ -15,7 +15,7 @@ export class Flight {
         public connections: string[] = [],
         public id: number = null,
         public seats: Seat[] = new Array<Seat>(),
-        public pricess: number[] = []
+        public prices: number[] = []
         ){
             this.conCount = connections.length;
         }

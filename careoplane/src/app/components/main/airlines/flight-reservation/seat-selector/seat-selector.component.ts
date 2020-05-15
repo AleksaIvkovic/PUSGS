@@ -62,7 +62,7 @@ export class SeatSelectorComponent implements OnInit {
     
     for(let segment = 0; segment < this.airline.segments.length; segment++)
     {
-      let price = this.airline.pricess[segment] * this.flight.distance;
+      let price = this.airline.prices[segment] * this.flight.distance;
       temp = [];
       for(let i = 0; i < this.airline.segments[segment];i++)
       {

@@ -60,7 +60,7 @@
             {{price | currency: 'EUR'}}
         </div>
         <div class="mat-h3" *ngIf="classType === 'any' && fastTicket == null">
-            {{flight.pricess[2] | currency: 'EUR'}} - {{flight.pricess[0] | currency: 'EUR'}}
+            {{flight.prices[2] | currency: 'EUR'}} - {{flight.prices[0] | currency: 'EUR'}}
         </div>
         <div class="row" *ngIf="fastTicket != null">
             <div class="col-md">
