@@ -23,10 +23,6 @@ namespace Careoplane.Models
 
         public DateTime Arrival { get; set; }
 
-        public int DurationHours { get; set; }
-
-        public int DurationMinutes { get; set; }
-
         public double Distance { get; set; }
 
         public ICollection<Connection> Conntections { get; set; }
