@@ -29,7 +29,7 @@ namespace Careoplane.Models
 
         public RentACar() { }
 
-        public RentACar(TORentACar toRentACar)
+        public void FromTO(TORentACar toRentACar)
         {
             Name = toRentACar.Name;
             Address = toRentACar.Address;

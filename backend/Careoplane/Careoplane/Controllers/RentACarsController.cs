@@ -82,7 +82,8 @@ namespace Careoplane.Controllers
         [HttpPost]
         public async Task<ActionResult<RentACar>> PostRentACar(TORentACar toRentACar)
         {
-            RentACar rentACar = new RentACar(toRentACar);
+            RentACar rentACar = new RentACar();
+            rentACar.FromTO(toRentACar);
             _context.RentACars.Add(rentACar);
             try
             {
