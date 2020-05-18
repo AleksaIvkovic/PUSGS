@@ -1,10 +1,4 @@
-import { Flight } from './flight.model';
-import { StringifyOptions } from 'querystring';
-import { Seat } from './seat.model';
-import { FastTicket } from './fast-ticket.model';
-
-export class Airline {
-
+export class TOAirline {
     constructor(
         public name: string = null, 
         public address: string = null,
@@ -12,10 +6,10 @@ export class Airline {
         public prices : number[] = [],
         public seatingArrangement: number[] = [],
         public segments: number[] = [],
-        public flights: Flight[] = [],
+        public flights: TOFlight[] = [],
         public picture: string = "",
         public rating: number = 0,
         public destinations: string[] = [],
-        public fastTickets: FastTicket[] = []){
+        public fastTickets: TOFastTicket[] = []){
     }
 }

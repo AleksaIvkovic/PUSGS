@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Careoplane.TOModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -36,7 +37,7 @@ namespace Careoplane.Models
     public class Destination
     {
         [Key]
-        public int PriceId { get; set; }
+        public int DestiantionId { get; set; }
 
         public string Value { get; set; }
 

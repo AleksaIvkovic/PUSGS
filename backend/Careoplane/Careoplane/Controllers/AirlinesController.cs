@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
+using Careoplane.TOModels;
 
 namespace Careoplane.Controllers
 {
@@ -78,9 +79,25 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Airline>> PostAirline(AirlineTO airline)
+        public async Task<ActionResult<Airline>> PostAirline(TOAirline airline)
         {
-            Airline tempAirline = new Airline();
+            Airline tempAirline = new Airline()
+            {
+                Name = airline.Name,
+                Address = airline.Address,
+                Description = airline.Description,
+                Image = airline.Image,
+                Rating = airline.Rating
+            }; 
+
+            foreach(var item in airline.Destinations)
+            {
+                tempAirline.Destinations.Add(new Destination()
+                {
+
+                });
+            }
+
             _context.Airlines.Add(tempAirline);
             try
             {

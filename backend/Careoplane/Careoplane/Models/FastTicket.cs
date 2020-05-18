@@ -11,8 +11,6 @@ namespace Careoplane.Models
         [Key]
         public int FastTicketId { get; set; }
 
-        public double NewPrice { get; set; }
-
         public Seat Seat { get; set; }
 
         public Flight Flight { get; set; }

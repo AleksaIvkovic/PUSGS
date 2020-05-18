@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Careoplane.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200515180425_Migration2")]
-    partial class Migration2
+    [Migration("20200516120834_CareoplaneDBv2.0")]
+    partial class CareoplaneDBv20
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,6 +53,9 @@ namespace Careoplane.Migrations
                     b.Property<int>("FlgihtFlightId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ConntectionId");
 
                     b.HasIndex("FlgihtFlightId");
@@ -93,9 +96,6 @@ namespace Careoplane.Migrations
 
                     b.Property<int?>("FlightId")
                         .HasColumnType("int");
-
-                    b.Property<double>("NewPrice")
-                        .HasColumnType("float");
 
                     b.Property<int?>("SeatId")
                         .HasColumnType("int");
@@ -240,9 +240,6 @@ namespace Careoplane.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AirlineName")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<double>("Discount")
                         .HasColumnType("float");
 
@@ -252,15 +249,10 @@ namespace Careoplane.Migrations
                     b.Property<bool>("Occupied")
                         .HasColumnType("bit");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SeatId");
-
-                    b.HasIndex("AirlineName");
 
                     b.HasIndex("FlightId");
 
@@ -488,10 +480,6 @@ namespace Careoplane.Migrations
 
             modelBuilder.Entity("Careoplane.Models.Seat", b =>
                 {
-                    b.HasOne("Careoplane.Models.Airline", "Airline")
-                        .WithMany()
-                        .HasForeignKey("AirlineName");
-
                     b.HasOne("Careoplane.Models.Flight", "Flight")
                         .WithMany("Seats")
                         .HasForeignKey("FlightId");

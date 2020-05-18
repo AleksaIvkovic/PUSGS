@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Careoplane.TOModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,18 +29,17 @@ namespace Careoplane.Models
 
         public double Distance { get; set; }
 
-        public IEnumerable<Connection> Conntections { get; set; }
+        public ICollection<Connection> Conntections { get; set; }
 
-        [NotMapped]
-        public List<double> Pricess { get; set; }
-
-        public IEnumerable<Seat> Seats { get; set; }
+        public ICollection<Seat> Seats { get; set; }
     }
 
     public class Connection
     {
         [Key]
         public int ConntectionId { get; set; }
+
+        public string Value { get; set; }
 
         [Required]
         public Flight Flgiht { get; set; }

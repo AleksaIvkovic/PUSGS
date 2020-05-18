@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Careoplane.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Careoplane.Models
+namespace Careoplane.TOModels
 {
-    public class AirlineTO
+    public class TOAirline
     {
         public string Name { get; set; }
 
@@ -19,7 +20,7 @@ namespace Careoplane.Models
 
         public ICollection<int> SegmentLength { get; set; }
 
-        public ICollection<Flight> Flights { get; set; }
+        public ICollection<TOFlight> Flights { get; set; }
 
         public string Image { get; set; }
 
@@ -27,6 +28,6 @@ namespace Careoplane.Models
 
         public ICollection<string> Destinations { get; set; }
 
-        public ICollection<FastTicket> FastTickets { get; set; }
+        public ICollection<TOFastTicket> FastTickets { get; set; }
     }
 }
