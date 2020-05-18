@@ -8,6 +8,7 @@ import { FastTicket } from '../models/fast-ticket.model';
 import { AirlineFastTicketsComponent } from '../components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
 import { FlightReservation } from '../models/flight-reservation.model';
 import { HttpClient } from '@angular/common/http';
+import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +21,11 @@ export class AirlineService {
     "",1,["Belgrade","Paris","New York","London","Rome"]),
   ];
 
-  private flight1: Flight = new Flight("Jat","Belgrade","New York",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,16,23,22,0), 20, 12, 2000, ["Paris","London"],0);
-  private flight2: Flight = new Flight("Jat","Paris","Belgrade",new Date(2020,3,25,14,23,22,0), new Date(2020,3,25,18,23,22,0),16, 12, 1200, ["Rome"],1);
-  private flight3: Flight = new Flight("WizzAir","Berlin","Belgrade",new Date(2020,4,6,14,23,22,0), new Date(2020,4,6,16,23,22,0), 18, 12, 1300, ["Rome"],2);
-  private flight4: Flight = new Flight("WizzAir","Rome","Berlin",new Date(2020,4,12,14,23,22,0), new Date(2020,4,12,15,23,22,0), 15, 12, 2800, ["Paris", "Belgrade"],3);
-  private flight5: Flight = new Flight("Jat","New York","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,15,19,23,22,0), 20, 12, 2900, ["London","Paris"],4);
+  private flight1: Flight = new Flight("Jat","Belgrade","New York",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,16,23,22,0), 2000, [],0);
+  private flight2: Flight = new Flight("Jat","Paris","Belgrade",new Date(2020,3,25,14,23,22,0), new Date(2020,3,25,18,23,22,0), 1200, [],1);
+  private flight3: Flight = new Flight("WizzAir","Berlin","Belgrade",new Date(2020,4,6,14,23,22,0), new Date(2020,4,6,16,23,22,0), 1300, [],2);
+  private flight4: Flight = new Flight("WizzAir","Rome","Berlin",new Date(2020,4,12,14,23,22,0), new Date(2020,4,12,15,23,22,0), 2800, [],3);
+  private flight5: Flight = new Flight("Jat","New York","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,15,19,23,22,0), 2900, [],4);
 
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
@@ -66,7 +67,7 @@ export class AirlineService {
       
         if(flight.airlineName == airline.name){
           for(let i = 0; i < airline.prices.length; i++){
-            flight.prices.push(flight.distance * airline.prices[i]);
+            flight.prices.push(new TOPrimaryObject(0,flight.distance * airline.prices[i],0));
           }
 
           let count = 1;
@@ -92,7 +93,7 @@ export class AirlineService {
 
             for(let j = 0;j < airline.segments[i];j++){
               for(let k= 0;k < sum;k++){
-                flight.seats.push(new Seat(airline.name,flight.id,count + characters[k],type,false,flight.prices[i],0));
+                flight.seats.push(new Seat(flight.id,count + characters[k],type,false,flight.prices[i].value,0));
               }
               count++;
             }
@@ -182,9 +183,10 @@ export class AirlineService {
   }
 
   changeSeatDiscount(seat: Seat) {
-    let airline = this.getAirline(seat.airlineName);
+    let flight = this.getFlight(seat.flightId)
+    let airline = this.getAirline(flight.airlineName);
     if(seat.discount != 0){
-      airline.fastTickets.push(new FastTicket(seat,this.getFlight(seat.FlightId)));
+      airline.fastTickets.push(new FastTicket(seat,this.getFlight(seat.flightId)));
     }
     else{
       for(let fastTicket of airline.fastTickets){
@@ -223,7 +225,7 @@ export class AirlineService {
 
           for(let j = 0;j < airline.segments[i];j++){
             for(let k= 0;k < sum;k++){
-              flight.seats.push(new Seat(airline.name,flight.id,count + characters[k],type,false,flight.prices[i]));
+              flight.seats.push(new Seat(flight.id,count + characters[k],type,false,flight.prices[i].value));
             }
             count++;
           }

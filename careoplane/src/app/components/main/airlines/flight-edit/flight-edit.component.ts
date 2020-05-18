@@ -7,6 +7,7 @@ import { Airline } from 'src/app/models/airline.model';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AirlineService } from 'src/app/services/airline.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { TOPrimaryObject } from 'src/app/t-o-models/t-o-primary-object.model';
 
 @Component({
   selector: 'app-flight-edit',
@@ -75,18 +76,15 @@ export class FlightEditComponent implements OnInit {
     this.flight.destination = this.group.controls['destination'].value;
     this.flight.departure = this.group.controls['departure'].value;
     this.flight.arrival = this.group.controls['arrival'].value;
-    let time = new Date(this.group.controls['arrival'].value).valueOf() - new Date(this.group.controls['departure'].value).valueOf();
-    this.flight.durationHours = Math.floor(time/36e5);
-    this.flight.durationMinutes = Math.floor(((time/36e5) -  Math.floor(time/36e5))*60);
     this.flight.distance = this.group.controls['distance'].value;
-    this.flight.connections = new Array<string>();
+    this.flight.connections = new Array<TOPrimaryObject>();
     
     for(let seat of this.connectionsForm.controls){
       this.flight.connections.push(seat.value['city']);
     }
 
     for(let price of this.airline.prices){
-      this.flight.prices.push(price * this.flight.distance);
+      this.flight.prices.push(new TOPrimaryObject(0,price * this.flight.distance,0));
     }
 
     this.flight.conCount = this.flight.connections.length;
