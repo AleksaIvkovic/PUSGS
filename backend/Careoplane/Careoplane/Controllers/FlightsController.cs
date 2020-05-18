@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
+using Careoplane.TOModels;
 
 namespace Careoplane.Controllers
 {
@@ -15,7 +16,7 @@ namespace Careoplane.Controllers
     public class FlightsController : ControllerBase
     {
         private readonly DatabaseContext _context;
-
+        private Flight DBFlight;
         public FlightsController(DatabaseContext context)
         {
             _context = context;
@@ -23,14 +24,17 @@ namespace Careoplane.Controllers
 
         // GET: api/Flights
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Flight>>> GetFlights()
+        public async Task<ActionResult<IEnumerable<TOFlight>>> GetFlights()
         {
-            return await _context.Flights.ToListAsync();
+            List<Flight> flights = await _context.Flights.ToListAsync();
+            List<TOFlight> returnList = new List<TOFlight>();
+            flights.ForEach(flight => returnList.Add(new TOFlight(flight)));
+            return returnList;
         }
 
         // GET: api/Flights/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Flight>> GetFlight(int id)
+        public async Task<ActionResult<TOFlight>> GetFlight(int id)
         {
             var flight = await _context.Flights.FindAsync(id);
 
@@ -39,7 +43,7 @@ namespace Careoplane.Controllers
                 return NotFound();
             }
 
-            return flight;
+            return new TOFlight(flight);
         }
 
         // PUT: api/Flights/5
@@ -78,17 +82,18 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Flight>> PostFlight(Flight flight)
+        public async Task<ActionResult<TOFlight>> PostFlight(TOFlight flight)
         {
-            _context.Flights.Add(flight);
+            Flight tempFlight = new Flight(flight, _context);
+            _context.Flights.Add(tempFlight);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetFlight", new { id = flight.FlightId }, flight);
+            return CreatedAtAction("GetFlight", new { id = tempFlight.FlightId }, tempFlight);
         }
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Flight>> DeleteFlight(int id)
+        public async Task<ActionResult<TOFlight>> DeleteFlight(int id)
         {
             var flight = await _context.Flights.FindAsync(id);
             if (flight == null)
@@ -99,7 +104,7 @@ namespace Careoplane.Controllers
             _context.Flights.Remove(flight);
             await _context.SaveChangesAsync();
 
-            return flight;
+            return new TOFlight(flight);
         }
 
         private bool FlightExists(int id)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
+using Careoplane.TOModels;
 
 namespace Careoplane.Controllers
 {
@@ -23,14 +24,17 @@ namespace Careoplane.Controllers
 
         // GET: api/Seats
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Seat>>> GetSeats()
+        public async Task<ActionResult<IEnumerable<TOSeat>>> GetSeats()
         {
-            return await _context.Seats.ToListAsync();
+            List<Seat> tempSeats = await _context.Seats.ToListAsync();
+            List<TOSeat> returnSeats = new List<TOSeat>();
+            tempSeats.ForEach(seat => returnSeats.Add(new TOSeat(seat)));
+            return returnSeats;
         }
 
         // GET: api/Seats/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Seat>> GetSeat(int id)
+        public async Task<ActionResult<TOSeat>> GetSeat(int id)
         {
             var seat = await _context.Seats.FindAsync(id);
 
@@ -39,21 +43,22 @@ namespace Careoplane.Controllers
                 return NotFound();
             }
 
-            return seat;
+            return new TOSeat(seat);
         }
 
         // PUT: api/Seats/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSeat(int id, Seat seat)
+        public async Task<IActionResult> PutSeat(int id, TOSeat seat)
         {
             if (id != seat.SeatId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(seat).State = EntityState.Modified;
+            Seat tempSeat = new Seat(seat,_context);
+            _context.Entry(tempSeat).State = EntityState.Modified;
 
             try
             {
@@ -78,17 +83,18 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Seat>> PostSeat(Seat seat)
+        public async Task<ActionResult<TOSeat>> PostSeat(TOSeat seat)
         {
-            _context.Seats.Add(seat);
+            Seat tempSeat = new Seat(seat,_context);
+            _context.Seats.Add(tempSeat);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSeat", new { id = seat.SeatId }, seat);
+            return CreatedAtAction("GetSeat", new { id = tempSeat.SeatId }, tempSeat);
         }
 
         // DELETE: api/Seats/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Seat>> DeleteSeat(int id)
+        public async Task<ActionResult<TOSeat>> DeleteSeat(int id)
         {
             var seat = await _context.Seats.FindAsync(id);
             if (seat == null)
@@ -99,7 +105,7 @@ namespace Careoplane.Controllers
             _context.Seats.Remove(seat);
             await _context.SaveChangesAsync();
 
-            return seat;
+            return new TOSeat(seat);
         }
 
         private bool SeatExists(int id)

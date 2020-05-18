@@ -1,4 +1,5 @@
-﻿using Careoplane.TOModels;
+﻿using Careoplane.Database;
+using Careoplane.TOModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -28,6 +29,19 @@ namespace Careoplane.Models
         public ICollection<Connection> Conntections { get; set; }
 
         public ICollection<Seat> Seats { get; set; }
+
+        public Flight() { }
+
+        public Flight(TOFlight flight, DatabaseContext _context) {
+
+            Airline = _context.Airlines.Find(flight.AirlineName);
+            Arrival = DateTime.Parse(flight.Arrival);
+            Departure = DateTime.Parse(flight.Departure);
+            Distance = flight.Distance;
+            FlightId = flight.FlightId;
+            Origin = flight.Origin;
+            Destination = flight.Destination;
+        }
     }
 
     public class Connection
@@ -38,6 +52,9 @@ namespace Careoplane.Models
         public string Value { get; set; }
 
         [Required]
-        public Flight Flgiht { get; set; }
+        public Flight Flight { get; set; }
+
+        public Connection() { }
+        public Connection(int id, string value, Flight flight) { ConntectionId = id; Value = value; Flight = flight; }
     }
 }

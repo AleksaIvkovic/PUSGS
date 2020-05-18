@@ -10,14 +10,25 @@ namespace Careoplane.TOModels
     {
         public int SeatId { get; set; }
 
+        public string Name { get; set; }
+
         public int FlightId { get; set; }
 
         public string Type { get; set; }
 
         public bool Occupied { get; set; }
 
-        public double Price { get; set; }
-
         public double Discount { get; set; }
+
+        public TOSeat() { }
+        public TOSeat (Seat seat)
+        {
+            Name = seat.Name;
+            Discount = seat.Discount;
+            FlightId = seat.Flight.FlightId;
+            Occupied = seat.Occupied;
+            SeatId = seat.SeatId;
+            Type = seat.Type;
+        }
     }
 }

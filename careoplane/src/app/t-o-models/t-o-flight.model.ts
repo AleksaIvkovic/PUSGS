@@ -8,8 +8,6 @@ export class TOFlight {
         public destination: string = null,
         public departure: string = null,
         public arrival: string = null, 
-        public durationHours: number = null,
-        public durationMinutes: number = null,
         public distance: number = null, 
         public connections: TOPrimaryObject[] = [],
         public id: number = null,

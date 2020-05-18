@@ -10,5 +10,12 @@ namespace Careoplane.TOModels
         public int Id { get; set; }
         public object Value { get; set; }
         public object Reference { get; set; }
+
+        public TOPrimaryObject(int id, object value, object reference)
+        {
+            Id = id;
+            Value = value;
+            Reference = reference;
+        }
     }
 }

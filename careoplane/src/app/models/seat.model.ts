@@ -1,7 +1,6 @@
 export class Seat {
     constructor(
-        public airlineName: string,
-        public FlightId: number,
+        public flightId: number,
         public name: string,
         public type: string,
         public occupied: boolean = false,

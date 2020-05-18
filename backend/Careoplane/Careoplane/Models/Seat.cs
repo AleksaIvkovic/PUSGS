@@ -14,6 +14,8 @@ namespace Careoplane.Models
         [Key]
         public int SeatId { get; set; }
 
+        public string Name { get; set; }
+
         public Flight Flight { get; set; }
 
         public string Type { get; set; }
@@ -21,5 +23,17 @@ namespace Careoplane.Models
         public bool Occupied { get; set; }
 
         public double Discount { get; set; }
+
+        public Seat() { }
+
+        public Seat(TOSeat seat, DatabaseContext _context)
+        {
+            Name = seat.Name;
+            Discount = seat.Discount;
+            Flight = _context.Flights.Find(seat.FlightId);
+            Occupied = seat.Occupied;
+            SeatId = seat.SeatId;
+            Type = seat.Type;
+        }
     }
 }
