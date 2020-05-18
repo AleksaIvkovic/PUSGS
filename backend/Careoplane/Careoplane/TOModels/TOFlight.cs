@@ -25,8 +25,8 @@ namespace Careoplane.TOModels
 
         public double Distance { get; set; }
 
-        public List<string> Conntections { get; set; }
-        public List<double> Pricess { get; set; }
+        public List<TOPrimaryObject> Conntections { get; set; }
+        public List<TOPrimaryObject> Pricess { get; set; }
 
         public List<TOSeat> Seats { get; set; }
     }

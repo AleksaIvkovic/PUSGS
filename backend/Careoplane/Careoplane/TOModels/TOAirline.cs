@@ -14,20 +14,20 @@ namespace Careoplane.TOModels
 
         public string Description { get; set; }
 
-        public ICollection<double> Prices { get; set; }
+        public List<TOPrimaryObject> Prices { get; set; }
 
-        public ICollection<int> SeatingArrangement { get; set; }
+        public List<TOPrimaryObject> SeatingArrangement { get; set; }
 
-        public ICollection<int> SegmentLength { get; set; }
+        public List<TOPrimaryObject> SegmentLength { get; set; }
 
-        public ICollection<TOFlight> Flights { get; set; }
+        public List<TOFlight> Flights { get; set; }
 
         public string Image { get; set; }
 
         public double Rating { get; set; }
 
-        public ICollection<string> Destinations { get; set; }
+        public List<TOPrimaryObject> Destinations { get; set; }
 
-        public ICollection<TOFastTicket> FastTickets { get; set; }
+        public List<TOFastTicket> FastTickets { get; set; }
     }
 }
