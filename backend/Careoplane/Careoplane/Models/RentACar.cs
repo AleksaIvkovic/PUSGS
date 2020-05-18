@@ -38,10 +38,39 @@ namespace Careoplane.Models
             Vehicles = new List<Vehicle>();
             Locations = new List<Location>();
             Prices = new List<PriceList>();
-            toRentACar.Vehicles.ToList().ForEach(vehicle => Vehicles.Add(vehicle));
-            toRentACar.Locations.ToList().ForEach(location => Locations.Add(new Location() { LocationValue = location, RentACar = this })) ;
+            toRentACar.Vehicles.ToList().ForEach(vehicle => 
+            {
+                Vehicle vehicleObj = new Vehicle();
+                vehicleObj.FromTO(vehicle);
+                Vehicles.Add(vehicleObj);
+            }) ;
+            toRentACar.Locations.ToList().ForEach(location => Locations.Add(
+                new Location()
+                {
+                    LocationId = 0,
+                    LocationValue = (string)(location.Value),
+                    RentACar = this
+                }));
             toRentACar.Prices.ToList().ForEach(price => Prices.Add(new PriceList()
-            { PriceValue = price, RentACar = this }));
+            { PriceValue = (double)(price.Value), RentACar = this }));
+        }
+
+        public TORentACar ToTO()
+        {
+            TORentACar toRentACar = new TORentACar();
+            toRentACar.Name = Name;
+            toRentACar.Address = Address;
+            toRentACar.Description = Description;
+            toRentACar.Rating = Rating;
+            toRentACar.Vehicles = new List<TOVehicle>();
+            toRentACar.Locations = new List<TOPrimaryObject>();
+            toRentACar.Prices = new List<TOPrimaryObject>();
+            Vehicles.ToList().ForEach(vehicle => toRentACar.Vehicles.Add(vehicle.ToTO()));
+            Locations.ToList().ForEach(location => toRentACar.Locations.Add(new TOPrimaryObject() { Value = (string)(location.LocationValue), Reference = this }));
+            Prices.ToList().ForEach(price => toRentACar.Prices.Add(new TOPrimaryObject()
+            { Value = (double)(price.PriceValue), Reference = this }));
+
+            return toRentACar;
         }
     }
 

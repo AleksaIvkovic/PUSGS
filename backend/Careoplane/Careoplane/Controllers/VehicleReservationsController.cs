@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
+using Careoplane.TOModels;
 
 namespace Careoplane.Controllers
 {
@@ -23,14 +24,18 @@ namespace Careoplane.Controllers
 
         // GET: api/VehicleReservations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VehicleReservation>>> GetVehicleReservation()
+        public async Task<ActionResult<IEnumerable<TOVehicleReservation>>> GetVehicleReservation()
         {
-            return await _context.VehicleReservation.ToListAsync();
+            List<VehicleReservation> VehicleReservationList = await _context.VehicleReservation.ToListAsync();
+            List<TOVehicleReservation> TOVehicleReservationList = new List<TOVehicleReservation>();
+            VehicleReservationList.ForEach(reservation => TOVehicleReservationList.Add(reservation.ToTO()));
+
+            return TOVehicleReservationList;
         }
 
         // GET: api/VehicleReservations/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<VehicleReservation>> GetVehicleReservation(int id)
+        public async Task<ActionResult<TOVehicleReservation>> GetVehicleReservation(int id)
         {
             var vehicleReservation = await _context.VehicleReservation.FindAsync(id);
 
@@ -39,15 +44,18 @@ namespace Careoplane.Controllers
                 return NotFound();
             }
 
-            return vehicleReservation;
+            return vehicleReservation.ToTO();
         }
 
         // PUT: api/VehicleReservations/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVehicleReservation(int id, VehicleReservation vehicleReservation)
+        public async Task<IActionResult> PutVehicleReservation(int id, TOVehicleReservation toVehicleReservation)
         {
+            VehicleReservation vehicleReservation = new VehicleReservation();
+            vehicleReservation.FromTO(toVehicleReservation);
+
             if (id != vehicleReservation.ReservationId)
             {
                 return BadRequest();
@@ -78,8 +86,11 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<VehicleReservation>> PostVehicleReservation(VehicleReservation vehicleReservation)
+        public async Task<ActionResult<TOVehicleReservation>> PostVehicleReservation(TOVehicleReservation toVehicleReservation)
         {
+            VehicleReservation vehicleReservation = new VehicleReservation();
+            vehicleReservation.FromTO(toVehicleReservation);
+
             _context.VehicleReservation.Add(vehicleReservation);
             await _context.SaveChangesAsync();
 
@@ -88,7 +99,7 @@ namespace Careoplane.Controllers
 
         // DELETE: api/VehicleReservations/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<VehicleReservation>> DeleteVehicleReservation(int id)
+        public async Task<ActionResult<TOVehicleReservation>> DeleteVehicleReservation(int id)
         {
             var vehicleReservation = await _context.VehicleReservation.FindAsync(id);
             if (vehicleReservation == null)
@@ -99,7 +110,7 @@ namespace Careoplane.Controllers
             _context.VehicleReservation.Remove(vehicleReservation);
             await _context.SaveChangesAsync();
 
-            return vehicleReservation;
+            return vehicleReservation.ToTO();
         }
 
         private bool VehicleReservationExists(int id)

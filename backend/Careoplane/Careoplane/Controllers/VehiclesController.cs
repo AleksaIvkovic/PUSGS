@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
+using Careoplane.TOModels;
 
 namespace Careoplane.Controllers
 {
@@ -23,14 +24,18 @@ namespace Careoplane.Controllers
 
         // GET: api/Vehicles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Vehicle>>> GetVehicles()
+        public async Task<ActionResult<IEnumerable<TOVehicle>>> GetVehicles()
         {
-            return await _context.Vehicles.ToListAsync();
+            List<Vehicle> VehicleList = await _context.Vehicles.ToListAsync();
+            List<TOVehicle> TOVehicleList = new List<TOVehicle>();
+            VehicleList.ForEach(vehicle => TOVehicleList.Add(vehicle.ToTO()));
+
+            return TOVehicleList;
         }
 
         // GET: api/Vehicles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Vehicle>> GetVehicle(int id)
+        public async Task<ActionResult<TOVehicle>> GetVehicle(int id)
         {
             var vehicle = await _context.Vehicles.FindAsync(id);
 
@@ -39,15 +44,18 @@ namespace Careoplane.Controllers
                 return NotFound();
             }
 
-            return vehicle;
+            return vehicle.ToTO();
         }
 
         // PUT: api/Vehicles/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutVehicle(int id, Vehicle vehicle)
+        public async Task<IActionResult> PutVehicle(int id, TOVehicle toVehicle)
         {
+            Vehicle vehicle = new Vehicle();
+            vehicle.FromTO(toVehicle);
+
             if (id != vehicle.VehicleId)
             {
                 return BadRequest();
@@ -78,8 +86,11 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Vehicle>> PostVehicle(Vehicle vehicle)
+        public async Task<ActionResult<TOVehicle>> PostVehicle(TOVehicle toVehicle)
         {
+            Vehicle vehicle = new Vehicle();
+            vehicle.FromTO(toVehicle);
+
             _context.Vehicles.Add(vehicle);
             await _context.SaveChangesAsync();
 
@@ -88,7 +99,7 @@ namespace Careoplane.Controllers
 
         // DELETE: api/Vehicles/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Vehicle>> DeleteVehicle(int id)
+        public async Task<ActionResult<TOVehicle>> DeleteVehicle(int id)
         {
             var vehicle = await _context.Vehicles.FindAsync(id);
             if (vehicle == null)
@@ -99,7 +110,7 @@ namespace Careoplane.Controllers
             _context.Vehicles.Remove(vehicle);
             await _context.SaveChangesAsync();
 
-            return vehicle;
+            return vehicle.ToTO();
         }
 
         private bool VehicleExists(int id)

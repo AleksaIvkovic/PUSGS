@@ -25,14 +25,18 @@ namespace Careoplane.Controllers
 
         // GET: api/RentACars
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RentACar>>> GetRentACars()
+        public async Task<ActionResult<IEnumerable<TORentACar>>> GetRentACars()
         {
-            return await _context.RentACars.ToListAsync();
+            List<RentACar> RentACarList = await _context.RentACars.ToListAsync();
+            List<TORentACar> TORentACarList = new List<TORentACar>();
+            RentACarList.ForEach(rentACar => TORentACarList.Add(rentACar.ToTO()));
+
+            return TORentACarList;
         }
 
         // GET: api/RentACars/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<RentACar>> GetRentACar(string id)
+        public async Task<ActionResult<TORentACar>> GetRentACar(string id)
         {
             var rentACar = await _context.RentACars.FindAsync(id);
 
@@ -41,15 +45,18 @@ namespace Careoplane.Controllers
                 return NotFound();
             }
 
-            return rentACar;
+            return rentACar.ToTO();
         }
 
         // PUT: api/RentACars/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRentACar(string id, RentACar rentACar)
+        public async Task<IActionResult> PutRentACar(string id, TORentACar toRentACar)
         {
+            RentACar rentACar = new RentACar();
+            rentACar.FromTO(toRentACar);
+
             if (id != rentACar.Name)
             {
                 return BadRequest();
@@ -84,6 +91,7 @@ namespace Careoplane.Controllers
         {
             RentACar rentACar = new RentACar();
             rentACar.FromTO(toRentACar);
+
             _context.RentACars.Add(rentACar);
             try
             {
@@ -106,7 +114,7 @@ namespace Careoplane.Controllers
 
         // DELETE: api/RentACars/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<RentACar>> DeleteRentACar(string id)
+        public async Task<ActionResult<TORentACar>> DeleteRentACar(string id)
         {
             var rentACar = await _context.RentACars.FindAsync(id);
             if (rentACar == null)
@@ -117,7 +125,7 @@ namespace Careoplane.Controllers
             _context.RentACars.Remove(rentACar);
             await _context.SaveChangesAsync();
 
-            return rentACar;
+            return rentACar.ToTO();
         }
 
         private bool RentACarExists(string id)

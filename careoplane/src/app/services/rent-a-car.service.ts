@@ -102,7 +102,7 @@ export class RentACarService {
         return this.http
         .post(
             'http://localhost:52075/api/RentACars',
-            newRentACar
+            newRentACar.ToTO()
         );
     }
 

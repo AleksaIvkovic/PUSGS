@@ -14,12 +14,12 @@ namespace Careoplane.TOModels
 
         public string Description { get; set; }
 
-        public ICollection<Vehicle> Vehicles { get; set; }
+        public ICollection<TOVehicle> Vehicles { get; set; }
 
-        public ICollection<string> Locations { get; set; }
+        public ICollection<TOPrimaryObject> Locations { get; set; }
 
         public double Rating { get; set; }
 
-        public ICollection<int> Prices { get; set; }
+        public ICollection<TOPrimaryObject> Prices { get; set; }
     }
 }

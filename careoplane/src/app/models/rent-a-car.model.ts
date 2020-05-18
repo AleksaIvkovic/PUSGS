@@ -1,4 +1,5 @@
 import { Vehicle } from './vehicle.model';
+import { TORentACar } from '../t-o-models/t-o-rent-a-car.model';
 
 export class RentACar {
     public constructor(
@@ -19,6 +20,19 @@ export class RentACar {
                 v => {
                     v.location = location.substr(1);
                     v.rentACar = name;
-                });
-        }
+                }
+            );
+    }
+
+    public ToTO(): TORentACar {
+        return new TORentACar(
+            this.name,
+            this.address,
+            this.description,
+            [],
+            [],
+            this.rating,
+            []
+        );
+    }
 }

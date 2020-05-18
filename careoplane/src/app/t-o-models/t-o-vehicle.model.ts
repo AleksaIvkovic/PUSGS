@@ -1,3 +1,5 @@
+import { TOPrimaryObject } from './t-o-primary-object.model';
+
 export class TOVehicle {
     constructor(
         public brand: string,
