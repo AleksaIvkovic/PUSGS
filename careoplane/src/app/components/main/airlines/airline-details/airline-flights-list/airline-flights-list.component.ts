@@ -53,8 +53,8 @@ export class AirlineFlightsListComponent implements OnInit {
     this.flights = this.airline.flights;
 
     for(let city of this.airline.destinations){
-      if(!this.cities.includes(city)){
-        this.cities.push(city);
+      if(!this.cities.includes(city.value)){
+        this.cities.push(city.value);
       }
     }
 

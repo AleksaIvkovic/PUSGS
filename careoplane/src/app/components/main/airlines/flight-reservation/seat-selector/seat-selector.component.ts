@@ -51,7 +51,7 @@ export class SeatSelectorComponent implements OnInit {
     this.rowLength = 0;
     for(let k = 0;k < this.airline.seatingArrangement.length;k++)
     {
-      for(let q = 0;q < this.airline.seatingArrangement[k];q++){
+      for(let q = 0;q < this.airline.seatingArrangement[k].value;q++){
         row += "g";
         this.rowLength++;
       }
@@ -62,9 +62,9 @@ export class SeatSelectorComponent implements OnInit {
     
     for(let segment = 0; segment < this.airline.segments.length; segment++)
     {
-      let price = this.airline.prices[segment] * this.flight.distance;
+      let price = this.airline.prices[segment].value * this.flight.distance;
       temp = [];
-      for(let i = 0; i < this.airline.segments[segment];i++)
+      for(let i = 0; i < this.airline.segments[segment].value;i++)
       {
           let tempObj = {
             "seat_label": count.toString(),
@@ -124,14 +124,14 @@ export class SeatSelectorComponent implements OnInit {
       let end: number = map_data.length;
 
       if(this.type === 'first'){
-        end = this.airline.segments[0];
+        end = this.airline.segments[0].value;
       }
       else if(this.type === 'business'){
-        start = this.airline.segments[0]
-        end = this.airline.segments[0] + this.airline.segments[1];
+        start = this.airline.segments[0].value
+        end = this.airline.segments[0].value + this.airline.segments[1].value;
       }
       else if(this.type ==='economy'){
-        start = this.airline.segments[0] + this.airline.segments[1];
+        start = this.airline.segments[0].value + this.airline.segments[1].value;
       }
 
       let myCounter: number = start * this.rowLength;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Careoplane.Models
@@ -19,25 +20,35 @@ namespace Careoplane.Models
 
         public ICollection<Price> Prices { get; set; }
 
-        public ICollection<SeatArrangement> SeatingArrangement { get; set; }
+        public ICollection<SeatArrangement> SeatingArrangements { get; set; }
 
-        public ICollection<Segment> SegmentLength { get; set; }
+        public ICollection<Segment> SegmentLengths { get; set; }
 
         public ICollection<Flight> Flights { get; set; }
 
         public string Image { get; set; }
 
-        public double Rating { get; set; }
+        public decimal Rating { get; set; }
 
         public ICollection<Destination> Destinations { get; set; }
 
         public ICollection<FastTicket> FastTickets { get; set; }
+
+        public Airline() { }
+        public Airline(TOAirline airline) {
+            Name = airline.Name;
+            Address = airline.Address;
+            Description = airline.Description;
+            Image = airline.Image;
+            Rating = airline.Rating;
+        }
+
     }
 
     public class Destination
     {
         [Key]
-        public int DestiantionId { get; set; }
+        public int DestinationId { get; set; }
 
         public string Value { get; set; }
 
@@ -59,7 +70,7 @@ namespace Careoplane.Models
     public class SeatArrangement
     {
         [Key]
-        public int PriceId { get; set; }
+        public int SeatArrangementId { get; set; }
 
         public double Value { get; set; }
 
@@ -70,7 +81,7 @@ namespace Careoplane.Models
     public class Segment
     {
         [Key]
-        public int PriceId { get; set; }
+        public int SegmentId { get; set; }
 
         public double Value { get; set; }
 

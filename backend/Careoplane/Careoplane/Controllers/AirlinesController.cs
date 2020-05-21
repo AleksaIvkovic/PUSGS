@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
 using Careoplane.TOModels;
+using System.Security.Cryptography;
 
 namespace Careoplane.Controllers
 {
@@ -24,14 +25,17 @@ namespace Careoplane.Controllers
 
         // GET: api/Airlines
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Airline>>> GetAirlines()
+        public async Task<ActionResult<IEnumerable<TOAirline>>> GetAirlines()
         {
-            return await _context.Airlines.ToListAsync();
+            List<Airline> airlines = await _context.Airlines.ToListAsync();
+            List<TOAirline> result = new List<TOAirline>();
+            airlines.ForEach(airline => result.Add(new TOAirline(airline)));
+            return result;
         }
 
         // GET: api/Airlines/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Airline>> GetAirline(string id)
+        public async Task<ActionResult<TOAirline>> GetAirline(string id)
         {
             var airline = await _context.Airlines.FindAsync(id);
 
@@ -40,7 +44,7 @@ namespace Careoplane.Controllers
                 return NotFound();
             }
 
-            return airline;
+            return new TOAirline(airline);
         }
 
         // PUT: api/Airlines/5
@@ -79,24 +83,9 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Airline>> PostAirline(TOAirline airline)
+        public async Task<ActionResult<TOAirline>> PostAirline(TOAirline airline)
         {
-            Airline tempAirline = new Airline()
-            {
-                Name = airline.Name,
-                Address = airline.Address,
-                Description = airline.Description,
-                Image = airline.Image,
-                Rating = airline.Rating
-            }; 
-
-            foreach(var item in airline.Destinations)
-            {
-                tempAirline.Destinations.Add(new Destination()
-                {
-
-                });
-            }
+            Airline tempAirline = new Airline(airline);
 
             _context.Airlines.Add(tempAirline);
             try
@@ -105,7 +94,7 @@ namespace Careoplane.Controllers
             }
             catch (DbUpdateException)
             {
-                if (AirlineExists(airline.Name))
+                if (AirlineExists(tempAirline.Name))
                 {
                     return Conflict();
                 }
@@ -115,12 +104,60 @@ namespace Careoplane.Controllers
                 }
             }
 
-            return CreatedAtAction("GetAirline", new { id = airline.Name }, airline);
+            tempAirline.Destinations = new List<Destination>();
+            foreach(var destination in airline.Destinations)
+            {
+                tempAirline.Destinations.Add(new Destination()
+                {
+                    Airline = tempAirline,
+                    DestinationId = destination.Id,
+                    Value = destination.Value.ToString()
+                });
+            }
+
+            tempAirline.Prices = new List<Price>();
+            foreach (var price in airline.Prices)
+            {
+                tempAirline.Prices.Add(new Price()
+                {
+                    Airline = tempAirline,
+                    PriceId = price.Id,
+                    Value = double.Parse(price.Value.ToString())
+                });
+            }
+
+            tempAirline.SegmentLengths = new List<Segment>();
+            foreach (var segment in airline.SegmentLengths)
+            {
+                tempAirline.SegmentLengths.Add(new Segment()
+                {
+                    Airline = tempAirline,
+                    SegmentId = segment.Id,
+                    Value = int.Parse(segment.Value.ToString())
+                });
+            }
+
+            tempAirline.SeatingArrangements = new List<SeatArrangement>();
+            foreach (var seatArrangement in airline.SeatingArrangements)
+            {
+                tempAirline.SeatingArrangements.Add(new SeatArrangement()
+                {
+                    Airline = tempAirline,
+                    SeatArrangementId = seatArrangement.Id,
+                    Value = int.Parse(seatArrangement.Value.ToString())
+                });
+            }
+
+            _context.Entry(tempAirline).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetAirline", new { id = tempAirline.Name }, tempAirline);
         }
 
         // DELETE: api/Airlines/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Airline>> DeleteAirline(string id)
+        public async Task<ActionResult<TOAirline>> DeleteAirline(string id)
         {
             var airline = await _context.Airlines.FindAsync(id);
             if (airline == null)
@@ -131,7 +168,7 @@ namespace Careoplane.Controllers
             _context.Airlines.Remove(airline);
             await _context.SaveChangesAsync();
 
-            return airline;
+            return new TOAirline(airline);
         }
 
         private bool AirlineExists(string id)
