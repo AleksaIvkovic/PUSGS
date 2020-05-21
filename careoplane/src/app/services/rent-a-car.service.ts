@@ -4,6 +4,7 @@ import { Vehicle } from '../models/vehicle.model';
 import { Subject, Observable } from 'rxjs';
 import { VehicleReservation } from '../models/vehicle-reservation.model';
 import { HttpClient } from '@angular/common/http'
+import { TORentACar } from '../t-o-models/t-o-rent-a-car.model';
 
 @Injectable({
     providedIn: 'root'
@@ -53,6 +54,23 @@ export class RentACarService {
     newVehicleListChanged = new Subject<Vehicle[]>();
     newVehicles: Vehicle[] = [];
 
+    getRentACar(RentACarName: string): RentACar {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/RentACars/' + RentACarName;
+        this.http
+        .get(
+            address
+        ).subscribe(
+            response => {
+                return (response as TORentACar).ToRegular();
+            },
+            error => {
+                console.log(error);
+                return null;
+            }
+        );
+        return null;
+    }
+
     getRentACars() {
         return this.rentACars.slice();
     }
@@ -99,9 +117,10 @@ export class RentACarService {
 
         this.rentACars.push(newRentACar);
         this.rentACarsChanged.next(this.rentACars.slice());
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/RentACars';
         return this.http
         .post(
-            'http://localhost:52075/api/RentACars',
+            address,
             newRentACar.ToTO()
         );
     }

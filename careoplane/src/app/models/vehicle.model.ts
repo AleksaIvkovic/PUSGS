@@ -1,3 +1,6 @@
+import { TOVehicle } from '../t-o-models/t-o-vehicle.model';
+import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
+
 export class Vehicle {
     constructor(
         public brand: string,
@@ -11,4 +14,25 @@ export class Vehicle {
         public isOnSale: boolean = false,
         public rentACar: string = ''
     ) {}
+
+    public ToTO(): TOVehicle {
+        let toUnavailableDates: TOPrimaryObject[] = [];
+        this.unavailableDates.forEach(
+            d => {
+                toUnavailableDates.push(new TOPrimaryObject(0, d.toDateString(), this));
+            }
+        );
+        return new TOVehicle(
+            this.brand,
+            this.type,
+            this.numOfSeats,
+            this.year, 
+            this.pricePerDay,
+            this.location,
+            this.rating,
+            toUnavailableDates,
+            this.isOnSale,
+            this.rentACar
+        ); 
+    }
 }

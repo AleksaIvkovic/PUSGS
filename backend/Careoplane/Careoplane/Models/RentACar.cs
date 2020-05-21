@@ -51,8 +51,24 @@ namespace Careoplane.Models
                     LocationValue = location.Value.ToString(),
                     RentACar = this
                 }));
-            toRentACar.Prices.ToList().ForEach(price => Prices.Add(new PriceList()
-            { PriceValue = (double)(price.Value), RentACar = this }));
+            Prices.Add(new PriceList()
+            { PriceValue = (Int64)(toRentACar.Prices.ToList()[0].Value),
+              PriceService = "Car",
+              RentACar = this });
+            Prices.Add(new PriceList()
+            {
+                PriceValue = (Int64)(toRentACar.Prices.ToList()[1].Value),
+                PriceService = "Van",
+                RentACar = this
+            });
+            Prices.Add(new PriceList()
+            {
+                PriceValue = (Int64)(toRentACar.Prices.ToList()[2].Value),
+                PriceService = "Truck",
+                RentACar = this
+            });
+            //toRentACar.Prices.ToList().ForEach(price => Prices.Add(new PriceList()
+            //{  }));
         }
 
         public TORentACar ToTO()
@@ -75,7 +91,7 @@ namespace Careoplane.Models
             Prices.ToList().ForEach(price => toRentACar.Prices.Add(
                 new TOPrimaryObject() { 
                     Id = 0,
-                    Value = (double)(price.PriceValue), 
+                    Value = (Int64)(price.PriceValue), 
                     Reference = this 
                 }));
 
@@ -100,6 +116,8 @@ namespace Careoplane.Models
         public int PriceId { get; set; }
 
         public double PriceValue { get; set; }
+
+        public string PriceService { get; set; }
 
         [Required]
         public RentACar RentACar { get; set; }

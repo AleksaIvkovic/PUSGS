@@ -60,7 +60,7 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
       (params: Params) => {
         if (this.admin) {
           this.isAdmin = true;
-          this.rentACar = this.rentACarService.getRentACarByName(this.admin.company);
+          this.rentACar = this.rentACarService.getRentACar(this.admin.company);
         } else {
           this.index = params['id'];
           this.rentACar = this.rentACarService.getRentACarByIndex(this.index);

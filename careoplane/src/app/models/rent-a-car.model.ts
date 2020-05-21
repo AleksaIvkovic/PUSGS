@@ -1,6 +1,7 @@
 import { Vehicle } from './vehicle.model';
 import { TORentACar } from '../t-o-models/t-o-rent-a-car.model';
 import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
+import { TOVehicle } from '../t-o-models/t-o-vehicle.model';
 
 export class RentACar {
     public constructor(
@@ -32,14 +33,26 @@ export class RentACar {
                 toLocations.push(new TOPrimaryObject(0, l, this));
             }
         );
+        let toPrices: TOPrimaryObject[] = [];
+        this.prices.forEach(
+            p => {
+                toPrices.push(new TOPrimaryObject(0, p, this));
+            }
+        );
+        let toVehicles: TOVehicle[] = [];
+        this.vehicles.forEach(
+            v => {
+                toVehicles.push(v.ToTO());
+            }
+        );
         return new TORentACar(
             this.name,
             this.address,
             this.description,
-            [],
+            toVehicles,
             toLocations,
             this.rating,
-            []
+            toPrices
         );
     }
 }

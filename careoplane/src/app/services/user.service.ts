@@ -193,6 +193,10 @@ export class UserService {
         this.loggedInUserChanged.next(this.users[index]);
     }
 
+    updateCompanyName(companyName: string) {
+        (this.loggedInUser as Admin).company = companyName;
+    }
+
     addReservation(reservation: any){
         this.loggedInUser.reservations.push(reservation);
     }

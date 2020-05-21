@@ -8,6 +8,7 @@ import { Vehicle } from 'src/app/models/vehicle.model';
 import { RentACar } from 'src/app/models/rent-a-car.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from 'src/app/services/user.service';
+import { Admin } from 'src/app/models/admin.model';
 
 @Component({
   selector: 'app-rent-a-car-manager',
@@ -110,6 +111,10 @@ export class RentACarManagerComponent implements OnInit {
       });
       this.router.navigate(['main/rent-a-car-profile']);
     } else {
+      let prices = [];
+      prices.push(this.addForm.value['car']);
+      prices.push(this.addForm.value['van']);
+      prices.push(this.addForm.value['truck']);
       let rentACar = new RentACar(
         this.addForm.value['name'],
         this.locationOfRentACar,
@@ -117,12 +122,14 @@ export class RentACarManagerComponent implements OnInit {
         [],
         this.locations,
         0,
-        [this.addForm.value['car'], this.addForm.value['van'], this.addForm.value['truck']]
+        prices
       );
 
       this.rentACarService.addRentACar(rentACar).subscribe(
         response => {
+          this.userService.updateCompanyName(response['name']);
           this.router.navigate(['main/rent-a-car-profile']);
+          //this.rentACarService.rentACarChanged.next(response as RentACar);
         },
         error => {
           console.log(error);

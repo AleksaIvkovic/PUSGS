@@ -1,4 +1,5 @@
 import { TOPrimaryObject } from './t-o-primary-object.model';
+import { Vehicle } from '../models/vehicle.model';
 
 export class TOVehicle {
     constructor(
@@ -13,4 +14,25 @@ export class TOVehicle {
         public isOnSale: boolean = false,
         public rentACar: string = ''
     ) {}
+
+    public ToRegular() {
+        let unavailableDates: Date[] = [];
+        this.unavailableDates.forEach(
+            d => {
+                unavailableDates.push(new Date(d.value));
+            }
+        );
+        return new Vehicle(
+            this.brand,
+            this.type,
+            this.numOfSeats,
+            this.year,
+            this.pricePerDay,
+            this.location,
+            this.rating,
+            unavailableDates,
+            this.isOnSale,
+            this.rentACar
+        );
+    }
 }
