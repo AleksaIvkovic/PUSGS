@@ -48,7 +48,7 @@
         <mat-chip-list #chipList aria-label="Destnations">
           <mat-chip *ngFor="let destination of airline.destinations"
                    [removable]="removable" (removed)="remove(destination)" color="accent">
-            {{destination}}
+            {{destination.value}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
           <input placeholder="New destination..."

@@ -68,8 +68,8 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
 
     for(let airline of this.airlines){
       for(let city of airline.destinations){
-        if(!this.cities.includes(city)){
-          this.cities.push(city);
+        if(!this.cities.includes(city.value)){
+          this.cities.push(city.value);
         }
       }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Careoplane.TOModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,5 +15,12 @@ namespace Careoplane.Models
         public Seat Seat { get; set; }
 
         public Flight Flight { get; set; }
+        
+        public FastTicket() { }
+        
+        public FastTicket(TOFastTicket fastTicket)
+        {
+        }
+
     }
 }

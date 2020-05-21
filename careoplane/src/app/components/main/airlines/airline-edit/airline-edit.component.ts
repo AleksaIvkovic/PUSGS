@@ -10,6 +10,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Admin } from 'src/app/models/admin.model';
 import { UserService } from 'src/app/services/user.service';
+import { TOPrimaryObject } from 'src/app/t-o-models/t-o-primary-object.model';
 
 @Component({
   selector: 'app-airline-edit',
@@ -27,6 +28,7 @@ export class AirlineEditComponent implements OnInit {
   visible = true;
   removable = true;
   addOnBlur = true;
+
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(private userService: UserService, private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService,private geocoderService: GeoCodingServiceService) { }
@@ -39,6 +41,13 @@ export class AirlineEditComponent implements OnInit {
     }
     else{
       this.airline = new Airline();
+      this.airline.name = 'Lufthansa';
+      this.airline.prices.push(new TOPrimaryObject(0,null,null));
+      this.airline.prices.push(new TOPrimaryObject(0,null,null));
+      this.airline.prices.push(new TOPrimaryObject(0,null,null));
+      this.airline.segments.push(new TOPrimaryObject(0,null,null));
+      this.airline.segments.push(new TOPrimaryObject(0,null,null));
+      this.airline.segments.push(new TOPrimaryObject(0,null,null));
     }
 
     this.addressControl = new FormControl(this.airline.address,Validators.required);
@@ -65,14 +74,16 @@ export class AirlineEditComponent implements OnInit {
       'name': this.nameControl,
       'address': this.addressControl,
       'description': new FormControl(this.airline.description,Validators.required),
-      'priceFirstClass': new FormControl(this.airline.prices[0],Validators.required),
-      'priceBusinessClass': new FormControl(this.airline.prices[1],Validators.required),
-      'priceEconomyClass': new FormControl(this.airline.prices[2],Validators.required),
-      'rowsFirstClass': new FormControl(this.airline.segments[0],Validators.required),
-      'rowsBusinessClass': new FormControl(this.airline.segments[1],Validators.required),
-      'rowsEconomyClass': new FormControl(this.airline.segments[2],Validators.required),
+      'priceFirstClass': new FormControl(this.airline.prices[0].value,Validators.required),
+      'priceBusinessClass': new FormControl(this.airline.prices[1].value,Validators.required),
+      'priceEconomyClass': new FormControl(this.airline.prices[2].value,Validators.required),
+      'rowsFirstClass': new FormControl(this.airline.segments[0].value,Validators.required),
+      'rowsBusinessClass': new FormControl(this.airline.segments[1].value,Validators.required),
+      'rowsEconomyClass': new FormControl(this.airline.segments[2].value,Validators.required),
       'seats': this.seats
     });
+
+    this.group.controls['name'].disable({onlySelf:true});
 
     this.addressControl.valueChanges.subscribe(value => {
       this.addressValid = false;
@@ -111,17 +122,17 @@ export class AirlineEditComponent implements OnInit {
     this.airline.address = this.group.controls['address'].value;
     this.airline.description = this.group.controls['description'].value;
     this.airline.prices = [];
-    this.airline.prices.push(this.group.controls['priceFirstClass'].value);
-    this.airline.prices.push(this.group.controls['priceBusinessClass'].value);
-    this.airline.prices.push(this.group.controls['priceEconomyClass'].value);
+    this.airline.prices.push(new TOPrimaryObject(0,<string>this.group.controls['priceFirstClass'].value,this.airline.name));
+    this.airline.prices.push(new TOPrimaryObject(0,<string>this.group.controls['priceBusinessClass'].value,this.airline.name));
+    this.airline.prices.push(new TOPrimaryObject(0,<string>this.group.controls['priceEconomyClass'].value,this.airline.name));
     this.airline.segments = [];
-    this.airline.segments.push(this.group.controls['rowsFirstClass'].value);
-    this.airline.segments.push(this.group.controls['rowsBusinessClass'].value);
-    this.airline.segments.push(this.group.controls['rowsEconomyClass'].value);
-    this.airline.seatingArrangement = new Array<number>();
+    this.airline.segments.push(new TOPrimaryObject(0,this.group.controls['rowsFirstClass'].value,this.airline.name));
+    this.airline.segments.push(new TOPrimaryObject(0,this.group.controls['rowsBusinessClass'].value,this.airline.name));
+    this.airline.segments.push(new TOPrimaryObject(0,this.group.controls['rowsEconomyClass'].value,this.airline.name));
+    this.airline.seatingArrangement = new Array<TOPrimaryObject>();
     
     for(let seat of this.seats.controls){
-      this.airline.seatingArrangement.push(seat.value['seat']);
+      this.airline.seatingArrangement.push(new TOPrimaryObject(0,seat.value['seat'],this.airline.name));
     }
     
     console.log(this.airline);
@@ -189,22 +200,19 @@ export class AirlineEditComponent implements OnInit {
     const value = event.value;
 
     if ((value || '').trim()) {
-      this.airline.destinations.push(value.trim());
+      this.airline.destinations.push(new TOPrimaryObject(0,value.trim(),this.airline.name));
     }
 
     if (input) {
       input.value = '';
     }
-
-    this.airlineService.editAirline(this.airline);
   }
 
-  remove(destination: string): void {
+  remove(destination: TOPrimaryObject): void {
     const index = this.airline.destinations.indexOf(destination);
 
     if (index >= 0) {
       this.airline.destinations.splice(index, 1);
-      this.airlineService.editAirline(this.airline);
     }
   }
 

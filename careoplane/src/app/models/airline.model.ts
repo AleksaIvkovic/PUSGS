@@ -2,6 +2,7 @@ import { Flight } from './flight.model';
 import { StringifyOptions } from 'querystring';
 import { Seat } from './seat.model';
 import { FastTicket } from './fast-ticket.model';
+import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
 
 export class Airline {
 
@@ -9,13 +10,13 @@ export class Airline {
         public name: string = null, 
         public address: string = null,
         public description: string = null, 
-        public prices : number[] = [],
-        public seatingArrangement: number[] = [],
-        public segments: number[] = [],
+        public prices : TOPrimaryObject[] = [],
+        public seatingArrangement: TOPrimaryObject[] = [],
+        public segments: TOPrimaryObject[] = [],
         public flights: Flight[] = [],
         public picture: string = "",
         public rating: number = 0,
-        public destinations: string[] = [],
+        public destinations: TOPrimaryObject[] = [],
         public fastTickets: FastTicket[] = []){
     }
 }
