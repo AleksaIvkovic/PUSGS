@@ -48,7 +48,7 @@ namespace Careoplane.Models
                 new Location()
                 {
                     LocationId = 0,
-                    LocationValue = (string)(location.Value),
+                    LocationValue = location.Value.ToString(),
                     RentACar = this
                 }));
             toRentACar.Prices.ToList().ForEach(price => Prices.Add(new PriceList()
@@ -66,9 +66,18 @@ namespace Careoplane.Models
             toRentACar.Locations = new List<TOPrimaryObject>();
             toRentACar.Prices = new List<TOPrimaryObject>();
             Vehicles.ToList().ForEach(vehicle => toRentACar.Vehicles.Add(vehicle.ToTO()));
-            Locations.ToList().ForEach(location => toRentACar.Locations.Add(new TOPrimaryObject() { Value = (string)(location.LocationValue), Reference = this }));
-            Prices.ToList().ForEach(price => toRentACar.Prices.Add(new TOPrimaryObject()
-            { Value = (double)(price.PriceValue), Reference = this }));
+            Locations.ToList().ForEach(location => toRentACar.Locations.Add(
+                new TOPrimaryObject() { 
+                    Id = 0, 
+                    Value = location.LocationValue, 
+                    Reference = this 
+                }));
+            Prices.ToList().ForEach(price => toRentACar.Prices.Add(
+                new TOPrimaryObject() { 
+                    Id = 0,
+                    Value = (double)(price.PriceValue), 
+                    Reference = this 
+                }));
 
             return toRentACar;
         }

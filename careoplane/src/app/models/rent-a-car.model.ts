@@ -1,5 +1,6 @@
 import { Vehicle } from './vehicle.model';
 import { TORentACar } from '../t-o-models/t-o-rent-a-car.model';
+import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
 
 export class RentACar {
     public constructor(
@@ -25,12 +26,18 @@ export class RentACar {
     }
 
     public ToTO(): TORentACar {
+        let toLocations: TOPrimaryObject[] = [];
+        this.locations.forEach(
+            l => {
+                toLocations.push(new TOPrimaryObject(0, l, this));
+            }
+        );
         return new TORentACar(
             this.name,
             this.address,
             this.description,
             [],
-            [],
+            toLocations,
             this.rating,
             []
         );

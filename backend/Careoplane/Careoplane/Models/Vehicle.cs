@@ -61,7 +61,7 @@ namespace Careoplane.Models
             UnavailableDates = new List<UnavailableDate>();
             toVehicle.UnavailableDates.ToList().ForEach(date =>
             {
-                DateTime newDate = DateTime.Parse((string)(date.Value));
+                DateTime newDate = DateTime.Parse(date.Value.ToString());
                 UnavailableDates.Add(new UnavailableDate()
                 {
                     DateId = 0,
@@ -89,6 +89,7 @@ namespace Careoplane.Models
             UnavailableDates.ToList().ForEach(date => toVehicle.UnavailableDates.Add(
                 new TOPrimaryObject() 
                 { 
+                    Id = 0,
                     Value = date.ToString(), 
                     Reference = this 
                 }));
