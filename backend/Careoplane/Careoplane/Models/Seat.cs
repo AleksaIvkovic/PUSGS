@@ -16,6 +16,7 @@ namespace Careoplane.Models
 
         public string Name { get; set; }
 
+        [Required]
         public Flight Flight { get; set; }
 
         public string Type { get; set; }
@@ -23,6 +24,8 @@ namespace Careoplane.Models
         public bool Occupied { get; set; }
 
         public double Discount { get; set; }
+
+        public double Price { get; set; }
 
         public Seat() { }
 
@@ -34,6 +37,7 @@ namespace Careoplane.Models
             Occupied = seat.Occupied;
             SeatId = seat.SeatId;
             Type = seat.Type;
+            Price = seat.Price;
         }
     }
 }

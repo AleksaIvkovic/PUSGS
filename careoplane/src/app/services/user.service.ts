@@ -81,7 +81,7 @@ export class UserService {
         'lufty@gmail.com',
         'admin',
         'airline',
-        ''
+        'Lufthansa'
     )
 
     //private loggedInUser: any;

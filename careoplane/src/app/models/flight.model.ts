@@ -12,9 +12,9 @@ export class Flight {
         public destination: string = null,
         public departure: Date = null,
         public arrival: Date = null, 
-        public distance: number = null, 
+        public distance: number = 0, 
         public connections: TOPrimaryObject[] = [],
-        public id: number = null,
+        public id: number = 0,
         public seats: Seat[] = [],
         public prices: TOPrimaryObject[] = []
         ){

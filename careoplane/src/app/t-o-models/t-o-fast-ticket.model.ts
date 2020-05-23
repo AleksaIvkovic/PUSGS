@@ -3,7 +3,7 @@ import { TOFlight } from './t-o-flight.model';
 
 export class TOFastTicket{
  
-    constructor(public seat: TOSeat = null,public flight: TOFlight = null)
+    constructor(public fastTicketId:number = 0, public seatId: number = 0,public flightId: number = 0)
     {
     }
 }

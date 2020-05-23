@@ -22,7 +22,7 @@ namespace Careoplane.TOModels
 
         public double Distance { get; set; }
 
-        public List<TOPrimaryObject> Conntections { get; set; }
+        public List<TOPrimaryObject> Connections { get; set; }
         public List<TOSeat> Seats { get; set; }
 
         public TOFlight() { }
@@ -35,10 +35,10 @@ namespace Careoplane.TOModels
             Origin = flight.Origin;
             Destination = flight.Destination;
 
-            Conntections = new List<TOPrimaryObject>();
-            foreach (var connection in flight.Conntections)
+            Connections = new List<TOPrimaryObject>();
+            foreach (var connection in flight.Connections)
             {
-                Conntections.Add(new TOPrimaryObject(connection.ConntectionId, connection.Value, connection.Flight.FlightId));
+                Connections.Add(new TOPrimaryObject(connection.ConntectionId, connection.Value, connection.Flight.FlightId));
             }
 
             Seats = new List<TOSeat>();
