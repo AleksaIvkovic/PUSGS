@@ -11,6 +11,7 @@ import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Admin } from 'src/app/models/admin.model';
 import { UserService } from 'src/app/services/user.service';
 import { TOPrimaryObject } from 'src/app/t-o-models/t-o-primary-object.model';
+import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 
 @Component({
   selector: 'app-airline-edit',
@@ -36,26 +37,33 @@ export class AirlineEditComponent implements OnInit {
   ngOnInit(): void {
     if(this.router.url.includes('edit')){
       let admin: Admin = <Admin>this.userService.getLoggedInUser();
-      this.airline = this.airlineService.getAirline(admin.company);
+      this.airlineService.getAirlineDB(admin.company).subscribe(
+        result => {
+          this.airline = Object.assign(new TOAirline(), result).convert();
+
+          this.addressControl = new FormControl(this.airline.address,Validators.required);
+          this.nameControl = new FormControl(this.airline.name,[Validators.required,this.verifyName.bind(this)]);
+          this.formInit();
+
+          this.nameControl.disable({onlySelf: true});
+        },
+        error => {console.log(error);}
+      );
       this.edit = true;
     }
     else{
       this.airline = new Airline();
-      this.airline.name = 'Lufthansa';
       this.airline.prices.push(new TOPrimaryObject(0,null,null));
       this.airline.prices.push(new TOPrimaryObject(0,null,null));
       this.airline.prices.push(new TOPrimaryObject(0,null,null));
       this.airline.segments.push(new TOPrimaryObject(0,null,null));
       this.airline.segments.push(new TOPrimaryObject(0,null,null));
       this.airline.segments.push(new TOPrimaryObject(0,null,null));
-    }
+      
+      this.addressControl = new FormControl(this.airline.address,Validators.required);
+      this.nameControl = new FormControl(this.airline.name,[Validators.required,this.verifyName.bind(this)]);
+      this.formInit();
 
-    this.addressControl = new FormControl(this.airline.address,Validators.required);
-    this.nameControl = new FormControl(this.airline.name,[Validators.required,this.verifyName.bind(this)]);
-    this.formInit();
-
-    if(this.edit){
-      this.nameControl.disable({onlySelf: true});
     }
   }
 
@@ -65,7 +73,8 @@ export class AirlineEditComponent implements OnInit {
     if(this.edit){
       for(let seat of this.airline.seatingArrangement){
         this.seats.push(new FormGroup({
-          'seat': new FormControl(seat,Validators.required)
+          'seat': new FormControl(seat.value,Validators.required),
+          'id' : new FormControl(seat.id)
         }))
       }
     }
@@ -82,8 +91,6 @@ export class AirlineEditComponent implements OnInit {
       'rowsEconomyClass': new FormControl(this.airline.segments[2].value,Validators.required),
       'seats': this.seats
     });
-
-    this.group.controls['name'].disable({onlySelf:true});
 
     this.addressControl.valueChanges.subscribe(value => {
       this.addressValid = false;
@@ -121,26 +128,44 @@ export class AirlineEditComponent implements OnInit {
     this.airline.name = this.group.controls['name'].value;
     this.airline.address = this.group.controls['address'].value;
     this.airline.description = this.group.controls['description'].value;
-    this.airline.prices = [];
-    this.airline.prices.push(new TOPrimaryObject(0,<string>this.group.controls['priceFirstClass'].value,this.airline.name));
-    this.airline.prices.push(new TOPrimaryObject(0,<string>this.group.controls['priceBusinessClass'].value,this.airline.name));
-    this.airline.prices.push(new TOPrimaryObject(0,<string>this.group.controls['priceEconomyClass'].value,this.airline.name));
-    this.airline.segments = [];
-    this.airline.segments.push(new TOPrimaryObject(0,this.group.controls['rowsFirstClass'].value,this.airline.name));
-    this.airline.segments.push(new TOPrimaryObject(0,this.group.controls['rowsBusinessClass'].value,this.airline.name));
-    this.airline.segments.push(new TOPrimaryObject(0,this.group.controls['rowsEconomyClass'].value,this.airline.name));
+    let prices: TOPrimaryObject[] = [];
+    if(!this.edit){
+      prices.push(new TOPrimaryObject(0,this.group.controls['priceFirstClass'].value,this.airline.name));
+      prices.push(new TOPrimaryObject(0,this.group.controls['priceBusinessClass'].value,this.airline.name));
+      prices.push(new TOPrimaryObject(0,this.group.controls['priceEconomyClass'].value,this.airline.name));
+    }
+    else{
+      prices.push(new TOPrimaryObject(this.airline.prices[0].id,this.group.controls['priceFirstClass'].value,this.airline.name));
+      prices.push(new TOPrimaryObject(this.airline.prices[1].id,this.group.controls['priceBusinessClass'].value,this.airline.name));
+      prices.push(new TOPrimaryObject(this.airline.prices[2].id,this.group.controls['priceEconomyClass'].value,this.airline.name));
+    }
+    this.airline.prices = prices;
+
+    let segments: TOPrimaryObject[] = [];
+    if(!this.edit){
+      segments.push(new TOPrimaryObject(0,this.group.controls['rowsFirstClass'].value,this.airline.name));
+      segments.push(new TOPrimaryObject(0,this.group.controls['rowsBusinessClass'].value,this.airline.name));
+      segments.push(new TOPrimaryObject(0,this.group.controls['rowsEconomyClass'].value,this.airline.name));
+    }
+    else{
+      segments.push(new TOPrimaryObject(this.airline.segments[0].id,this.group.controls['rowsFirstClass'].value,this.airline.name));
+      segments.push(new TOPrimaryObject(this.airline.segments[1].id,this.group.controls['rowsBusinessClass'].value,this.airline.name));
+      segments.push(new TOPrimaryObject(this.airline.segments[2].id,this.group.controls['rowsEconomyClass'].value,this.airline.name));
+    }
+    this.airline.segments = segments;
     this.airline.seatingArrangement = new Array<TOPrimaryObject>();
     
     for(let seat of this.seats.controls){
-      this.airline.seatingArrangement.push(new TOPrimaryObject(0,seat.value['seat'],this.airline.name));
+      this.airline.seatingArrangement.push(new TOPrimaryObject(seat.value['id'],seat.value['seat'],this.airline.name));
     }
-    
+
     console.log(this.airline);
     if(!this.edit){
       this.airlineService.addAirline(this.airline)
       .subscribe(
         responseData => {
-          this.router.navigate(['../../'],{relativeTo : this.activeRoute});
+          this.userService.updateCompanyName(this.airline.name);
+          this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
         },
         error => {
           console.log(error);
@@ -148,18 +173,26 @@ export class AirlineEditComponent implements OnInit {
       )
     }
     else{
-      this.airlineService.editAirline(this.airline);
+      this.airlineService.editAirline(this.airline).subscribe(
+        responseData => {
+          this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
+        },
+        error => {
+          console.log(error);
+        }
+      )
     }
   }
 
-  onAddConnection(){
+  onAddSeat(){
     this.seats.push(
       new FormGroup({
-        'seat': new FormControl(null)
+        'seat': new FormControl(null, Validators.required),
+        'id': new FormControl(0)
       }));
   }
 
-  onDeleteConnection(i: number){
+  onDeleteSeat(i: number){
     this.seats.removeAt(i);
   }
 

@@ -20,6 +20,8 @@ namespace Careoplane.TOModels
 
         public double Discount { get; set; }
 
+        public double Price { get; set; }
+
         public TOSeat() { }
         public TOSeat (Seat seat)
         {
@@ -29,6 +31,7 @@ namespace Careoplane.TOModels
             Occupied = seat.Occupied;
             SeatId = seat.SeatId;
             Type = seat.Type;
+            Price = seat.Price;
         }
     }
 }

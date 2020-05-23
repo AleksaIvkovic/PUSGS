@@ -91,4 +91,15 @@ export class FlightComponent implements OnInit {
   DeleteFastReservation(){
     
   }
+
+  DeleteFlight(){
+    this.airlineService.DeleteFlight(this.flight.id).subscribe(
+      res => {
+        this.airlineService.flightListChanged(this.flight.id);
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
 }

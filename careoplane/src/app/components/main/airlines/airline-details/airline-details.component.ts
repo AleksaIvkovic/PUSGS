@@ -8,13 +8,14 @@ import { Subscription } from 'rxjs';
 import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
 import { UserService } from 'src/app/services/user.service';
 import { Admin } from 'src/app/models/admin.model';
+import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 
 @Component({
   selector: 'app-airline-details',
   templateUrl: './airline-details.component.html',
   styleUrls: ['./airline-details.component.css']
 })
-export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AirlineDetailsComponent implements OnInit{
   name: string;
   admin: boolean = false;
   
@@ -36,6 +37,20 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(private userService: UserService, private geocodingService: GeoCodingServiceService,private router: Router,private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
+    this.airline = new Airline();
+    this.airlineService.flightListChange.subscribe(
+      value => {
+        let count = 0;  
+        for(let flight of this.airline.flights){
+          if(flight.id == value)
+          {
+            this.airline.flights.splice(count,1);
+            break;
+          }
+          count++;
+        }
+      }
+    )
     this.activeRoute.params.subscribe(
       (params: Params) => {
           if(params['id']){
@@ -46,7 +61,13 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
             this.name = admin.company;
             this.admin = true;
           }
-          this.airline = this.airlineService.getAirline(this.name);
+          this.airlineService.getAirlineDB(this.name).subscribe(
+            result => {
+              this.airline = Object.assign(new TOAirline(), result).convert();
+              this.mapInitializer();
+            },
+            error => {console.log(error);}
+          );
       }
     );
   }
@@ -55,15 +76,15 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit, OnDestroy
     this.geocodingService.LatLon(this.airline.address,this.map, this.gmap);
   }
 
-  ngAfterViewInit() {
-    this.mapInitializer();
-  }
-
   ngOnDestroy(): void {
   }
 
   onEdit(): void{
     this.router.navigate(['../edit'], { relativeTo: this.activeRoute });
+  }
+
+  AddFlight(){
+    this.router.navigate(['../add-flight'], { relativeTo: this.activeRoute });
   }
 
   Back(){

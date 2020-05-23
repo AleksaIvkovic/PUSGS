@@ -10,35 +10,31 @@ import { FlightReservation } from '../models/flight-reservation.model';
 import { HttpClient } from '@angular/common/http';
 import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
 import { TOAirline } from '../t-o-models/t-o-airline.model';
+import { TOFlight } from '../t-o-models/t-o-flight.model';
+import { TOSeat } from '../t-o-models/t-o-seat.model';
+import { TOFastTicket } from '../t-o-models/t-o-fast-ticket.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AirlineService {
-  private airlines: Airline[] = [
-  //  new Airline("WizzAir","31 Oxford street, London, UK", "Why wait for a perfecr moment to travel, with us, every moment is perfect",
-  //[0.5,0.35,0.25],[2,4,2],[3,5,10],[],"",1,["Berlin","Rome","Belgrade","New York","Paris"],[]),
-    //new Airline("Jat","Beograd","Still going strong",[0.2,0.1,0.05],[3,3],[1,1,15],[],
-    //"",1,["Belgrade","Paris","New York","London","Rome"]),
-  ];
-
-  private flight1: Flight = new Flight("Jat","Belgrade","New York",new Date(2020,5,5,14,23,22,0), new Date(2020,5,5,16,23,22,0), 2000, [],0);
-  private flight2: Flight = new Flight("Jat","Paris","Belgrade",new Date(2020,3,25,14,23,22,0), new Date(2020,3,25,18,23,22,0), 1200, [],1);
-  private flight3: Flight = new Flight("WizzAir","Berlin","Belgrade",new Date(2020,4,6,14,23,22,0), new Date(2020,4,6,16,23,22,0), 1300, [],2);
-  private flight4: Flight = new Flight("WizzAir","Rome","Berlin",new Date(2020,4,12,14,23,22,0), new Date(2020,4,12,15,23,22,0), 2800, [],3);
-  private flight5: Flight = new Flight("Jat","New York","Belgrade",new Date(2020,5,15,14,23,22,0), new Date(2020,5,15,19,23,22,0), 2900, [],4);
-
+  private airlines: Airline[] = [];
+  private flights: Flight[] = [];
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
   ticketsChanged = new Subject<any>();
   emptyTickets = new Subject<any>();
   classType = new Subject<string>();
   ticketDone = new Subject<string>();
-
+  flightListChange = new Subject<number>();
   public reservations: FlightReservation[] = []
 
   public ticketDoneChange(){
     this.ticketDone.next('');
+  }
+
+  public flightListChanged(id: number){
+    this.flightListChange.next(id);
   }
 
   public updateClassType(newClass: string){
@@ -53,83 +49,41 @@ export class AirlineService {
     this.emptyTickets.next(tickets);
   }
   
-  private flights: Flight[] = [
-    // this.flight1,
-    // this.flight2,
-    // this.flight3,
-    // this.flight4,
-    // this.flight5
-  ];
-  
   constructor(private http: HttpClient) {
-    // for(let flight of this.flights){
-
-    //   for(let airline of this.airlines){
-      
-    //     if(flight.airlineName == airline.name){
-    //       for(let i = 0; i < airline.prices.length; i++){
-    //         flight.prices.push(new TOPrimaryObject(0,flight.distance * airline.prices[i],0));
-    //       }
-
-    //       let count = 1;
-    //       let characters: string[] = ['A','B','C','D','E','F','G','H','I','J'];
-    //       let sum = 0;
-      
-    //       for(let i = 0;i < airline.seatingArrangement.length;i++){
-    //         sum += airline.seatingArrangement[i];
-    //       }
-      
-    //       for(let i = 0;i < airline.segments.length;i++){
-    //         let type: string;
-            
-    //         if(i == 0){
-    //           type = "first";
-    //         }
-    //         else if(i == 1){
-    //           type = "business";
-    //         }
-    //         else{
-    //           type = "economy";
-    //         }
-
-    //         for(let j = 0;j < airline.segments[i];j++){
-    //           for(let k= 0;k < sum;k++){
-    //             flight.seats.push(new Seat(flight.id,count + characters[k],type,false,flight.prices[i].value,0));
-    //           }
-    //           count++;
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
-    // this.airlines[1].flights.push(this.flight1);
-    // this.airlines[1].flights.push(this.flight2);
-    // this.airlines[1].flights.push(this.flight5);
-    // this.airlines[1].picture = "https://seeklogo.com/images/J/JAT_Jugoslovenski_Aero_Transport-logo-04390D0687-seeklogo.com.png";
-    // this.airlines[0].flights.push(this.flight3);
-    // this.airlines[0].flights.push(this.flight4);
-    // this.airlines[0].picture="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wizz_Air_logo.svg/1280px-Wizz_Air_logo.svg.png";
-  
-    this.http.get('http://localhost:52075/api/Airlines').subscribe(responseData => {
-      this.airlines = [];    
-    });
   }
   
+  //treba obrisati
   getAirlines(){
     this.airlinesChanged.next(this.airlines.slice());
   }
 
+  getAirlinesDB(){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines';
+    return this.http.get<TOAirline[]>(address);
+  }
+
+  //treba obrisati
   getAllFlights(){
     this.flightsChanged.next(this.flights.slice())
   }
 
-  getAirline(name: string): Airline{
+  getAllFlightsDB(){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights';
+    return this.http.get<TOFlight[]>(address);
+  }
+
+  //treba obrisati
+  getAirline(name: string) : Airline{
     for(let airline of this.airlines){
       if(airline.name === name){
         return airline;
       }
     }
+  }
+
+  getAirlineDB(name : string){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/' + name;
+    return this.http.get<TOAirline>(address);
   }
 
   addAirline(airline: Airline) {
@@ -139,18 +93,39 @@ export class AirlineService {
   }
 
   editAirline(airline: Airline) {
-    for(let tempAirline of this.airlines){
-      if(tempAirline.name === airline.name){
-        tempAirline=airline;
+    let tempAirline = new TOAirline(airline.name,airline.address,airline.description,airline.prices,airline.seatingArrangement,airline.segments,[],airline.picture,airline.rating,airline.destinations,[]);
+    for(let flight of airline.flights){
+      let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,flight.id,[]);
+      for(let seat of flight.seats){
+        tempFlight.seats.push(new TOSeat(seat.id,seat.name,seat.type,seat.occupied,seat.price,seat.discount,seat.id));
+      }
+      tempAirline.flights.push(tempFlight);
+    }
+    
+    for(let fastTicket of airline.fastTickets){
+      tempAirline.fastTickets.push(new TOFastTicket(fastTicket.seat.id,fastTicket.flight.id));
+    }
+
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/' + tempAirline.name;
+    for(let airlineI of this.airlines){
+      if(airlineI.name == airline.name){
+        airlineI = airline;
       }
     }
-    this.airlinesChanged.next(this.airlines.slice())
+    return this.http.put(address,tempAirline);
   }
 
+  //treba obrisati
   getFlight(id: number): Flight {
     return this.flights[id];
   }
 
+  getFlightDB(id: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/' + id;
+    return this.http.get<TOFlight>(address); 
+  }
+
+  //treba obrisati
   verifyName(value: string) {
     for(let tempAirline of this.airlines){
       if(tempAirline.name.toLowerCase() === value.toLowerCase()){
@@ -160,75 +135,42 @@ export class AirlineService {
     return true;
   }
 
+  //treba obrisati
   getCurrentAirline(): Airline {
     return this.airlines[1];
   }
 
+  //izmeni da radi sa DB
   EditFlight(flight: Flight) {
-    for(let flightTemp of this.flights){
-      if(flight.id == flightTemp.id){
-        flightTemp = flight;
-      }
-    }
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/' + flight.id.toString();
+    let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,flight.id,[]);
+    return this.http.put(address,tempFlight);
   }
 
+  //izmeni da radi sa DB
   AddFlgiht(flight: Flight) {
-    flight.id= this.flights.length;
-    this.generateSeats(flight);
-    for(let airline of this.airlines){
-      if(airline.name == flight.airlineName){
-        airline.flights.push(flight);
-      }
-    }
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights';
+    let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,flight.id,[]);
+    return this.http.post(address,tempFlight);
   }
 
+  DeleteFlight(id: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/' + id.toString();
+    return this.http.delete(address);
+  }
+
+  //izmeni da radi sa DB
   changeSeatDiscount(seat: Seat) {
     let flight = this.getFlight(seat.flightId)
     let airline = this.getAirline(flight.airlineName);
     if(seat.discount != 0){
-      airline.fastTickets.push(new FastTicket(seat,this.getFlight(seat.flightId)));
+      airline.fastTickets.push(new FastTicket(0,seat,this.getFlight(seat.flightId)));
     }
     else{
       for(let fastTicket of airline.fastTickets){
         if(fastTicket.seat.name === seat.name){
           airline.fastTickets.splice(airline.fastTickets.indexOf(fastTicket),1);
           return;
-        }
-      }
-    }
-  }
-
-  generateSeats(flight: Flight) {
-    for(let airline of this.airlines){
-      
-      if(flight.airlineName == airline.name){
-        let count = 1;
-        let characters: string[] = ['A','B','C','D','E','F','G','H','I','J'];
-        let sum = 0;
-    
-        for(let i = 0;i < airline.seatingArrangement.length;i++){
-          sum += airline.seatingArrangement[i].value;
-        }
-    
-        for(let i = 0;i < airline.segments.length;i++){
-          let type: string;
-          
-          if(i == 0){
-            type = "first";
-          }
-          else if(i == 1){
-            type = "business";
-          }
-          else{
-            type = "economy";
-          }
-
-          for(let j = 0;j < airline.segments[i].value;j++){
-            for(let k= 0;k < sum;k++){
-              flight.seats.push(new Seat(flight.id,count + characters[k],type,false,flight.prices[i].value));
-            }
-            count++;
-          }
         }
       }
     }

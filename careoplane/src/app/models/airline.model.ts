@@ -5,7 +5,6 @@ import { FastTicket } from './fast-ticket.model';
 import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
 
 export class Airline {
-
     constructor(
         public name: string = null, 
         public address: string = null,

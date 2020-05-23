@@ -4,8 +4,8 @@
       <mat-form-field appearance="fill">
         <mat-label>Origin</mat-label>
         <mat-select [formControlName]="'origin'">
-          <mat-option *ngFor="let destination of airline.destinations" [value]="destination">
-            {{destination}}
+          <mat-option *ngFor="let destination of airline.destinations" [value]="destination.value">
+            {{destination.value}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -14,8 +14,8 @@
       <mat-form-field appearance="fill">
         <mat-label>Destination</mat-label>
         <mat-select [formControlName]="'destination'">
-          <mat-option *ngFor="let destination of airline.destinations" [value]="destination">
-            {{destination}}
+          <mat-option *ngFor="let destination of airline.destinations" [value]="destination.value">
+            {{destination.value}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -55,8 +55,8 @@
           <mat-form-field appearance="fill">
             <mat-label>Connection</mat-label>
             <mat-select [formControlName]="'city'">
-              <mat-option *ngFor="let destination of airline.destinations" [value]="destination">
-                {{destination}}
+              <mat-option *ngFor="let destination of airline.destinations" [value]="destination.value">
+                {{destination.value}}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -73,7 +73,7 @@
       <br/>
       <div class="row">
         <div class="col-md-3">
-          <button mat-raised-button color="accent" type="button" (click)="onAddConnection()">Add Connection</button>
+          <button mat-raised-button color="accent" type="button" [disabled]="edit" (click)="onAddConnection()">Add Connection</button>
         </div>
       </div>
       <br/>

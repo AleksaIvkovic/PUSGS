@@ -1,10 +1,10 @@
 <div class="row">
     <div class="col-md-1">
-        <div matTooltip="{{flight.airlineName}}"> 
+        <!-- <div matTooltip="{{flight.airlineName}}"> 
             <a [routerLink]="[backStr,flight.airlineName, 'details']">
                 <app-airline [name]="flight.airlineName"></app-airline>
             </a>
-        </div>
+        </div> -->
     </div>
     <div class="col-md-2 flight">
         <div class="mat-h3">
@@ -42,7 +42,7 @@
             </div>
             <div class="col-md" *ngFor="let connection of flight.connections">
                 <div class="mat-small">
-                    {{connection}}
+                    {{connection.value}}
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@
             {{price | currency: 'EUR'}}
         </div>
         <div class="mat-h3" *ngIf="classType === 'any' && fastTicket == null">
-            {{flight.prices[2] | currency: 'EUR'}} - {{flight.prices[0] | currency: 'EUR'}}
+            {{flight.prices[2].value | currency: 'EUR'}} - {{flight.prices[0].value | currency: 'EUR'}}
         </div>
         <div class="row" *ngIf="fastTicket != null">
             <div class="col-md">
@@ -96,6 +96,9 @@
                 Edit
             </button>
             <button mat-mini-fab color="warn" style="margin: 0 auto;" (click)="DeleteFastReservation()" *ngIf="fastTicket != null && admin">
+                X
+            </button>
+            <button mat-mini-fab color="warn" style="margin: 0 auto;" (click)="DeleteFlight()" *ngIf="fastTicket == null && admin">
                 X
             </button>
         </div>

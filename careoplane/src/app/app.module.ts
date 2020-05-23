@@ -200,7 +200,7 @@ import { HttpClientModule } from '@angular/common/http';
     ScrollingModule,
     MatTableFilterModule,
     TooltipModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

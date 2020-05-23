@@ -4,14 +4,16 @@ using Careoplane.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Careoplane.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200523132919_CareoplaneDBv5.0")]
+    partial class CareoplaneDBv50
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,7 +240,7 @@ namespace Careoplane.Migrations
                     b.Property<double>("Discount")
                         .HasColumnType("float");
 
-                    b.Property<int>("FlightId")
+                    b.Property<int?>("FlightId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -353,6 +355,10 @@ namespace Careoplane.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -411,7 +417,7 @@ namespace Careoplane.Migrations
             modelBuilder.Entity("Careoplane.Models.Connection", b =>
                 {
                     b.HasOne("Careoplane.Models.Flight", "Flight")
-                        .WithMany("Connections")
+                        .WithMany("Conntections")
                         .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -479,9 +485,7 @@ namespace Careoplane.Migrations
                 {
                     b.HasOne("Careoplane.Models.Flight", "Flight")
                         .WithMany("Seats")
-                        .HasForeignKey("FlightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FlightId");
                 });
 
             modelBuilder.Entity("Careoplane.Models.SeatArrangement", b =>

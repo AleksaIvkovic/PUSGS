@@ -8,6 +8,10 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AirlineService } from 'src/app/services/airline.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TOPrimaryObject } from 'src/app/t-o-models/t-o-primary-object.model';
+import { TOFlight } from 'src/app/t-o-models/t-o-flight.model';
+import { UserService } from 'src/app/services/user.service';
+import { Admin } from 'src/app/models/admin.model';
+import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 
 @Component({
   selector: 'app-flight-edit',
@@ -22,42 +26,60 @@ export class FlightEditComponent implements OnInit {
   removable = true;
   addOnBlur = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
-  airline: Airline;
+  airline: Airline = new Airline();
   minArrivalDate = new Date();
   minDepartureDate = new Date();
   edit: boolean;
+  origin: FormControl;
 
-  constructor(private router: Router, private activeRoute: ActivatedRoute, private airlineService: AirlineService) { }
+  constructor(private router: Router, private activeRoute: ActivatedRoute, private airlineService: AirlineService, private userService: UserService) { }
 
   ngOnInit(): void {
     this.minArrivalDate = new Date();
-
     this.activeRoute.params.subscribe((params: Params) => {
-      if(params['fid']){
-        this.flight = this.airlineService.getFlight(params['fid']);
-        this.edit = true;
-      }
-      else{
-        this.flight = new Flight();
-      }
+      let admin: Admin = <Admin>this.userService.getLoggedInUser();
+        this.airlineService.getAirlineDB(admin.company).subscribe(
+        result => {
+          this.airline = Object.assign(new TOAirline(), result).convert();
+        
+          if(params['fid']){
+              this.airlineService.getFlightDB(params['fid']).subscribe(
+                (result) => {
+                  this.flight = Object.assign(new TOFlight(),result).convert(this.airline.prices);
+                  this.edit = true;
+                  this.origin = new FormControl(this.flight.origin,Validators.required);
+                  this.InitForm();
+                },
+                (error) => {
+                  console.log(result);
+                }
+              );
+          }
+          else{
+            this.flight = new Flight();
+            this.InitForm();
+          }
+        },
+      error => {console.log(error);});
     });
+  }
 
-    this.airline = this.airlineService.getCurrentAirline();
-
+  InitForm(){
     this.connectionsForm = new FormArray([]);
 
     if(this.edit){
       for(let connection of this.flight.connections){
         this.connectionsForm.push(
           new FormGroup({
-            'city': new FormControl(connection, Validators.required)
+            'city': new FormControl(connection.value, Validators.required),
+            'id': new FormControl(connection.id)
           })
         )
       }
     }
 
     this.group = new FormGroup({
-      'origin': new FormControl(this.flight.origin, Validators.required),
+      'origin': this.origin,
       'destination': new FormControl(this.flight.destination, [Validators.required, this.checkDestination.bind(this)]),
       'departure': new FormControl(this.flight.departure, [Validators.required, this.checkDepartureDate.bind(this)]),
       'arrival': new FormControl(this.flight.arrival, [Validators.required, this.checkArrivalDate.bind(this)]),
@@ -68,36 +90,58 @@ export class FlightEditComponent implements OnInit {
     this.group.controls['departure'].valueChanges.subscribe(value => {
       this.minArrivalDate = new Date(value);
       this.checkArrivalDate(<FormControl>this.group.controls['arrival']);
-    })
+    });
+
+    if(this.edit){
+      this.origin.disable({onlySelf: true});
+      this.group.controls['destination'].disable({onlySelf: true});
+      this.group.controls['distance'].disable({onlySelf: true});
+      this.group.controls['connectionsForm'].disable({onlySelf: true});
+    }
   }
-  
+
   onSubmit(){
-    this.flight.origin = this.group.controls['origin'].value;
-    this.flight.destination = this.group.controls['destination'].value;
-    this.flight.departure = this.group.controls['departure'].value;
-    this.flight.arrival = this.group.controls['arrival'].value;
-    this.flight.distance = this.group.controls['distance'].value;
-    this.flight.connections = new Array<TOPrimaryObject>();
+    if(!this.edit){
+      this.flight.origin = this.group.controls['origin'].value;
+      this.flight.destination = this.group.controls['destination'].value;
+      this.flight.departure = this.group.controls['departure'].value;
+      this.flight.arrival = this.group.controls['arrival'].value;
+      this.flight.distance = this.group.controls['distance'].value;
+      this.flight.connections = new Array<TOPrimaryObject>();
+      
+      for(let connection of this.connectionsForm.controls){
+        this.flight.connections.push(new TOPrimaryObject(0,connection.value['city'],0));this.flight.connections.push(new TOPrimaryObject(connection.value['id'],connection.value['city'],this.flight.id));
+      }
+  
+      for(let price of this.airline.prices){
+        this.flight.prices.push(new TOPrimaryObject(0, price.value * this.flight.distance,0));
+      }
+  
+      this.flight.conCount = this.flight.connections.length;
+    }
     
-    for(let seat of this.connectionsForm.controls){
-      this.flight.connections.push(seat.value['city']);
-    }
-
-    for(let price of this.airline.prices){
-      this.flight.prices.push(new TOPrimaryObject(0, price.value * this.flight.distance,0));
-    }
-
-    this.flight.conCount = this.flight.connections.length;
 
     if(!this.edit){
       this.flight.airlineName = this.airline.name;
-      this.airlineService.AddFlgiht(this.flight);
-      return;
+      this.airlineService.AddFlgiht(this.flight).subscribe(
+        response => {
+          this.router.navigate(['../'],{relativeTo: this.activeRoute});
+        },
+        error => {
+          console.log(error);
+        }
+      )
     }
-    
-    this.airlineService.EditFlight(this.flight);
-
-    this.router.navigate(['../../'],{relativeTo: this.activeRoute});
+    else{
+      this.airlineService.EditFlight(this.flight).subscribe(
+        response => {
+          this.router.navigate(['../'],{relativeTo: this.activeRoute});
+        },
+        error => {
+          console.log(error);
+        }
+      )
+    }
   }
 
   checkDepartureDate(control: FormControl): {[s: string]: boolean} 
@@ -129,7 +173,7 @@ export class FlightEditComponent implements OnInit {
   onAddConnection(){
     this.connectionsForm.push(
       new FormGroup({
-        'city': new FormControl(null, Validators.required)
+        'city': new FormControl(null, Validators.required),
       }));
   }
 

@@ -11,6 +11,8 @@
     <Compile Remove="Migrations\20200516110727_DBv3.0.Designer.cs" />
     <Compile Remove="Migrations\20200516120642_CareoplaneDB-v2.0.cs" />
     <Compile Remove="Migrations\20200516120642_CareoplaneDB-v2.0.Designer.cs" />
+    <Compile Remove="Migrations\20200523180314_CareoplaneDBv6.0.cs" />
+    <Compile Remove="Migrations\20200523180314_CareoplaneDBv6.0.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
