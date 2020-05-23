@@ -54,21 +54,12 @@ export class RentACarService {
     newVehicleListChanged = new Subject<Vehicle[]>();
     newVehicles: Vehicle[] = [];
 
-    getRentACar(RentACarName: string): RentACar {
+    getRentACar(RentACarName: string) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/RentACars/' + RentACarName;
-        this.http
+        return this.http
         .get(
             address
-        ).subscribe(
-            response => {
-                return (response as TORentACar).ToRegular();
-            },
-            error => {
-                console.log(error);
-                return null;
-            }
         );
-        return null;
     }
 
     getRentACars() {

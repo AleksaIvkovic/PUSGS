@@ -27,7 +27,6 @@ namespace Careoplane.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TORentACar>>> GetRentACars()
         {
-            //Treba popuniti lokacije, vozila i cene
             List<RentACar> RentACarList = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).Include(r => r.Vehicles).ToListAsync();
             List<TORentACar> TORentACarList = new List<TORentACar>();
             RentACarList.ForEach(rentACar => TORentACarList.Add(rentACar.ToTO()));
@@ -40,7 +39,7 @@ namespace Careoplane.Controllers
         public async Task<ActionResult<TORentACar>> GetRentACar(string id)
         {
             var rentACar = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).Include(r => r.Vehicles).FirstOrDefaultAsync(r => r.Name == id);
-            //Treba popuniti lokacije, vozila i cene
+
             if (rentACar == null)
             {
                 return NotFound();

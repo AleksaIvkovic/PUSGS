@@ -129,7 +129,6 @@ export class RentACarManagerComponent implements OnInit {
         response => {
           this.userService.updateCompanyName(response['name']);
           this.router.navigate(['main/rent-a-car-profile']);
-          //this.rentACarService.rentACarChanged.next(response as RentACar);
         },
         error => {
           console.log(error);
