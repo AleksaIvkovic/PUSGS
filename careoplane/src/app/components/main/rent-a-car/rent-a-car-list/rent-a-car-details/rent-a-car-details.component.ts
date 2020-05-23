@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { Admin } from 'src/app/models/admin.model';
 import { Vehicle } from 'src/app/models/vehicle.model';
 import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
+import { VehicleService } from 'src/app/services/vehicle.service';
 
 @Component({
   selector: 'app-rent-a-car-details',
@@ -40,6 +41,7 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
   constructor(
     private rentACarService: RentACarService,
+    private vehicleService: VehicleService,
     private route: ActivatedRoute,
     private router: Router) { }
 
@@ -63,13 +65,15 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
         if (this.admin) {
           this.isAdmin = true;
           this.rentACarService.getRentACar(this.admin.company).subscribe(
-            (response : TORentACar) => {
-                this.rentACar = plainToClass response.ToRegular();
+            (response : any) => {
+                let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
+                this.rentACar = toRentACar.ToRegular();
+                this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
             },
             error => {
                 console.log(error);
             }
-        );;
+        );
         } else {
           this.index = params['id'];
           this.rentACar = this.rentACarService.getRentACarByIndex(this.index);

@@ -7,6 +7,8 @@ import { UserService } from 'src/app/services/user.service';
 import { Vehicle } from 'src/app/models/vehicle.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscriber, Subscription } from 'rxjs';
+import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
+import { VehicleService } from 'src/app/services/vehicle.service';
 
 @Component({
   selector: 'app-vehicle-manager',
@@ -30,44 +32,55 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
   constructor(
     private rentACarService: RentACarService,
     private userService: UserService,
+    private vehicleService: VehicleService,
     private router: Router,
     private activeRoute: ActivatedRoute,
     private _snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-    if (this.router.url.includes('new')) {
-      this.vehicleTypes = this.rentACarService.getVehicleTypes();
-      this.vehicleTypes.splice(0, 1);
-      if (!this.router.url.includes('edit')) {
-        this.isEdit = false;
-      } else {
-        this.indexLocation = 0;
-        this.vehicleIndex = +this.router.url.split('/')[3];
-        this.vehicle = this.rentACarService.getTempVehicle(this.vehicleIndex);
+    // if (this.router.url.includes('new')) {
+    //   this.vehicleTypes = this.rentACarService.getVehicleTypes();
+    //   this.vehicleTypes.splice(0, 1);
+    //   if (!this.router.url.includes('edit')) {
+    //     this.isEdit = false;
+    //   } else {
+    //     this.indexLocation = 0;
+    //     this.vehicleIndex = +this.router.url.split('/')[3];
+    //     this.vehicle = this.rentACarService.getTempVehicle(this.vehicleIndex);
+    //   }
+    //   this.locations = ['HQ'];
+    //   this.isNew = true;
+    // } else {
+    this.isEdit = this.router.url.includes('edit');
+    let company = this.userService.getLoggedInUser().company;
+    this.rentACarService.getRentACar(company).subscribe(
+      (response : any) => {
+          let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
+          this.rentACar = toRentACar.ToRegular();
+          this.vehicleTypes = this.rentACarService.getVehicleTypes();
+          this.vehicleTypes.splice(0, 1);
+          this.locations = this.rentACar.locations;
+          this.subscribtion = this.activeRoute.params
+          .subscribe(
+            (params: Params) => {
+              this.vehicleIndex = +params['idvh'];
+              if (this.vehicleIndex === undefined || Number.isNaN(this.vehicleIndex)) {
+                this.isEdit = false;
+              } else {
+                this.isEdit = true;
+                this.vehicle = this.rentACar.vehicles[this.vehicleIndex];
+                this.indexLocation = this.locations.indexOf(this.vehicle.location);
+                this.indexType = this.vehicleTypes.indexOf(this.vehicle.type);
+              }
+          });
+          this.initForm();
+      },
+      error => {
+          console.log(error);
       }
-      this.locations = ['HQ'];
-      this.isNew = true;
-    } else {
-      this.rentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
-      this.vehicleTypes = this.rentACarService.getVehicleTypes();
-      this.vehicleTypes.splice(0, 1);
-      this.locations = this.rentACar.locations;
-      this.subscribtion = this.activeRoute.params
-      .subscribe(
-        (params: Params) => {
-          this.vehicleIndex = +params['idvh'];
-          if (this.vehicleIndex === undefined || Number.isNaN(this.vehicleIndex)) {
-            this.isEdit = false;
-          } else {
-            this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.rentACar.name, this.vehicleIndex);
-            this.indexLocation = this.locations.indexOf(this.vehicle.location);
-            this.indexType = this.vehicleTypes.indexOf(this.vehicle.type);
-          }
-      });
-    }
-    
-    this.initForm();
+    );
+    // }
   }
 
   initForm() {
@@ -83,8 +96,6 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if (!this.isEdit) {
-      // let year = <Date>this.addForm.value['pickerYear'];
-    
       let vehicle = new Vehicle(
         this.addForm.value['brand'], 
         this.addForm.value['type'],
@@ -93,28 +104,42 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
         this.addForm.value['price'],
         this.addForm.value['location']
       );
+      vehicle.rentACar = this.rentACar.name;
 
-      if (this.isNew) {
-        this.rentACarService.addTempVehicle(vehicle);
-      } else {
-        this.rentACarService.addVehicle(this.rentACar, vehicle);
-      }
-      
-      this._snackBar.open('Vehicle added successfully', 'OK', {
-        duration: 5000,
-      });
-      this.router.navigate(['../'], {relativeTo: this.activeRoute});
+      this.vehicleService.postVehicle(vehicle).subscribe(
+        (response: any) => {
+          this._snackBar.open('Vehicle added successfully', 'OK', {
+            duration: 5000,
+          });
+          this.rentACar.vehicles.push(vehicle);
+          this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+          this.router.navigate(['../'], {relativeTo: this.activeRoute});
+        }, 
+        error => {
+          console.log(error);
+        }
+      );
     } else {
-      if (this.isNew) {
-        this.rentACarService.editTempVehicle(this.vehicleIndex, this.addForm.value['brand'], this.addForm.value['seats'], this.addForm.value['price'], this.addForm.value['location']);
-      } else {
-        this.rentACarService.editVehicle(this.rentACar, this.vehicleIndex, this.addForm.value['brand'], this.addForm.value['seats'], this.addForm.value['price'], this.addForm.value['location']);
-      }
-      
-      this._snackBar.open('Vehicle edited successfully', 'OK', {
-        duration: 5000,
-      });
-      this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+      this.vehicle.numOfSeats = this.addForm.value['seats'];
+      this.vehicle.pricePerDay = this.addForm.value['price'];
+      this.vehicle.location = this.addForm.value['location'];
+      this.vehicleService.putVehicle(this.vehicle).subscribe(
+        response => {
+          let index = -1;
+          this.rentACar.vehicles.forEach(v => {
+            if (v.vehicleId == this.vehicle.vehicleId) {
+              index = this.rentACar.vehicles.indexOf(v);
+            }
+          });
+          this.rentACar.vehicles[index] = this.vehicle;
+          this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+          this._snackBar.open('Vehicle edited successfully', 'OK', {duration: 5000,});
+          this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+        },
+        error => {
+          console.log(error);
+        }
+      );
     }
   }
 

@@ -54,7 +54,8 @@ namespace Careoplane.Controllers
         public async Task<IActionResult> PutVehicle(int id, TOVehicle toVehicle)
         {
             Vehicle vehicle = new Vehicle();
-            vehicle.FromTO(toVehicle);
+            var rentACar = _context.RentACars.FirstOrDefault(r => r.Name == toVehicle.RentACar);
+            vehicle.FromTO(toVehicle, rentACar);
 
             if (id != vehicle.VehicleId)
             {
@@ -89,7 +90,8 @@ namespace Careoplane.Controllers
         public async Task<ActionResult<TOVehicle>> PostVehicle(TOVehicle toVehicle)
         {
             Vehicle vehicle = new Vehicle();
-            vehicle.FromTO(toVehicle);
+            var rentACar = _context.RentACars.FirstOrDefault(r => r.Name == toVehicle.RentACar);
+            vehicle.FromTO(toVehicle, rentACar);
 
             _context.Vehicles.Add(vehicle);
             await _context.SaveChangesAsync();
@@ -101,7 +103,7 @@ namespace Careoplane.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<TOVehicle>> DeleteVehicle(int id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _context.Vehicles.Include(v => v.RentACar).Include(v => v.UnavailableDates).FirstOrDefaultAsync(v => v.VehicleId == id);
             if (vehicle == null)
             {
                 return NotFound();

@@ -2,6 +2,7 @@ import { Vehicle } from '../models/vehicle.model';
 import { TOPrimaryObject } from './t-o-primary-object.model';
 import { TOVehicle } from './t-o-vehicle.model';
 import { RentACar } from '../models/rent-a-car.model';
+import { formatPercent } from '@angular/common';
 
 export class TORentACar {
     public constructor(
@@ -14,7 +15,7 @@ export class TORentACar {
         public prices: TOPrimaryObject[] = []) {
     }
 
-    public ToRegular() {
+    public ToRegular(): RentACar {
         let locations: string[] = [];
         this.locations.forEach(
             l => {
@@ -29,8 +30,9 @@ export class TORentACar {
         );
         let vehicles: Vehicle[] = [];
         this.vehicles.forEach(
-            v => {
-                vehicles.push(v.ToRegular());
+            (v: any) => {
+                let toVehicle: TOVehicle = Object.assign(new TOVehicle('', '', 0, 0, 0,'',0,[], false, ''), v);
+                vehicles.push(toVehicle.ToRegular());
             }
         );
         return new RentACar(

@@ -48,7 +48,7 @@ namespace Careoplane.Models
             ToLocation = toVehicleReservation.ToLocation;
             Type = toVehicleReservation.Type;
             Vehicle vehicle = new Vehicle();
-            vehicle.FromTO(toVehicleReservation.Vehicle);
+            //vehicle.FromTO(toVehicleReservation.Vehicle);
             Vehicle = vehicle;
         }
 

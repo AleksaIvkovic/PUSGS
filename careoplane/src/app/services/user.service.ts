@@ -22,35 +22,35 @@ export class UserService {
         '123456789'
     );
 
-    private userWithReservations: User = new User(
-        'resUsername',
-        'test@gmail.com',
-        'pass',
-        'Name',
-        'Surname',
-        'City',
-        '123456789',
-        [
-            new VehicleReservation(
-                new Vehicle('BMW', 'Car', 5, 2019, 200, 'Novi Sad', 0, [], false, 'INEX'),
-                new Date(2020, 4, 25),
-                'Novi Sad',
-                new Date(2020, 4, 27),
-                'Novi Sad',
-                3,
-                400
-            ),
-            new VehicleReservation(
-                new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, 'Novi Sad', 0, [], false, 'Europcar'),
-                new Date(2020, 4, 26),
-                'Novi Sad',
-                new Date(2020, 4, 27),
-                'Novi Sad',
-                2,
-                300
-            ),
-        ]
-    );
+    // private userWithReservations: User = new User(
+    //     'resUsername',
+    //     'test@gmail.com',
+    //     'pass',
+    //     'Name',
+    //     'Surname',
+    //     'City',
+    //     '123456789',
+    //     [
+    //         new VehicleReservation(
+    //             new Vehicle('BMW', 'Car', 5, 2019, 200, 'Novi Sad', 0, [], false, 'INEX'),
+    //             new Date(2020, 4, 25),
+    //             'Novi Sad',
+    //             new Date(2020, 4, 27),
+    //             'Novi Sad',
+    //             3,
+    //             400
+    //         ),
+    //         new VehicleReservation(
+    //             new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, 'Novi Sad', 0, [], false, 'Europcar'),
+    //             new Date(2020, 4, 26),
+    //             'Novi Sad',
+    //             new Date(2020, 4, 27),
+    //             'Novi Sad',
+    //             2,
+    //             300
+    //         ),
+    //     ]
+    // );
 
     private rentACarAdminWithCompany: Admin = new Admin(
         'admin123',
@@ -65,7 +65,7 @@ export class UserService {
         'admin2@gmail.com',
         'admin',
         'rent-a-car',
-        ''
+        'rent a car 1'
     );
 
     private airlineAdminWithComapny: Admin = new Admin(
@@ -90,7 +90,7 @@ export class UserService {
 
     private users: User[] = [
         this.user,
-        this.userWithReservations
+        // this.userWithReservations
     ];
 
     private admins: Admin[] = [

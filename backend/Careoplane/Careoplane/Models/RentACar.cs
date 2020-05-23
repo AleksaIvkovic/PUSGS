@@ -41,7 +41,7 @@ namespace Careoplane.Models
             toRentACar.Vehicles.ToList().ForEach(vehicle => 
             {
                 Vehicle vehicleObj = new Vehicle();
-                vehicleObj.FromTO(vehicle);
+                vehicleObj.FromTO(vehicle, this);
                 Vehicles.Add(vehicleObj);
             }) ;
             toRentACar.Locations.ToList().ForEach(location => Locations.Add(

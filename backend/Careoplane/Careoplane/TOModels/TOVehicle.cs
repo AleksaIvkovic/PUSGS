@@ -10,7 +10,7 @@ namespace Careoplane.TOModels
     {
         public int VehicleId { get; set; }
    
-        public string Title { get; set; }
+        //public string Title { get; set; }
         
         public string Brand { get; set; }
         
@@ -30,7 +30,7 @@ namespace Careoplane.TOModels
         
         public bool IsOnSale { get; set; }
         
-        public TORentACar RentACar { get; set; }
+        public string RentACar { get; set; }
 
     }
 }

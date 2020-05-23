@@ -12,8 +12,8 @@ namespace Careoplane.Models
         [Key]
         public int VehicleId { get; set; }
 
-        [Required]
-        public string Title { get; set; }
+        //[Required]
+        //public string Title { get; set; }
 
         [Required]
         public string Brand { get; set; }
@@ -45,7 +45,7 @@ namespace Careoplane.Models
         [Required]
         public RentACar RentACar { get; set; }
 
-        public void FromTO(TOVehicle toVehicle)
+        public void FromTO(TOVehicle toVehicle, RentACar rentACar)
         {
             Brand = toVehicle.Brand;
             IsOnSale = toVehicle.IsOnSale;
@@ -53,10 +53,8 @@ namespace Careoplane.Models
             NumOfSeats = toVehicle.NumOfSeats;
             PricePerDay = toVehicle.PricePerDay;
             Rating = toVehicle.Rating;
-            RentACar rentACar = new RentACar();
-            rentACar.FromTO(toVehicle.RentACar);
             RentACar = rentACar;
-            Title = toVehicle.Title;
+            //Title = toVehicle.Title;
             Type = toVehicle.Type;
             UnavailableDates = new List<UnavailableDate>();
             toVehicle.UnavailableDates.ToList().ForEach(date =>
@@ -82,8 +80,8 @@ namespace Careoplane.Models
             toVehicle.NumOfSeats = NumOfSeats;
             toVehicle.PricePerDay = PricePerDay;
             toVehicle.Rating = Rating;
-            toVehicle.RentACar = RentACar.ToTO();
-            toVehicle.Title = Title;
+            toVehicle.RentACar = RentACar.Name;
+            //toVehicle.Title = Title;
             toVehicle.Type = Type;
             toVehicle.UnavailableDates = new List<TOPrimaryObject>();
             UnavailableDates.ToList().ForEach(date => toVehicle.UnavailableDates.Add(

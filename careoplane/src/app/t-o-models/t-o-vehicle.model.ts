@@ -12,10 +12,11 @@ export class TOVehicle {
         public rating: number = 0,
         public unavailableDates: TOPrimaryObject[] = [],
         public isOnSale: boolean = false,
-        public rentACar: string = ''
-    ) {}
+        public rentACar: string,
+        public vehicleId: number = 0) {
+    }
 
-    public ToRegular() {
+    public ToRegular(): Vehicle {
         let unavailableDates: Date[] = [];
         this.unavailableDates.forEach(
             d => {
@@ -32,7 +33,8 @@ export class TOVehicle {
             this.rating,
             unavailableDates,
             this.isOnSale,
-            this.rentACar
+            this.rentACar,
+            this.vehicleId
         );
     }
 }

@@ -1,5 +1,6 @@
 import { TOVehicle } from '../t-o-models/t-o-vehicle.model';
 import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
+import { RentACar } from './rent-a-car.model';
 
 export class Vehicle {
     constructor(
@@ -12,7 +13,8 @@ export class Vehicle {
         public rating: number = 0,
         public unavailableDates: Date[] = [],
         public isOnSale: boolean = false,
-        public rentACar: string = ''
+        public rentACar: string = '',
+        public vehicleId: number = 0
     ) {}
 
     public ToTO(): TOVehicle {
@@ -32,7 +34,8 @@ export class Vehicle {
             this.rating,
             toUnavailableDates,
             this.isOnSale,
-            this.rentACar
-        ); 
+            this.rentACar,
+            this.vehicleId
+        );
     }
 }
