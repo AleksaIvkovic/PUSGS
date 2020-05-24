@@ -105,6 +105,7 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
     this.vehicleService.putVehicle(this.vehicle).subscribe(
       response => {
         this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+        this.router.navigate(['../../'], {relativeTo: this.route});
       },
       error => {
         console.log(error);

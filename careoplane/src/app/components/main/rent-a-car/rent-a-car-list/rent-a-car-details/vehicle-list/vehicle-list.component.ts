@@ -40,7 +40,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
   pickUpDateFormControl: FormControl = new FormControl(null, Validators.required);
   returnDateFormControl: FormControl = new FormControl(null, Validators.required);
 
-  length;
+  length: number;
   currentPage = 0;
   pageSize = 4;
   pageSizeOptions: number[] = [4];
@@ -50,6 +50,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
 
   normalVehicles: Vehicle[];
   saleVehicles: Vehicle[];
+  isShowingOnSale: boolean = false;
 
   constructor(
     private rentACarService: RentACarService,
@@ -58,14 +59,14 @@ export class VehicleListComponent implements OnInit, OnDestroy {
     private router: Router) { }
 
   ngOnInit(): void {
-    if (this.rentACar === undefined || this.rentACar.name === '') {
+    if (this.rentACar === undefined || this.rentACar.name === '') { //Admin
       this.rentACarService.newVehicleListChanged.
       subscribe(
         (vehicles: Vehicle[]) => {
           this.manageVehicleLists(vehicles);
           //Provera da li treba da se prikazuju na snizenju ili obicna
-          this.dataSource = this.normalVehicles;
-          this.searchedVehicles = this.normalVehicles;
+          this.dataSource = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
+          this.searchedVehicles = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
         }
       );
       this.vehicleListSubscription = this.vehicleService.vehicleListChanged
@@ -74,45 +75,17 @@ export class VehicleListComponent implements OnInit, OnDestroy {
           this.rentACar.vehicles = vehicles;
           this.manageVehicleLists(vehicles);
           //Provera da li treba da se prikazuju na snizenju ili obicna
-          this.searchedVehicles = this.normalVehicles;
-          this.dataSource = this.normalVehicles;
+          this.searchedVehicles = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
+          this.dataSource = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
           this.dataSource.paginator = this.paginator;
           // this.length = this.rentACar.vehicles.length;
-          this.length = this.normalVehicles.length;
+          this.length = this.isShowingOnSale ? this.saleVehicles.length : this.normalVehicles.length;
           this.iterator();
         });
-    } else {
-      this.pickUpLocations = this.rentACar.locations.slice();
-      if (this.pickUpLocations.length !== 1) {
-        this.pickUpLocations.unshift('Any');
-      }
-      this.returnToLocations = this.rentACar.locations.slice();
-      this.returnToLocation = this.returnToLocations[0];
-      this.vehicleTypes = this.rentACarService.getVehicleTypes();
-      this.initForm();
-      // this.rentACar.locations.unshift('Any');
-      this.vehicleListSubscription = this.vehicleService.vehicleListChanged
-      .subscribe(
-        (vehicles: Vehicle[]) => {
-          this.manageVehicleLists(vehicles);
-          //Provera da li treba da se prikazuju na snizenju ili obicna
-          this.searchedVehicles = this.normalVehicles;
-          this.dataSource = this.normalVehicles;
-          this.dataSource.paginator = this.paginator;
-          // this.length = this.rentACar.vehicles.length;
-          this.length = this.normalVehicles.length;
-          this.iterator();
-        }
-      );
-      this.rentACarService.reservationMade
-    .subscribe(
-      () => {
-        this.onCancelSearch();
-      }
-    );
       this.rentACarService.onSaleClicked
-      .subscribe(
+        .subscribe(
         (isClicked: boolean) => {
+          this.isShowingOnSale = isClicked;
           this.manageVehicleLists(this.rentACar.vehicles.slice());
           if (isClicked) {
             this.searchedVehicles = this.saleVehicles;
@@ -128,10 +101,9 @@ export class VehicleListComponent implements OnInit, OnDestroy {
           // this.length = this.rentACar.vehicles.length;
          
           this.iterator();
-        }
-      );
+        });
 
-        this.rentACarService.vehicleSwaped
+      this.rentACarService.vehicleSwaped
         .subscribe(
           (isSaleList: boolean) => {
             this.manageVehicleLists(this.rentACar.vehicles.slice());
@@ -151,6 +123,36 @@ export class VehicleListComponent implements OnInit, OnDestroy {
           this.iterator();
           }
         );
+    } else { //Klijent
+      this.pickUpLocations = this.rentACar.locations.slice();
+      if (this.pickUpLocations.length !== 1) {
+        this.pickUpLocations.unshift('Any');
+      }
+      this.returnToLocations = this.rentACar.locations.slice();
+      this.returnToLocation = this.returnToLocations[0];
+      this.vehicleTypes = this.rentACarService.getVehicleTypes();
+      this.initForm();
+      // this.rentACar.locations.unshift('Any');
+      this.vehicleListSubscription = this.vehicleService.vehicleListChanged
+      .subscribe(
+        (vehicles: Vehicle[]) => {
+          this.manageVehicleLists(vehicles);
+          //Provera da li treba da se prikazuju na snizenju ili obicna
+          this.searchedVehicles = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
+          this.dataSource = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
+          this.dataSource.paginator = this.paginator;
+          // this.length = this.rentACar.vehicles.length;
+          this.length = this.isShowingOnSale ? this.saleVehicles.length : this.normalVehicles.length;
+          this.iterator();
+        }
+      );
+
+      this.rentACarService.reservationMade
+        .subscribe(
+          () => {
+            this.onCancelSearch();
+          }
+        );
 
       this.subscription = this.route.params
       .subscribe(
@@ -158,24 +160,45 @@ export class VehicleListComponent implements OnInit, OnDestroy {
           this.vehicleTypes = this.rentACarService.getVehicleTypes();
           this.manageVehicleLists(this.rentACar.vehicles.slice());
           // this.searchedVehicles = this.rentACar.vehicles.slice();
-          this.searchedVehicles = this.normalVehicles.slice();
+          this.searchedVehicles = this.isShowingOnSale ? this.saleVehicles.slice() : this.normalVehicles.slice();
           // this.dataSource = this.rentACar.vehicles.slice();
-          this.dataSource = this.normalVehicles.slice();
+          this.dataSource = this.isShowingOnSale ? this.saleVehicles.slice() : this.normalVehicles.slice();
           this.dataSource.paginator = this.paginator;
           // this.length = this.rentACar.vehicles.length;
-          this.length = this.normalVehicles.length;
+          this.length = this.isShowingOnSale ? this.saleVehicles.length : this.normalVehicles.length;
           this.iterator();
+
+          this.rentACarService.onSaleClicked
+          .subscribe(
+          (isClicked: boolean) => {
+          this.isShowingOnSale = isClicked;
+          this.manageVehicleLists(this.rentACar.vehicles.slice());
+          if (isClicked) {
+            this.searchedVehicles = this.saleVehicles;
+            this.dataSource = this.saleVehicles;
+            this.length = this.saleVehicles.length;
+          } else {
+            this.searchedVehicles = this.normalVehicles;
+            this.dataSource = this.normalVehicles;
+            this.length = this.normalVehicles.length;
+          }
+          
+          this.dataSource.paginator = this.paginator;
+          // this.length = this.rentACar.vehicles.length;
+         
+          this.iterator();
+          });
         }
       );
 
       this.manageVehicleLists(this.rentACar.vehicles.slice());
       // this.searchedVehicles = this.rentACar.vehicles.slice();
-      this.searchedVehicles = this.normalVehicles.slice();
+      this.searchedVehicles = this.isShowingOnSale ? this.saleVehicles.slice() : this.normalVehicles.slice();
       // this.dataSource = this.rentACar.vehicles.slice();
-      this.dataSource = this.normalVehicles.slice();
+      this.dataSource = this.isShowingOnSale ? this.saleVehicles.slice() : this.normalVehicles.slice();
       this.dataSource.sort = this.sort;
       // this.length = this.rentACar.vehicles.length;
-      this.length = this.normalVehicles.length;
+      this.length = this.isShowingOnSale ? this.saleVehicles.length : this.normalVehicles.length;
       this.iterator();
     }
   }
@@ -268,13 +291,13 @@ export class VehicleListComponent implements OnInit, OnDestroy {
     });
     this.minReturnDate = new Date();
     // this.searchedVehicles = this.rentACar.vehicles.slice();
-    this.searchedVehicles = this.normalVehicles.slice();
+    this.searchedVehicles = this.isShowingOnSale ? this.saleVehicles.slice() : this.normalVehicles.slice();
     this.searchForm.markAsPristine();
     // this.dataSource = this.rentACar.vehicles.slice();
-    this.dataSource = this.normalVehicles.slice();
+    this.dataSource = this.isShowingOnSale ? this.saleVehicles.slice() : this.normalVehicles.slice();
     this.dataSource.paginator = this.paginator;
     // this.length = this.rentACar.vehicles.length;
-    this.length = this.normalVehicles.length;
+    this.length = this.isShowingOnSale ? this.saleVehicles.length : this.normalVehicles.length;
     this.iterator();
   }
 
