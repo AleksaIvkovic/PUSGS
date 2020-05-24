@@ -11,7 +11,7 @@
             {{flight.origin}}
         </div>
         <div class="mat-h3">
-            {{flight.departure | date:'short'}}
+            {{flight.departure | date:'dd.MM.yyyy HH:mm'}}
         </div>
     </div>
     <div class="col-md-4 flight">
@@ -52,7 +52,7 @@
             {{flight.destination}}
         </div>
         <div class="mat-h3">
-            {{flight.arrival | date:'short'}}
+            {{flight.arrival | date:'dd.MM.yyyy HH:mm'}}
         </div>
     </div>
     <div class="col-md-3 flight">
@@ -60,7 +60,7 @@
             {{price | currency: 'EUR'}}
         </div>
         <div class="mat-h3" *ngIf="classType === 'any' && fastTicket == null">
-            {{flight.prices[2].value | currency: 'EUR'}} - {{flight.prices[0].value | currency: 'EUR'}}
+            {{flight.prices[2] | currency: 'EUR'}} - {{flight.prices[0] | currency: 'EUR'}}
         </div>
         <div class="row" *ngIf="fastTicket != null">
             <div class="col-md">

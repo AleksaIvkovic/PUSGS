@@ -16,7 +16,7 @@ export class Flight {
         public connections: TOPrimaryObject[] = [],
         public id: number = 0,
         public seats: Seat[] = [],
-        public prices: TOPrimaryObject[] = []
+        public prices: number[] = []
         ){
             this.conCount = connections.length;
             let time = new Date(arrival).valueOf() - new Date(departure).valueOf();

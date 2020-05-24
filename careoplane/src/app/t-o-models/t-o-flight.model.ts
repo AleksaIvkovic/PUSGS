@@ -16,8 +16,12 @@ export class TOFlight {
         ){}
 
         public convert(prices: TOPrimaryObject[]): Flight {
-            let flight: Flight = new Flight(this.airlineName,this.origin,this.destination,new Date(this.departure), new Date(this.arrival),this.distance,this.connections,this.flightId,[],prices);
-    
+            let flight: Flight = new Flight(this.airlineName,this.origin,this.destination,new Date(this.departure), new Date(this.arrival),this.distance,this.connections,this.flightId,[]);
+            flight.prices = []
+            flight.prices.push(prices[0].value * flight.distance);
+            flight.prices.push(prices[1].value * flight.distance);
+            flight.prices.push(prices[2].value * flight.distance);
+
             for(let seat of this.seats){
                 let toSeat: TOSeat = Object.assign(new TOSeat(),seat);
                 flight.seats.push(toSeat.convert());
