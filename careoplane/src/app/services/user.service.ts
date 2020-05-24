@@ -5,11 +5,16 @@ import { Subject } from 'rxjs';
 import { VehicleReservation } from '../models/vehicle-reservation.model';
 import { FlightReservation } from '../models/flight-reservation.model';
 import { Vehicle } from '../models/vehicle.model';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
+    constructor(
+        private http: HttpClient
+    ) {}
+
     loggedInUserChanged = new Subject<User>();
 
     private user: User = new User(
@@ -116,45 +121,45 @@ export class UserService {
         return this.loggedInUser;
     }
 
-    logIn(usermail: string, password: string): boolean {
-        if (usermail === undefined || password === undefined) {
-            return false;
-        }
+    // logIn(usermail: string, password: string): boolean {
+    //     if (usermail === undefined || password === undefined) {
+    //         return false;
+    //     }
         
-        let isMail = usermail.includes('@') ? true : false;
-        for (let user of this.users) {
-            if (isMail) {
-                if (user.email === usermail && user.password === password) {
-                    this.loggedInUser = user;
-                    this.loggedInUserChanged.next(this.loggedInUser);
-                    return true;
-                }
-            } else {
-                if (user.username === usermail && user.password === password) {
-                    this.loggedInUser = user;
-                    this.loggedInUserChanged.next(this.loggedInUser);
-                    return true;
-                }
-            }
-        }
+    //     let isMail = usermail.includes('@') ? true : false;
+    //     for (let user of this.users) {
+    //         if (isMail) {
+    //             if (user.email === usermail && user.password === password) {
+    //                 this.loggedInUser = user;
+    //                 this.loggedInUserChanged.next(this.loggedInUser);
+    //                 return true;
+    //             }
+    //         } else {
+    //             if (user.username === usermail && user.password === password) {
+    //                 this.loggedInUser = user;
+    //                 this.loggedInUserChanged.next(this.loggedInUser);
+    //                 return true;
+    //             }
+    //         }
+    //     }
 
-        for (let admin of this.admins) {
-            if (isMail) {
-                if (admin.email === usermail && admin.password === password) {
-                    this.loggedInUser = admin;
-                    this.loggedInUserChanged.next(this.loggedInUser);
-                    return true;
-                }
-            } else {
-                if (admin.username === usermail && admin.password === password) {
-                    this.loggedInUser = admin;
-                    this.loggedInUserChanged.next(this.loggedInUser);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    //     for (let admin of this.admins) {
+    //         if (isMail) {
+    //             if (admin.email === usermail && admin.password === password) {
+    //                 this.loggedInUser = admin;
+    //                 this.loggedInUserChanged.next(this.loggedInUser);
+    //                 return true;
+    //             }
+    //         } else {
+    //             if (admin.username === usermail && admin.password === password) {
+    //                 this.loggedInUser = admin;
+    //                 this.loggedInUserChanged.next(this.loggedInUser);
+    //                 return true;
+    //             }
+    //         }
+    //     }
+    //     return false;
+    // }
 
     logOut() {
         this.loggedInUser = null;
@@ -200,4 +205,27 @@ export class UserService {
     addReservation(reservation: any){
         this.loggedInUser.reservations.push(reservation);
     }
+
+    register(user: User) {
+        var body = {
+            UserName: user.username,
+            Email: user.email,
+            Password: user.password,
+            Name: user.name,
+            Surname: user.surname,
+            PhoneNumber: user.phoneNumber,
+            City: user.city
+        }
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/Register';
+        return this.http.post(address, body);
+    }
+
+    login(usermail: string, password: string) {
+        var user = {
+            Username: usermail,
+            Password: password
+        }
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/Login';
+        return this.http.post(address, user);
+      }
 }

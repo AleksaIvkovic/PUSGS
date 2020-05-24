@@ -34,19 +34,27 @@ export class LogInComponent implements OnInit {
   }
 
   onLogin() {
-    if (this.userService.logIn(this.logInForm.value['usermail'], this.logInForm.value['password'])) {
-      this.dialogRef.close();
-    } else {
-      this._snackBar.open('Wrong email/username or password', 'OK', {
-        duration: 5000,
-      });
-      this.logInForm.patchValue({
-        usermail: '',
-        password: ''
-      });
-      this.logInForm.markAsPristine();
-      this.logInForm.markAsUntouched();
-    }
+    this.userService.login(this.logInForm.value['usermail'], this.logInForm.value['password'])
+    .subscribe(
+      (res: any) => {
+        localStorage.setItem('token', res.token);
+        this.dialogRef.close();
+        //Treba dodati preko servisa subscribe na ulogovanog korisnika
+      },
+      err => {
+        if (err.status == 400) {
+          this._snackBar.open('Incorrect email/username or password.', 'OK', {duration: 5000,});
+          this.logInForm.patchValue({
+            usermail: '',
+            password: ''
+          });
+          this.logInForm.markAsPristine();
+          this.logInForm.markAsUntouched();
+        }
+        else
+          console.log(err);
+      }
+    );
   }
 
 }

@@ -168,19 +168,29 @@ export class UserAuthentificationComponent implements OnInit {
         this.registerForm.value['phone'],
       );
   
-      if (this.userService.registerUser(user)) {
-        this._snackBar.open('Please verify your e-mail address', 'OK', {
-          duration: 5000,
+      this.userService.register(user).subscribe(
+        (response: any) => {
+          if (response.succeeded) {
+            this.registerForm.reset();
+            this._snackBar.open('Please verify your e-mail address', 'OK', {duration: 5000,});
+            this.router.navigate(['/main']);
+        } else {
+          response.errors.forEach(element => {
+            switch (element.code) {
+              case 'DuplicateUserName':
+                this._snackBar.open('Username is already taken', 'OK', {duration: 5000,});
+                break;
+
+              default:
+                this._snackBar.open(element.description, 'OK', {duration: 5000,});
+                break;
+            }
+          });
+        }
+        },
+        error => {
+          console.log(error);
         });
-        this.router.navigate(['/main']);
-      } else {
-        this.registerForm.patchValue({
-          'username': '',
-        })
-        this._snackBar.open('Username already taken', 'OK', {
-          duration: 5000,
-        });
-      }
     }
   }
 
