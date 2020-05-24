@@ -15,6 +15,8 @@ namespace Careoplane.Models
         [Key]
         public int FlightId { get; set; }
 
+        [Required]
+
         public Airline Airline { get; set; }
 
         public string Origin { get; set; }
@@ -42,6 +44,19 @@ namespace Careoplane.Models
             FlightId = flight.FlightId;
             Origin = flight.Origin;
             Destination = flight.Destination;
+        }
+
+        public DateTime ConvertJsDate(string jsDate)
+        {
+            string formatString = "ddd MMM d yyyy HH:mm:ss";
+
+            var gmtIndex = jsDate.IndexOf(" GMT");
+            if (gmtIndex > -1)
+            {
+                jsDate = jsDate.Remove(gmtIndex);
+                return DateTime.ParseExact(jsDate, formatString, null);
+            }
+            return DateTime.Parse(jsDate);
         }
 
         public void GenerateSeats()

@@ -12,6 +12,7 @@ import { TOFlight } from 'src/app/t-o-models/t-o-flight.model';
 import { UserService } from 'src/app/services/user.service';
 import { Admin } from 'src/app/models/admin.model';
 import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-flight-edit',
@@ -32,7 +33,7 @@ export class FlightEditComponent implements OnInit {
   edit: boolean;
   origin: FormControl;
 
-  constructor(private router: Router, private activeRoute: ActivatedRoute, private airlineService: AirlineService, private userService: UserService) { }
+  constructor(private datePipe: DatePipe, private router: Router, private activeRoute: ActivatedRoute, private airlineService: AirlineService, private userService: UserService) { }
 
   ngOnInit(): void {
     this.minArrivalDate = new Date();
@@ -81,8 +82,8 @@ export class FlightEditComponent implements OnInit {
     this.group = new FormGroup({
       'origin': this.origin,
       'destination': new FormControl(this.flight.destination, [Validators.required, this.checkDestination.bind(this)]),
-      'departure': new FormControl(this.flight.departure, [Validators.required, this.checkDepartureDate.bind(this)]),
-      'arrival': new FormControl(this.flight.arrival, [Validators.required, this.checkArrivalDate.bind(this)]),
+      'departure': new FormControl(this.datePipe.transform(this.flight.departure, 'dd.MM.yyyy HH:mm'), [Validators.required, this.checkDepartureDate.bind(this)]),
+      'arrival': new FormControl(this.datePipe.transform(this.flight.arrival, 'dd.MM.yyyy HH:mm'), [Validators.required, this.checkArrivalDate.bind(this)]),
       'distance': new FormControl(this.flight.distance, Validators.required),
       'connectionsForm': this.connectionsForm
     });
@@ -114,7 +115,7 @@ export class FlightEditComponent implements OnInit {
       }
   
       for(let price of this.airline.prices){
-        this.flight.prices.push(new TOPrimaryObject(0, price.value * this.flight.distance,0));
+        this.flight.prices.push(price.value * this.flight.distance);
       }
   
       this.flight.conCount = this.flight.connections.length;
@@ -133,9 +134,12 @@ export class FlightEditComponent implements OnInit {
       )
     }
     else{
+      this.flight.departure = this.group.controls['departure'].value;
+      this.flight.arrival = this.group.controls['arrival'].value;
+
       this.airlineService.EditFlight(this.flight).subscribe(
         response => {
-          this.router.navigate(['../'],{relativeTo: this.activeRoute});
+          this.router.navigate(['../../'],{relativeTo: this.activeRoute});
         },
         error => {
           console.log(error);
