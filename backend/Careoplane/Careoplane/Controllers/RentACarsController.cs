@@ -9,6 +9,8 @@ using Careoplane.Database;
 using Careoplane.Models;
 using Microsoft.AspNetCore.Cors;
 using Careoplane.TOModels;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.AspNetCore.Http.Connections;
 
 namespace Careoplane.Controllers
 {
@@ -27,7 +29,6 @@ namespace Careoplane.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TORentACar>>> GetRentACars()
         {
-            //Treba popuniti lokacije, vozila i cene
             List<RentACar> RentACarList = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).Include(r => r.Vehicles).ToListAsync();
             List<TORentACar> TORentACarList = new List<TORentACar>();
             RentACarList.ForEach(rentACar => TORentACarList.Add(rentACar.ToTO()));
@@ -39,8 +40,8 @@ namespace Careoplane.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TORentACar>> GetRentACar(string id)
         {
-            var rentACar = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).Include(r => r.Vehicles).FirstOrDefaultAsync(r => r.Name == id);
-            //Treba popuniti lokacije, vozila i cene
+            var rentACar = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).Include(r => r.Vehicles).ThenInclude(v => v.UnavailableDates).FirstOrDefaultAsync(r => r.Name == id);
+
             if (rentACar == null)
             {
                 return NotFound();
@@ -55,15 +56,65 @@ namespace Careoplane.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRentACar(string id, TORentACar toRentACar)
         {
-            RentACar rentACar = new RentACar();
-            rentACar.FromTO(toRentACar);
+            var rentACar = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).FirstOrDefaultAsync(r => r.Name == id);
+
+            RentACar modifiedRentACar = new RentACar();
+            modifiedRentACar.FromTO(toRentACar);
 
             if (id != rentACar.Name)
             {
                 return BadRequest();
             }
 
-            _context.Entry(rentACar).State = EntityState.Modified;
+            //_context.Entry(rentACar).State = EntityState.Modified;
+            _context.Entry(rentACar).CurrentValues.SetValues(modifiedRentACar);
+
+            #region Update Locations
+
+            var locations = rentACar.Locations.ToList(); //Lokacije iz baze
+            foreach (var location in locations)
+            {
+                var loc = toRentACar.Locations.SingleOrDefault(l => l.Value.ToString() == location.LocationValue); //Ako ne postoji u bazi ta lokacija, ukloni je
+                //if (loc != null)
+                //    _context.Entry(location).CurrentValues.SetValues(loc);
+                //else
+                //    _context.Remove(location);
+                if (loc == null)
+                {
+                    _context.Remove(location);
+                }
+            }
+            // add the new items
+            foreach (var location in toRentACar.Locations.ToList()) //Nove lokacije
+            {
+                if (locations.All(l => l.LocationValue != location.Value.ToString())) //Ako sve lokacije nisu jednake novoj lokaciji, dodaj je
+                {
+                    rentACar.Locations.Add(new Location()
+                    {
+                        LocationId = 0,
+                        LocationValue = location.Value.ToString(),
+                        RentACar = rentACar
+                    });
+                }
+            }
+
+            #endregion
+
+            #region Update Prices
+
+            var prices = rentACar.Prices.ToList(); //Cene iz baze
+            var carPrice = prices.SingleOrDefault(p => p.PriceService == "Car");
+            carPrice.PriceValue = (Int64)toRentACar.Prices.ToList()[0].Value;
+            var vanPrice = prices.SingleOrDefault(p => p.PriceService == "Van");
+            vanPrice.PriceValue = (Int64)toRentACar.Prices.ToList()[1].Value;
+            var truckPrice = prices.SingleOrDefault(p => p.PriceService == "Truck");
+            truckPrice.PriceValue = (Int64)toRentACar.Prices.ToList()[2].Value;
+
+            _context.Entry(prices[0]).CurrentValues.SetValues(carPrice);
+            _context.Entry(prices[1]).CurrentValues.SetValues(vanPrice);
+            _context.Entry(prices[2]).CurrentValues.SetValues(truckPrice);
+
+            #endregion
 
             try
             {

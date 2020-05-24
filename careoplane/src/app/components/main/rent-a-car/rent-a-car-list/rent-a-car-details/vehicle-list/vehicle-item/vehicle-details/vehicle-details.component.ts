@@ -7,6 +7,8 @@ import { Url } from 'url';
 import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
+import { VehicleService } from 'src/app/services/vehicle.service';
 
 @Component({
   selector: 'app-vehicle-details',
@@ -31,12 +33,14 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private rentACarService: RentACarService,
     private userService: UserService,
+    private vehicleService: VehicleService,
     private route: ActivatedRoute,
     private router: Router,
     private _snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
+    this.vehicle = new Vehicle('', '', 0, 0, 0);
     this.isLoggedIn = this.userService.getLoggedInUser() === undefined ? false : true;
     this.subscription = this.route.params
     .subscribe(
@@ -51,10 +55,19 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
           if (this.router.url.includes('new')) {
             this.vehicle = this.rentACarService.newVehicles[this.adminVehicleId];
           } else {
-            this.rentACar = this.rentACarService.getRentACarByName(this.userService.getLoggedInUser().company);
-            this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.userService.getLoggedInUser().company, this.adminVehicleId);
+            this.rentACarService.getRentACar(this.userService.getLoggedInUser().company).subscribe(
+              (response : any) => {
+                  let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
+                  this.rentACar = toRentACar.ToRegular();
+                  this.vehicle = this.rentACar.vehicles[this.adminVehicleId];
+              },
+              error => {
+                  console.log(error);
+              });
+            // this.rentACar = this.rentACarService.getRentACarByName(this.userService.getLoggedInUser().company);
+            // this.vehicle = this.rentACarService.getVehicleForRentACarByName(this.userService.getLoggedInUser().company, this.adminVehicleId);
+            this.isAdmin = true;
           }
-          this.isAdmin = true;
         }
       }
     );
@@ -70,22 +83,33 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   }
 
   onRemoveVehicle() {
-    if (this.router.url.includes('new')) {
-      this.rentACarService.removeTempVehicle(this.adminVehicleId);
-    } else {
-      let index = +this.router.url.split('/')[3];
-      this.rentACarService.removeVehicle(this.rentACar, index);
-    }
-    
-    this._snackBar.open('Vehicle removed successfully', 'OK', {
-      duration: 5000,
-    });
-    this.router.navigate(['../../'], {relativeTo: this.route});
+    this.vehicleService.deleteVehicle(this.vehicle).subscribe(
+      response => {
+        this.rentACar.vehicles.splice(this.rentACar.vehicles.indexOf(this.vehicle), 1);
+        this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+        this._snackBar.open('Vehicle removed successfully', 'OK', {duration: 5000,});
+        this.router.navigate(['../../'], {relativeTo: this.route});
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   onSwapVehicle() {
     let index = +this.router.url.split('/')[3];
-    this.rentACarService.swapVehicleList(this.rentACar, index);
+    // this.vehicle.isOnSale = !this.vehicle.isOnSale;
+    this.rentACar.vehicles[index].isOnSale = !this.rentACar.vehicles[index].isOnSale;
+    this.rentACarService.vehicleSwaped.next(!this.rentACar.vehicles[index].isOnSale);
+    // this.rentACarService.swapVehicleList(this.rentACar, index);
+    this.vehicleService.putVehicle(this.vehicle).subscribe(
+      response => {
+        this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   ngOnDestroy() {

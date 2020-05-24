@@ -5,6 +5,8 @@ import { RentACar } from 'src/app/models/rent-a-car.model';
 import { Subscription } from 'rxjs';
 import { Admin } from 'src/app/models/admin.model';
 import { Vehicle } from 'src/app/models/vehicle.model';
+import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
+import { VehicleService } from 'src/app/services/vehicle.service';
 
 @Component({
   selector: 'app-rent-a-car-details',
@@ -39,10 +41,12 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
   constructor(
     private rentACarService: RentACarService,
+    private vehicleService: VehicleService,
     private route: ActivatedRoute,
     private router: Router) { }
 
   ngOnInit(): void {
+    this.rentACar = new RentACar('','','');
     this.rentACarSubscription = this.rentACarService.rentACarChanged
     .subscribe(
       (rentACar: RentACar) => {
@@ -60,7 +64,16 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
       (params: Params) => {
         if (this.admin) {
           this.isAdmin = true;
-          this.rentACar = this.rentACarService.getRentACar(this.admin.company);
+          this.rentACarService.getRentACar(this.admin.company).subscribe(
+            (response : any) => {
+                let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
+                this.rentACar = toRentACar.ToRegular();
+                this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+            },
+            error => {
+                console.log(error);
+            }
+        );
         } else {
           this.index = params['id'];
           this.rentACar = this.rentACarService.getRentACarByIndex(this.index);

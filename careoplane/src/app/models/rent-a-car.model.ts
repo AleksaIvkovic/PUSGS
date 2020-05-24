@@ -17,13 +17,13 @@ export class RentACar {
             pricelist['Van'] = prices[1];
             pricelist['Truck'] = prices[2];
 
-            let location: string = this.address.split(',')[1];
-            this.vehicles.forEach(
-                v => {
-                    v.location = location.substr(1);
-                    v.rentACar = name;
-                }
-            );
+            // let location: string = this.address.split(',')[1];
+            // this.vehicles.forEach(
+            //     v => {
+            //         v.location = location.substr(1);
+            //         v.rentACar = name;
+            //     }
+            // );
     }
 
     public ToTO(): TORentACar {

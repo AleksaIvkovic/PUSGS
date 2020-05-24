@@ -2,7 +2,7 @@
     [formGroup]="addForm" 
     (ngSubmit)="onSubmit()">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5" *ngIf="!isEdit">
             <mat-form-field appearance="fill">
                 <mat-label>Brand</mat-label>
                 <input 

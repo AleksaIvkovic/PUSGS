@@ -9,6 +9,7 @@ import { RentACar } from 'src/app/models/rent-a-car.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from 'src/app/services/user.service';
 import { Admin } from 'src/app/models/admin.model';
+import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
 
 @Component({
   selector: 'app-rent-a-car-manager',
@@ -40,10 +41,21 @@ export class RentACarManagerComponent implements OnInit {
   ngOnInit(): void {
     if (this.router.url.includes('edit')) {
       this.isEdit = true;
-      this.rentACar = this.rentACarService.getRentACarByName(this.userService.getMockUpRentACarAdmin().company);
-      this.locationOfRentACar = this.rentACar.address; //address, city, state
+      let company = this.userService.getLoggedInUser().company;
+      this.rentACarService.getRentACar(company).subscribe(
+        (response : any) => {
+            let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
+            this.rentACar = toRentACar.ToRegular();
+            this.locationOfRentACar = this.rentACar.address; //address, city, state
+            this.initForm();
+        },
+        error => {
+            console.log(error);
+        });
+    } else {
+      this.isEdit = false;
+      this.initForm();
     }
-    this.initForm();
   }
 
   initForm() {
@@ -87,29 +99,25 @@ export class RentACarManagerComponent implements OnInit {
     this.locations.splice(this.locations.indexOf(location), 1);
   }
 
-  onAddVehicle() {
-    this.router.navigate(['add-vehicle'], {relativeTo: this.route});
-  }
-
   onCancel() {
     this.router.navigate(['main/rent-a-car-profile']);
   }
 
   onSubmit() {
     if (this.isEdit) {
-      this.rentACarService.editRentACar(
-        this.rentACar.name,
-        this.locationOfRentACar,
-        this.addForm.value['description'],
-        this.addForm.value['car'],
-        this.addForm.value['van'],
-        this.addForm.value['truck'],
-        this.locations
-      );
-      this._snackBar.open('Information updated successfully', 'OK', {
-        duration: 5000,
-      });
-      this.router.navigate(['main/rent-a-car-profile']);
+      this.rentACar.address = this.locationOfRentACar;
+      this.rentACar.description = this.addForm.value['description'];
+      this.rentACar.prices[0] = this.addForm.value['car'];
+      this.rentACar.prices[1] = this.addForm.value['van'];
+      this.rentACar.prices[2] = this.addForm.value['truck'];
+      this.rentACar.locations = this.locations;
+
+      this.rentACarService.editRentACar(this.rentACar).subscribe(
+        response => {
+          this._snackBar.open('Information updated successfully', 'OK', {duration: 5000,});
+          this.router.navigate(['main/rent-a-car-profile']);
+        },
+        error => {});
     } else {
       let prices = [];
       prices.push(this.addForm.value['car']);
@@ -127,31 +135,16 @@ export class RentACarManagerComponent implements OnInit {
 
       this.rentACarService.addRentACar(rentACar).subscribe(
         response => {
+          this._snackBar.open('Rent a car service created successfully', 'OK', {duration: 5000,});
           this.userService.updateCompanyName(response['name']);
           this.router.navigate(['main/rent-a-car-profile']);
-          //this.rentACarService.rentACarChanged.next(response as RentACar);
         },
         error => {
           console.log(error);
-          this.addForm.patchValue({
-            name: ''
-          }) 
-          this._snackBar.open('Rent a car service with that name already exists', 'OK', {
-            duration: 5000,
-          });
+          this.addForm.patchValue({name: ''}); 
+          this._snackBar.open('Rent a car service with that name already exists', 'OK', {duration: 5000,});
         }
       )
-      // if (this.rentACarService.addRentACar(rentACar)) {
-      //   this.router.navigate(['main/rent-a-car-profile']);
-      // } else {
-      //   this.addForm.patchValue({
-      //     name: ''
-      //   }) 
-      //   this._snackBar.open('Rent a car service with that name already exists', 'OK', {
-      //     duration: 5000,
-      //   });
-      // }
     }
   }
-
 }

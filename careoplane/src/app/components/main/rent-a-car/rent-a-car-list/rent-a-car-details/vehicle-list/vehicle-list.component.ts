@@ -7,6 +7,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Vehicle } from 'src/app/models/vehicle.model';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { VehicleService } from 'src/app/services/vehicle.service';
 
 @Component({
   selector: 'app-vehicle-list',
@@ -52,11 +53,12 @@ export class VehicleListComponent implements OnInit, OnDestroy {
 
   constructor(
     private rentACarService: RentACarService,
+    private vehicleService: VehicleService,
     private route: ActivatedRoute,
     private router: Router) { }
 
   ngOnInit(): void {
-    if (this.rentACar === undefined) {
+    if (this.rentACar === undefined || this.rentACar.name === '') {
       this.rentACarService.newVehicleListChanged.
       subscribe(
         (vehicles: Vehicle[]) => {
@@ -66,6 +68,19 @@ export class VehicleListComponent implements OnInit, OnDestroy {
           this.searchedVehicles = this.normalVehicles;
         }
       );
+      this.vehicleListSubscription = this.vehicleService.vehicleListChanged
+      .subscribe(
+        (vehicles: Vehicle[]) => {
+          this.rentACar.vehicles = vehicles;
+          this.manageVehicleLists(vehicles);
+          //Provera da li treba da se prikazuju na snizenju ili obicna
+          this.searchedVehicles = this.normalVehicles;
+          this.dataSource = this.normalVehicles;
+          this.dataSource.paginator = this.paginator;
+          // this.length = this.rentACar.vehicles.length;
+          this.length = this.normalVehicles.length;
+          this.iterator();
+        });
     } else {
       this.pickUpLocations = this.rentACar.locations.slice();
       if (this.pickUpLocations.length !== 1) {
@@ -76,7 +91,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
       this.vehicleTypes = this.rentACarService.getVehicleTypes();
       this.initForm();
       // this.rentACar.locations.unshift('Any');
-      this.vehicleListSubscription = this.rentACarService.vehicleListChanged
+      this.vehicleListSubscription = this.vehicleService.vehicleListChanged
       .subscribe(
         (vehicles: Vehicle[]) => {
           this.manageVehicleLists(vehicles);
@@ -313,8 +328,8 @@ export class VehicleListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.rentACar !== undefined) {
-      this.subscription.unsubscribe();
-      this.vehicleListSubscription.unsubscribe();
+      // this.subscription.unsubscribe();
+      // this.vehicleListSubscription.unsubscribe();
     }
   }
 

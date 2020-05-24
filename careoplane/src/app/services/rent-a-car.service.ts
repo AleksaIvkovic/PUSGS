@@ -54,21 +54,12 @@ export class RentACarService {
     newVehicleListChanged = new Subject<Vehicle[]>();
     newVehicles: Vehicle[] = [];
 
-    getRentACar(RentACarName: string): RentACar {
+    getRentACar(RentACarName: string) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/RentACars/' + RentACarName;
-        this.http
+        return this.http
         .get(
             address
-        ).subscribe(
-            response => {
-                return (response as TORentACar).ToRegular();
-            },
-            error => {
-                console.log(error);
-                return null;
-            }
         );
-        return null;
     }
 
     getRentACars() {
@@ -125,38 +116,19 @@ export class RentACarService {
         );
     }
 
-    editRentACar(rentACarName: string, newAddress: string, newDescription: string, newCarPrice: number, newVanPrice: number, newTruckPrice: number, newLocations: string[]) {
-        let indexRentACar = this.rentACars.indexOf(this.getRentACarByName(rentACarName));
-        this.rentACars[indexRentACar].address = newAddress;
-        this.rentACars[indexRentACar].description = newDescription;
-        this.rentACars[indexRentACar].prices[0] = newCarPrice;
-        this.rentACars[indexRentACar].pricelist['Car'] = newCarPrice;
-        this.rentACars[indexRentACar].prices[1] = newVanPrice;
-        this.rentACars[indexRentACar].pricelist['Van'] = newVanPrice;
-        this.rentACars[indexRentACar].prices[2] = newTruckPrice;
-        this.rentACars[indexRentACar].pricelist['Truck'] = newTruckPrice;
-        this.rentACars[indexRentACar].locations = newLocations;
-        this.rentACarsChanged.next(this.rentACars.slice());
+    editRentACar(updatedRentACar: RentACar) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/RentACars/' + updatedRentACar.name;
+        return this.http
+        .put(
+            address,
+            updatedRentACar.ToTO()
+        );
+        // this.rentACarsChanged.next(this.rentACars.slice());
     }
 
     addTempVehicle(vehicle: Vehicle) {
         this.newVehicles.push(vehicle);
         this.newVehicleListChanged.next(this.newVehicles.slice());
-    }
-
-    addVehicle(rentACar: RentACar, vehicle: Vehicle) {
-        let index = this.getRentACarIndex(rentACar);
-        vehicle.rentACar = rentACar.name;
-        this.rentACars[index].vehicles.push(vehicle);
-        this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
-        this.rentACarChanged.next(this.rentACars[index]);
-    }
-
-    removeVehicle(rentACar: RentACar, vehicleIndex: number) {
-        let index = this.getRentACarIndex(rentACar);
-        this.rentACars[index].vehicles.splice(vehicleIndex, 1);
-        this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
-        this.rentACarChanged.next(this.rentACars[index]);
     }
 
     removeTempVehicle(vehicleIndex: number) {
@@ -187,9 +159,10 @@ export class RentACarService {
     }
 
     swapVehicleList(rentACar: RentACar, vehicleIndex: number) {
-        let index = this.getRentACarIndex(rentACar);
-        this.rentACars[index].vehicles[vehicleIndex].isOnSale = !this.rentACars[index].vehicles[vehicleIndex].isOnSale;
-        this.vehicleSwaped.next(!this.rentACars[index].vehicles[vehicleIndex].isOnSale);
+        
+        // let index = this.getRentACarIndex(rentACar);
+        // this.rentACars[index].vehicles[vehicleIndex].isOnSale = !this.rentACars[index].vehicles[vehicleIndex].isOnSale;
+        this.vehicleSwaped.next(!rentACar.vehicles[vehicleIndex].isOnSale);
     }
 
     editTempVehicle(vehicleIndex: number, newBrand: string, newSeats: number, newPrice: number, newLocation: string) {
