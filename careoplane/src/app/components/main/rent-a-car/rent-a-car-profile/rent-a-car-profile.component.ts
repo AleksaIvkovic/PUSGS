@@ -17,7 +17,7 @@ export class RentACarProfileComponent implements OnInit {
     private userService: UserService,
     private rentACarService: RentACarService
   ) { 
-    this.admin = this.userService.getMockUpRentACarAdmin();
+    // this.admin = this.userService.getMockUpRentACarAdmin();
   }
 
   ngOnInit(): void {

@@ -14,7 +14,7 @@
           <button mat-raised-button *ngIf="!isLoggedIn" style="height: 35px; width: 80px; margin-right: 10px;" (click)="onRegister()" type="button">Register</button>
           <button mat-raised-button *ngIf="!isLoggedIn" style="height: 35px; width: 80px;" (click)="onLogIn()" type="button">Log in</button>
           <li class="nav-item" *ngIf="isLoggedIn">
-            <a class="nav-link with-icon" style="cursor: pointer;" [matMenuTriggerFor]="menu">{{user.username}} <mat-icon>arrow_drop_down_circle</mat-icon></a>
+            <a class="nav-link with-icon" style="cursor: pointer;" [matMenuTriggerFor]="menu">{{user.userName}} <mat-icon>arrow_drop_down_circle</mat-icon></a>
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="onProfile()">Profile</button>
               <button mat-menu-item (click)="onLogOut()">Log Out</button>

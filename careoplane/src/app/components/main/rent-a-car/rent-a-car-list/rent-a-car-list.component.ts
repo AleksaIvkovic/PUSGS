@@ -8,6 +8,7 @@ import { Vehicle } from 'src/app/models/vehicle.model';
 import { MatSort, Sort } from '@angular/material/sort';
 import { FormGroup, FormControl } from '@angular/forms';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
+import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
 
 @Component({
   selector: 'app-rent-a-car-list',
@@ -18,7 +19,7 @@ export class RentACarListComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   
-  rentACars: RentACar[];
+  rentACars: RentACar[] = [];
   dataSource;
   displayedColumns: string[] = ['name', 'locations', 'rating', 'details'];
   subscription: Subscription;
@@ -57,11 +58,23 @@ export class RentACarListComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.rentACars = this.rentACarService.getRentACars();
-    this.searchedRentACars = this.rentACars.slice();
-    this.dataSource = this.rentACars.slice();
-    this.dataSource.sort = this.sort;
-    this.length = this.rentACars.length;
+    this.rentACarService.getRentACars().subscribe(
+      (response: TORentACar[]) => {
+        response.forEach(element => {
+          let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), element);
+          this.rentACars.push(toRentACar.ToRegular());
+        });
+        
+        // this.rentACars = response;
+        this.searchedRentACars = this.rentACars.slice();
+        this.dataSource = this.rentACars.slice();
+        this.dataSource.sort = this.sort;
+        this.length = this.rentACars.length;
+      },
+      error => {
+
+      }
+    );
   }
 
   initForm() {

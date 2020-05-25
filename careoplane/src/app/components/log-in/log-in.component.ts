@@ -38,8 +38,9 @@ export class LogInComponent implements OnInit {
     .subscribe(
       (res: any) => {
         localStorage.setItem('token', res.token);
+        localStorage.setItem('username', res.username);
+        localStorage.setItem('role', res.role);
         this.dialogRef.close();
-        //Treba dodati preko servisa subscribe na ulogovanog korisnika
       },
       err => {
         if (err.status == 400) {

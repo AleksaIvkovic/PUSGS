@@ -63,7 +63,11 @@ export class RentACarService {
     }
 
     getRentACars() {
-        return this.rentACars.slice();
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/RentACars';
+        return this.http
+        .get(
+            address
+        );
     }
 
     getRentACarByName(name: string): RentACar {
@@ -100,14 +104,14 @@ export class RentACarService {
     }
 
     addRentACar(newRentACar: RentACar) {
-        for (let rentACar of this.rentACars) {
-            if (rentACar.name.toLocaleLowerCase() === newRentACar.name.toLowerCase()) {
-                return null;
-            }
-        }
+        // for (let rentACar of this.rentACars) {
+        //     if (rentACar.name.toLocaleLowerCase() === newRentACar.name.toLowerCase()) {
+        //         return null;
+        //     }
+        // }
 
-        this.rentACars.push(newRentACar);
-        this.rentACarsChanged.next(this.rentACars.slice());
+        // this.rentACars.push(newRentACar);
+        // this.rentACarsChanged.next(this.rentACars.slice());
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/RentACars';
         return this.http
         .post(

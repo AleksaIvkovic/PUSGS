@@ -29,7 +29,7 @@ namespace Careoplane.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TORentACar>>> GetRentACars()
         {
-            List<RentACar> RentACarList = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).Include(r => r.Vehicles).ToListAsync();
+            List<RentACar> RentACarList = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).Include(r => r.Vehicles).ThenInclude(v => v.UnavailableDates).ToListAsync();
             List<TORentACar> TORentACarList = new List<TORentACar>();
             RentACarList.ForEach(rentACar => TORentACarList.Add(rentACar.ToTO()));
 
@@ -75,10 +75,6 @@ namespace Careoplane.Controllers
             foreach (var location in locations)
             {
                 var loc = toRentACar.Locations.SingleOrDefault(l => l.Value.ToString() == location.LocationValue); //Ako ne postoji u bazi ta lokacija, ukloni je
-                //if (loc != null)
-                //    _context.Entry(location).CurrentValues.SetValues(loc);
-                //else
-                //    _context.Remove(location);
                 if (loc == null)
                 {
                     _context.Remove(location);

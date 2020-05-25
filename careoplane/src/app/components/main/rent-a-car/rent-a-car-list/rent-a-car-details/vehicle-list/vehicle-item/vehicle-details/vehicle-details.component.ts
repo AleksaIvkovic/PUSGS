@@ -55,7 +55,9 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
           if (this.router.url.includes('new')) {
             this.vehicle = this.rentACarService.newVehicles[this.adminVehicleId];
           } else {
-            this.rentACarService.getRentACar(this.userService.getLoggedInUser().company).subscribe(
+            this.idRentACar = +(this.router.url.split('/')[3]);
+            let company = localStorage.getItem('company') === null ? '' : localStorage.getItem('company');
+            this.rentACarService.getRentACar(localStorage.getItem('company')).subscribe(
               (response : any) => {
                   let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
                   this.rentACar = toRentACar.ToRegular();

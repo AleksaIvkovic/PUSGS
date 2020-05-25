@@ -53,7 +53,7 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
     //   this.isNew = true;
     // } else {
     this.isEdit = this.router.url.includes('edit');
-    let company = this.userService.getLoggedInUser().company;
+    let company = localStorage.getItem('company');
     this.rentACarService.getRentACar(company).subscribe(
       (response : any) => {
           let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);

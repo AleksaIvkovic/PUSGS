@@ -7,6 +7,8 @@ import { Admin } from 'src/app/models/admin.model';
 import { Vehicle } from 'src/app/models/vehicle.model';
 import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
 import { VehicleService } from 'src/app/services/vehicle.service';
+import { stringify } from 'querystring';
+import { isNull } from 'util';
 
 @Component({
   selector: 'app-rent-a-car-details',
@@ -62,9 +64,13 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     this.subscription = this.route.params
     .subscribe(
       (params: Params) => {
-        if (this.admin) {
+        let company = localStorage.getItem('company');
+        if (company === '' || isNull(company) || company === 'null') {
+          this.index = params['id'];
+          this.rentACar = this.rentACarService.getRentACarByIndex(this.index);
+        } else {
           this.isAdmin = true;
-          this.rentACarService.getRentACar(this.admin.company).subscribe(
+          this.rentACarService.getRentACar(company).subscribe(
             (response : any) => {
                 let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
                 this.rentACar = toRentACar.ToRegular();
@@ -73,10 +79,7 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
             error => {
                 console.log(error);
             }
-        );
-        } else {
-          this.index = params['id'];
-          this.rentACar = this.rentACarService.getRentACarByIndex(this.index);
+          );
         }
       }
     );

@@ -135,9 +135,15 @@ export class RentACarManagerComponent implements OnInit {
 
       this.rentACarService.addRentACar(rentACar).subscribe(
         response => {
-          this._snackBar.open('Rent a car service created successfully', 'OK', {duration: 5000,});
-          this.userService.updateCompanyName(response['name']);
-          this.router.navigate(['main/rent-a-car-profile']);
+          this.userService.updateCompanyName(response['name']).subscribe(
+            (response: any) => {
+              this._snackBar.open('Rent a car service created successfully', 'OK', {duration: 5000,});
+              this.router.navigate(['main/rent-a-car-profile']);
+            },
+            error => {
+              console.log(error);
+            }
+          );
         },
         error => {
           console.log(error);

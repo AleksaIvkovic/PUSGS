@@ -50,7 +50,7 @@ export class UserAuthentificationComponent implements OnInit {
 
   initForm() {
     this.registerForm = new FormGroup({
-      'username': this.isProfile ? new FormControl({'value': this.loggedInUser.username, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
+      'username': this.isProfile ? new FormControl({'value': this.loggedInUser.userName, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
       'email': this.isProfile ? new FormControl({'value': this.loggedInUser.email, disabled: !this.isEdit}, [Validators.required, Validators.email]) : new FormControl(null, [Validators.required, Validators.email]),
       'password': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : new FormControl(null, [Validators.required]),
       'confirmPassword': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : this.confirmPasswordFormControl,
@@ -128,7 +128,7 @@ export class UserAuthentificationComponent implements OnInit {
         }
       }
         this.userService.updateUser(
-          this.loggedInUser.username,
+          this.loggedInUser.userName,
           this.registerForm.value['email'],
           // this.registerForm.value['password'],
           this.registerForm.value['name'],
@@ -159,6 +159,7 @@ export class UserAuthentificationComponent implements OnInit {
         });
     } else {
       let user = new User(
+        'regular',
         this.registerForm.value['username'],
         this.registerForm.value['email'],
         this.registerForm.value['password'],

@@ -7,6 +7,7 @@ using Careoplane.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,7 +40,7 @@ namespace Careoplane
             services.AddDbContext<AuthenticationContext>(options =>
                    options.UseSqlServer(Configuration.GetConnectionString("DatabaseContext")));
 
-            services.AddDefaultIdentity<AppUser>().AddEntityFrameworkStores<AuthenticationContext>();
+            services.AddDefaultIdentity<AppUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<AuthenticationContext>();
 
             services.AddCors();
 

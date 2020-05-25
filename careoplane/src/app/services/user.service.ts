@@ -18,6 +18,7 @@ export class UserService {
     loggedInUserChanged = new Subject<User>();
 
     private user: User = new User(
+        'regular',
         'testUsername',
         'test@gmail.com',
         'pass',
@@ -114,7 +115,7 @@ export class UserService {
     }
 
     getLoggedInUsername() {
-        return this.loggedInUser.username;
+        return this.loggedInUser.userName;
     }
 
     getMockUpRentACarAdmin(): Admin {
@@ -167,7 +168,7 @@ export class UserService {
 
     registerUser(newUser: User): boolean {
         for (let user of this.users) {
-            if (user.username === newUser.username) {
+            if (user.userName === newUser.userName) {
                 return false;
             }
         }
@@ -199,7 +200,14 @@ export class UserService {
     }
 
     updateCompanyName(companyName: string) {
-        (this.loggedInUser as Admin).company = companyName;
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/AppUsers/UpdateCompany/' + localStorage.getItem('username');
+        // var user: User = localStorage.getItem('user');
+        // user.company = companyName;
+        return this.http
+        .put(
+            address,
+            {company: companyName}
+        );
     }
 
     addReservation(reservation: any){
@@ -208,13 +216,14 @@ export class UserService {
 
     register(user: User) {
         var body = {
-            UserName: user.username,
+            UserName: user.userName,
             Email: user.email,
             Password: user.password,
             Name: user.name,
             Surname: user.surname,
             PhoneNumber: user.phoneNumber,
-            City: user.city
+            City: user.city,
+            Role: user.role
         }
         let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/Register';
         return this.http.post(address, body);
@@ -227,5 +236,10 @@ export class UserService {
         }
         let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/Login';
         return this.http.post(address, user);
-      }
+    }
+
+    getUser(username: string) {
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/' + username;
+        return this.http.get(address);
+    }
 }
