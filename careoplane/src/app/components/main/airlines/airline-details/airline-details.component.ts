@@ -15,7 +15,7 @@ import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
   templateUrl: './airline-details.component.html',
   styleUrls: ['./airline-details.component.css']
 })
-export class AirlineDetailsComponent implements OnInit{
+export class AirlineDetailsComponent implements OnInit, AfterViewInit{
   name: string;
   admin: boolean = false;
   
@@ -38,19 +38,6 @@ export class AirlineDetailsComponent implements OnInit{
 
   ngOnInit(): void {
     this.airline = new Airline();
-    this.airlineService.flightListChange.subscribe(
-      value => {
-        let count = 0;  
-        for(let flight of this.airline.flights){
-          if(flight.id == value)
-          {
-            this.airline.flights.splice(count,1);
-            break;
-          }
-          count++;
-        }
-      }
-    )
     this.activeRoute.params.subscribe(
       (params: Params) => {
           if(params['id']){
@@ -64,12 +51,18 @@ export class AirlineDetailsComponent implements OnInit{
           this.airlineService.getAirlineDB(this.name).subscribe(
             result => {
               this.airline = Object.assign(new TOAirline(), result).convert();
-              this.mapInitializer();
+              this.airlineService.airlineLoaded(this.airline);
             },
             error => {console.log(error);}
           );
       }
     );
+  }
+
+  ngAfterViewInit(){
+    if(this.airline.address != null || this.airline.address != ""){
+      this.mapInitializer();
+    }
   }
 
   mapInitializer() {

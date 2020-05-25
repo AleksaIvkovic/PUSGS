@@ -36,6 +36,12 @@ export class AirlineFastTicketsComponent implements OnInit {
   constructor(private airlineService: AirlineService) { }
 
   ngOnInit(): void {
+    this.airlineService.airlineFastTicketList.subscribe(
+      value => {
+        this.airline = value;
+      }
+    )
+
     for(let city of this.airline.destinations){
       if(!this.cities.includes(city.value)){
         this.cities.push(city.value);

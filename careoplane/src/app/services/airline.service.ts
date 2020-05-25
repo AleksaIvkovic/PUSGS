@@ -27,7 +27,14 @@ export class AirlineService {
   classType = new Subject<string>();
   ticketDone = new Subject<string>();
   flightListChange = new Subject<number>();
+  airlineFlightList = new Subject<Airline>();
+  airlineFastTicketList = new Subject<Airline>();
   public reservations: FlightReservation[] = []
+
+  public airlineLoaded(airline :Airline){
+    this.airlineFlightList.next(airline);
+    this.airlineFastTicketList.next(airline);
+  }
 
   public ticketDoneChange(){
     this.ticketDone.next('');

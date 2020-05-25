@@ -90,7 +90,7 @@ export class UserService {
     )
 
     //private loggedInUser: any;
-    private loggedInUser: any;
+    private loggedInUser: any = this.airlineAdminWithoutComapny;
     // private loggedInUser;
 
     private users: User[] = [

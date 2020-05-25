@@ -77,7 +77,7 @@
         <div class="example-large-box mat-elevation-z4">
             <app-airline-flights-list style="width: 100%;" [airline]="airline" [admin]="admin" *ngIf="!admin">
             </app-airline-flights-list>
-            <app-admin-flights style="width: 100%;" [airline]="airline" [admin]="admin" *ngIf="admin">
+            <app-admin-flights style="width: 100%;" [admin]="admin" *ngIf="admin">
             </app-admin-flights>
         </div>
     </mat-tab>
