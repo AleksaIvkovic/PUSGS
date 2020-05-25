@@ -1,30 +1,32 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import { Airline } from 'src/app/models/airline.model';
 import { Observable } from 'rxjs';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AirlineService } from 'src/app/services/airline.service';
 import { startWith, map } from 'rxjs/operators';
+import { Flight } from 'src/app/models/flight.model';
 
 @Component({
   selector: 'app-admin-flights',
   templateUrl: './admin-flights.component.html',
   styleUrls: ['./admin-flights.component.css']
 })
-export class AdminFlightsComponent implements OnInit {
-  @Input() airline: Airline;
+export class AdminFlightsComponent implements OnInit{
   @Input() back: string;
   @Input() admin: boolean;
 
+  airline: Airline;
   origin: string;
   destination: string;
   departure: Date;
   sortBy: string = 'price';
   sortWay:boolean = false;
   classType: string;
+  flights: Flight[];
 
   cities: string[] = [];
-  filteredOptionsOrigin: Observable<string[]>; 
-  filteredOptionsDestination: Observable<string[]>; 
+  filteredOptionsOrigin: Observable<string[]> = new Observable<string[]>(); 
+  filteredOptionsDestination: Observable<string[]> = new Observable<string[]>(); 
   
   minDateDep: Date = new Date();
   minDateRet: Date = new Date();
@@ -34,23 +36,46 @@ export class AdminFlightsComponent implements OnInit {
   constructor(private airlineService: AirlineService) { }
 
   ngOnInit(): void {
-    for(let city of this.airline.destinations){
-      if(!this.cities.includes(city.value)){
-        this.cities.push(city.value);
+    this.airlineService.airlineFlightList.subscribe(
+      value => {
+        this.airline = value;
+        this.flights = this.airline.flights;
+
+        for(let city of this.airline.destinations){
+          if(!this.cities.includes(city.value)){
+            this.cities.push(city.value);
+          }
+        }
+
+        this.initForm();
+    
+        this.filteredOptionsOrigin = this.filterForm.controls['origin'].valueChanges.pipe(
+          startWith(''),
+          map(value => this._filter(value))
+        );
+
+        this.filteredOptionsDestination = this.filterForm.controls['destination'].valueChanges.pipe(
+          startWith(''),
+          map(value => this._filter(value))
+        );
       }
-    }
+    )
 
-    this.initForm()
-
-    this.filteredOptionsOrigin = this.filterForm.controls['origin'].valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
-
-    this.filteredOptionsDestination = this.filterForm.controls['destination'].valueChanges.pipe(
-      startWith(''),
-      map(value => this._filter(value))
-    );
+    this.airlineService.flightListChange.subscribe(
+      value => {
+        let temp = [];
+        for(let flight of this.flights){
+          if(flight.id == value)
+          {
+            
+          }
+          else{
+            temp.push(flight);
+          }
+        }
+        this.flights = temp;
+      }
+    )
   }
 
   initForm() {

@@ -78,7 +78,7 @@
         <br/>
 
         <mat-list>
-            <div  *ngFor="let flight of airline.flights| 
+            <div  *ngFor="let flight of flights| 
                 filter:origin:'origin':false |  
                 filter:destination:'destination':false | 
                 orderBy:sortBy:sortWay:false |
