@@ -44,8 +44,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
             this.name = params['id'];
           }
           else{
-            let admin: Admin = <Admin>this.userService.getLoggedInUser();
-            this.name = admin.company;
+            this.name = localStorage.getItem('company');
             this.admin = true;
           }
           this.airlineService.getAirlineDB(this.name).subscribe(
@@ -60,9 +59,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
   }
 
   ngAfterViewInit(){
-    if(this.airline.address != null || this.airline.address != ""){
-      this.mapInitializer();
-    }
+    this.mapInitializer();
   }
 
   mapInitializer() {

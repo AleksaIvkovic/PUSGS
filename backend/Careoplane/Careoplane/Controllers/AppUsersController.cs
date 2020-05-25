@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Careoplane.Models;
 using Careoplane.TOModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -31,27 +33,42 @@ namespace Careoplane.Controllers
             _appSettings = appSettings.Value;
         }
 
-        [HttpGet("{username}")]
-        public async Task<ActionResult<TOAppUser>> GetAppUser(string username)
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("GetUserProfile")]
+        //GET : /api/UserProfile
+        public async Task<Object> GetUserProfile()
         {
-            var user = await _userManager.FindByNameAsync(username);
-
-            if (user == null)
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            return new
             {
-                return NotFound();
-            }
-
-            return user.ToTO();
+                user.Name,
+                user.Surname,
+                user.Email,
+                user.UserName,
+                user.City,
+                user.Company,
+                user.PhoneNumber,
+                role
+            };
         }
 
         [HttpPut("UpdateCompany/{username}")]
-        public async void UpdateCompany(string username, [FromBody]object company)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async void UpdateCompany([FromBody]object company)
         {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            user.Company = company.ToString().Split(':')[1].Split("\"")[1];
+
             try
             {
-                var user = await _userManager.FindByNameAsync(username);
-                string comp = company.ToString().Split(':')[1].Split("\"")[1]; //{\r\n  \"company\": \"Europcar\"\r\n}
-                user.Company = comp;
+                //var user = await _userManager.FindByNameAsync(username);
+                //string comp = company.ToString().Split(':')[1].Split("\"")[1]; //{\r\n  \"company\": \"Europcar\"\r\n}
+                //user.Company = comp;
                 var s = await _userManager.UpdateAsync(user);
             }
             catch (Exception ex)

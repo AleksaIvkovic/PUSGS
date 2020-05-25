@@ -239,7 +239,7 @@ export class UserService {
     }
 
     getUser(username: string) {
-        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/' + username;
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/GetUserProfile';
         return this.http.get(address);
     }
 }

@@ -96,8 +96,10 @@ import { ReservationsComponent } from './components/main/reservations/reservatio
 import { ReservationListComponent } from './components/main/reservations/reservation-list/reservation-list.component';
 import { AdminFlightsComponent } from './components/main/airlines/airline-details/admin-flights/admin-flights.component';
 import { ReservationItemComponent } from './components/main/reservations/reservation-list/reservation-item/reservation-item.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { AuthInterceptor } from './auth/auth.interceptor';
+import { TokenInterceptor } from './auth/tokenInterceptor';
 
 @NgModule({
   declarations: [
@@ -203,7 +205,19 @@ import { DatePipe } from '@angular/common';
     TooltipModule.forRoot(),
     HttpClientModule,
   ],
-  providers: [DatePipe],
+  providers: [
+    DatePipe,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+      },
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: TokenInterceptor,
+        multi: true,
+        },
+      ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
