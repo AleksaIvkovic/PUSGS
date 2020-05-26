@@ -64,12 +64,17 @@ namespace Careoplane.Controllers
             
             try
             {
-                //var user = await _userManager.FindByNameAsync(username);
-                //string comp = company.ToString().Split(':')[1].Split("\"")[1]; //{\r\n  \"company\": \"Europcar\"\r\n}
-                //user.Company = comp;
                 var user = await _userManager.FindByIdAsync(userId);
                 user.Company = company.ToString().Split(':')[1].Split("\"")[1];
-                var s = await _userManager.UpdateAsync(user);
+                await _userManager.UpdateAsync(user);
+                await _userManager.RemoveFromRoleAsync(user, role);
+                if (role == "racAdminNew")
+                {
+                    await _userManager.AddToRoleAsync(user, "racAdmin");
+                } else
+                {
+                    await _userManager.AddToRoleAsync(user, "aeroAdmin");
+                }
                 return Ok(new { user.Company });
             }
             catch (Exception ex)
