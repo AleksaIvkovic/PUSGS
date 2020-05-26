@@ -7,12 +7,13 @@ import { Seat } from '../models/seat.model';
 import { FastTicket } from '../models/fast-ticket.model';
 import { AirlineFastTicketsComponent } from '../components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
 import { FlightReservation } from '../models/flight-reservation.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
 import { TOAirline } from '../t-o-models/t-o-airline.model';
 import { TOFlight } from '../t-o-models/t-o-flight.model';
 import { TOSeat } from '../t-o-models/t-o-seat.model';
 import { TOFastTicket } from '../t-o-models/t-o-fast-ticket.model';
+import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +30,23 @@ export class AirlineService {
   flightListChange = new Subject<number>();
   airlineFlightList = new Subject<Airline>();
   airlineFastTicketList = new Subject<Airline>();
-  public reservations: FlightReservation[] = []
+  flightSeatsEdit = new Subject<Flight>();
+  flightChosenSeat = new Subject<Flight>();
+  reservations: FlightReservation[] = []
+  images: { [airline : string] : string; } = {}
+
 
   public airlineLoaded(airline :Airline){
     this.airlineFlightList.next(airline);
     this.airlineFastTicketList.next(airline);
+  }
+
+  public flightLoaded(flight : Flight){
+    this.flightSeatsEdit.next(flight);
+  }
+
+  public flightChosen(flight: Flight){
+    this.flightChosenSeat.next(flight);
   }
 
   public ticketDoneChange(){
@@ -56,7 +69,7 @@ export class AirlineService {
     this.emptyTickets.next(tickets);
   }
   
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private datePipe: DatePipe) {
   }
   
   //treba obrisati
@@ -77,6 +90,18 @@ export class AirlineService {
   getAllFlightsDB(){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights';
     return this.http.get<TOFlight[]>(address);
+  }
+
+  getSearchedFlightsDB(origin: string, destination: string,  departure: Date, num: number, classType: string){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/Searched';
+    var params = new HttpParams()
+      .append('origin',origin)
+      .append('destination',destination)
+      .append('departure', this.datePipe.transform(departure, 'dd.MM.yyyy HH:mm'))
+      .append('numPassengers',num.toString())
+      .append('classType',classType);
+
+    return this.http.get<TOFlight[]>(address, {params: params});
   }
 
   //treba obrisati

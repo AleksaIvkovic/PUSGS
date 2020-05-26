@@ -21,6 +21,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
   
   airline: Airline;
   paramsSub: Subscription;
+  address: string= "";
 
   origin: string = '';
   destination: string = '';
@@ -50,6 +51,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
           this.airlineService.getAirlineDB(this.name).subscribe(
             result => {
               this.airline = Object.assign(new TOAirline(), result).convert();
+              this.address = this.airline.address;
               this.airlineService.airlineLoaded(this.airline);
             },
             error => {console.log(error);}
@@ -63,7 +65,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
   }
 
   mapInitializer() {
-    this.geocodingService.LatLon(this.airline.address,this.map, this.gmap);
+    this.geocodingService.LatLon(this.address, this.map, this.gmap);
   }
 
   ngOnDestroy(): void {

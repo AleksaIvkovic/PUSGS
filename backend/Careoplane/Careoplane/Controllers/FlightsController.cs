@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
 using Careoplane.TOModels;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace Careoplane.Controllers
 {
@@ -52,6 +53,34 @@ namespace Careoplane.Controllers
             }
 
             return new TOFlight(flight);
+        }
+
+        [HttpGet]
+        [Route("Searched")]
+        public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]DateTime departure, [FromQuery]int numPassengers, [FromQuery]string classType) {
+            List<Flight> flights = await _context.Flights
+                .Include(f => f.Connections)
+                .Include(f => f.Seats).ThenInclude(s => s.Flight)
+                .Include(f => f.Airline)
+                .ToListAsync();
+
+            List<TOFlight> returnList = new List<TOFlight>();
+            foreach(Flight flight in flights)
+            {
+                if(flight.Origin == origin && flight.Destination == destination && flight.Departure.Date == departure.Date)
+                {
+                    int count = 0;
+                    foreach(Seat seat in flight.Seats)
+                    {
+                        if (seat.Type == classType || classType == "any")
+                            if (!seat.Occupied)
+                                count++;
+                    }
+                    if (count >= numPassengers)
+                        returnList.Add(new TOFlight(flight));
+                }
+            }
+            return returnList;
         }
 
         // PUT: api/Flights/5

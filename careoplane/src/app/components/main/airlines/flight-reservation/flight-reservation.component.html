@@ -8,7 +8,7 @@
 <mat-horizontal-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="firstFormGroup">
     <ng-template matStepLabel>Choose seats</ng-template>
-    <app-seat-selector [flight]="flight1" [type]="classType"></app-seat-selector>
+    <app-seat-selector [type]="classType"></app-seat-selector>
     <button mat-button matStepperNext color="primary" [disabled]="checked" >Next</button>
   </mat-step>
   

@@ -6,6 +6,8 @@ import { AirlineService } from 'src/app/services/airline.service';
 import { Subscription, Observable } from 'rxjs';
 import { Flight } from 'src/app/models/flight.model';
 import {map, startWith} from 'rxjs/operators';
+import { TOFlight } from 'src/app/t-o-models/t-o-flight.model';
+import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 
 @Component({
   selector: 'app-airlines-list',
@@ -13,14 +15,19 @@ import {map, startWith} from 'rxjs/operators';
   styleUrls: ['./airlines-list.component.css']
 })
 export class AirlinesListComponent implements OnInit, OnDestroy {
-  airlines: Airline[];
-  airlinesSubscription: Subscription;
-  flights: Flight[];
-  flightsSubscription: Subscription;
+//#region  Lists
+  airlines: Airline[] = [];
+  flights: Flight[] = [];
+  cities: string[] = [];
+//#endregion
 
+//#region Form
   typeControl: FormControl = new FormControl('one way', Validators.required);
   retControl: FormControl = new FormControl(null);
   departureControl: FormControl = new FormControl(null, Validators.required);
+  toggleControl = new FormControl();
+//#endregion
+
 
   travelType:string='one way';
   exs: boolean = true;
@@ -33,7 +40,7 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
   ret: Date;
   num: number;
 
-  cities: string[] = [];
+  
   filteredOptionsOrigin: Observable<string[]>; 
   filteredOptionsDestination: Observable<string[]>; 
   
@@ -53,26 +60,26 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initForm();
-    this.airlinesSubscription = this.airlineService.airlinesChanged.subscribe(
-      (airlines:Airline[])=> {
-        this.airlines = airlines;
-      }
-    )
-    this.flightsSubscription = this.airlineService.flightsChanged.subscribe(
-      (flights:Flight[])=> {
-        this.flights = flights;
-      }
-    )
-    this.airlineService.getAirlines();
-    this.airlineService.getAllFlights();
+    
+    this.airlineService.getAirlinesDB().subscribe(
+      result => {
+        for(let airline of result){
+          this.airlines.push(Object.assign(new TOAirline(),airline).convert());
+          this.airlineService.images[airline.name] = airline.picture;
 
-    for(let airline of this.airlines){
-      for(let city of airline.destinations){
-        if(!this.cities.includes(city.value)){
-          this.cities.push(city.value);
+          for(let airline of this.airlines){
+            for(let city of airline.destinations){
+              if(!this.cities.includes(city.value)){
+                this.cities.push(city.value);
+              }
+            }
+          }
         }
+      },
+      error => {
+        console.log();
       }
-    }
+    )
 
     this.filteredOptionsOrigin = this.searchForm.controls['origin'].valueChanges.pipe(
       startWith(''),
@@ -83,6 +90,7 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
       startWith(''),
       map(value => this._filter(value))
     );
+
   }
 
   private _filter(value: string): string[] {
@@ -92,8 +100,6 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.airlinesSubscription.unsubscribe();
-    this.flightsSubscription.unsubscribe();
   }
 
   private initForm() {
@@ -102,7 +108,6 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
     let departure = null;
     let num = 1;
     
-
     this.searchForm = new FormGroup({
       'origin': new FormControl(origin, Validators.required),
       'destination': new FormControl(destination, Validators.required),
@@ -128,15 +133,10 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
   }
 
   onSearch(){
-    this.origin = this.searchForm.value['origin']; 
-    this.destination = this.searchForm.value['destination'];
-    this.type = this.searchForm.value['type'];
-    this.departure = this.searchForm.value['departure'];
-    this.ret = this.searchForm.value['retControl'];
-    this.num = this.searchForm.value['num'];
+    this.airlineService.updateClassType(this.searchForm.value['classType']);
     this.classType = this.searchForm.value['classType'];
-
-    this.airlineService.updateClassType(this.classType);
+    this.origin = this.searchForm.value['origin'];
+    this.destination = this.searchForm.value['destination'];
 
     if(this.travelType === "round trip"){
       this.twoWay = true;
@@ -149,9 +149,30 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
 
     this.exs = false;
     this.exf = true;
+
+    this.airlineService.getSearchedFlightsDB(
+      this.searchForm.value['origin'],
+      this.searchForm.value['destination'],
+      this.searchForm.value['departure'],
+      this.searchForm.value['num'],
+      this.searchForm.value['classType']).subscribe(
+      result => {
+        let newFlights = [];
+        for(let flight of result){
+          for(let airline of this.airlines){
+            if(airline.name == flight.airlineName){
+              newFlights.push(Object.assign(new TOFlight(),flight).convert(airline.prices));   
+            }
+          }
+        }
+        this.flights = newFlights;
+      },
+      error => {
+        console.log();
+      }
+    )
   }
 
-  toggleControl = new FormControl();
   onToggleChange() {
     this.sortWay = this.toggleControl.value;
   } 

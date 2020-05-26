@@ -8,14 +8,12 @@ import { AirlineService } from 'src/app/services/airline.service';
   styleUrls: ['./airline.component.css']
 })
 export class AirlineComponent implements OnInit {
-  @Input() airline: Airline;
-  @Input() name: string = null;
-  constructor(private airlineService: AirlineService) { }
+  @Input() name: string;
+  @Input() image: string;
+
+  constructor() { }
 
   ngOnInit(): void {
-    if(this.name !== null){
-      this.airline = this.airlineService.getAirline(this.name);
-    }
   }
 
 }

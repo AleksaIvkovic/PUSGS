@@ -26,6 +26,11 @@ export class TOFlight {
                 let toSeat: TOSeat = Object.assign(new TOSeat(),seat);
                 flight.seats.push(toSeat.convert());
             }
+
+            flight.conCount = this.connections.length;
+            let time = new Date(this.arrival).valueOf() - new Date(this.departure).valueOf();
+            flight.durationHours = Math.floor(time/36e5);
+            flight.durationMinutes = Math.floor(((time/36e5) -  Math.floor(time/36e5))*60);
     
             return flight;
         }

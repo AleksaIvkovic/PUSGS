@@ -2,7 +2,7 @@
   <div class="row text-center">
       <div *ngFor="let airline of airlines" id="pictureDiv" matTooltip="{{airline.name}}">
           <a [routerLink]="['../',airline.name, 'details']">
-              <app-airline [airline]="airline"></app-airline>
+              <app-airline [image]="airline.picture" [name]="airline.name"></app-airline>
           </a>
       </div>
   </div>
@@ -149,9 +149,7 @@
 <br/>
 
 <mat-list *ngIf="search">
-  <div *ngFor="let flight of flights| 
-  filter:origin:'origin':false | 
-  filter:destination:'destination':false | 
+  <div *ngFor="let flight of flights|  
   orderBy:sortBy:sortWay:false |
   priceFilter:num:classType |
   filter:airlineName:'airlineName':false |
@@ -159,14 +157,14 @@
     <app-flight 
     [back]="'one'"
     [flight]="flight"
-    [admin]="false" [classType] = "classType" [passengers]="num"></app-flight> 
+    [admin]="false" 
+    [classType] = "classType" 
+    [passengers]="num"></app-flight> 
     <mat-divider></mat-divider>
   </div>
 </mat-list>
 <mat-list *ngIf="twoWay">
-  <div *ngFor="let flight of flights| 
-  filter:origin:'origin':false | 
-  filter:destination:'destination':false | 
+  <div *ngFor="let flight of flights|  
   orderBy:sortBy:sortWay:false |
   priceFilter:num:classType |
   filter:airlineName:'airlineName':false |

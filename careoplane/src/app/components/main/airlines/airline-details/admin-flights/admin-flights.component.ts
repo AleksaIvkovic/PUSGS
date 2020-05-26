@@ -22,7 +22,7 @@ export class AdminFlightsComponent implements OnInit{
   sortBy: string = 'price';
   sortWay:boolean = false;
   classType: string;
-  flights: Flight[];
+  flights: Flight[] = [];
 
   cities: string[] = [];
   filteredOptionsOrigin: Observable<string[]> = new Observable<string[]>(); 
@@ -36,6 +36,9 @@ export class AdminFlightsComponent implements OnInit{
   constructor(private airlineService: AirlineService) { }
 
   ngOnInit(): void {
+    this.airline = new Airline();
+    this.initForm();
+
     this.airlineService.airlineFlightList.subscribe(
       value => {
         this.airline = value;
@@ -46,18 +49,6 @@ export class AdminFlightsComponent implements OnInit{
             this.cities.push(city.value);
           }
         }
-
-        this.initForm();
-    
-        this.filteredOptionsOrigin = this.filterForm.controls['origin'].valueChanges.pipe(
-          startWith(''),
-          map(value => this._filter(value))
-        );
-
-        this.filteredOptionsDestination = this.filterForm.controls['destination'].valueChanges.pipe(
-          startWith(''),
-          map(value => this._filter(value))
-        );
       }
     )
 
@@ -76,6 +67,16 @@ export class AdminFlightsComponent implements OnInit{
         this.flights = temp;
       }
     )
+
+    this.filteredOptionsOrigin = this.filterForm.controls['origin'].valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
+
+    this.filteredOptionsDestination = this.filterForm.controls['destination'].valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value))
+    );
   }
 
   initForm() {

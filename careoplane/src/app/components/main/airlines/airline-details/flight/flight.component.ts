@@ -3,6 +3,8 @@ import { Flight } from 'src/app/models/flight.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FastTicket } from 'src/app/models/fast-ticket.model';
+import { Airline } from 'src/app/models/airline.model';
+import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 
 @Component({
   selector: 'app-flight',
@@ -19,7 +21,7 @@ export class FlightComponent implements OnInit {
   @Input() passengers: number;
   backStr: string;
   price: any;
-  constructor(private airlineService: AirlineService, private router: Router, private activeRoute: ActivatedRoute) { }
+  constructor(public airlineService: AirlineService, private router: Router, private activeRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     if(this.back == 'one'){
@@ -72,6 +74,7 @@ export class FlightComponent implements OnInit {
   }
 
   EditSeats(){
+    this.airlineService.flightLoaded(this.flight);
     this.router.navigate(['../',this.flight.id,'edit-seats'],{relativeTo:this.activeRoute});
   }
 

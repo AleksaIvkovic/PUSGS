@@ -11,10 +11,10 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./seat-selector.component.scss']
 })
 export class SeatSelectorComponent implements OnInit {
-  @Input() flight: Flight;
   @Input() type:string = 'any';
-  @Input() admin: boolean = false;
 
+  admin: boolean;
+  flight: Flight;
   airline: Airline;
 
   private seatConfig: any = null;
@@ -33,7 +33,6 @@ export class SeatSelectorComponent implements OnInit {
     cartId : "",
     eventId : 0
   };
-  
 
   title = 'seat-chart-generator';
   rowLength: number;
@@ -84,6 +83,22 @@ export class SeatSelectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if(localStorage.getItem('role') == "aeroAdmin"){
+      this.admin = true;
+    }
+    else{
+      this.admin = false;
+    }
+
+    this.airlineService.flightSeatsEdit.subscribe(
+      result => {
+        this.flight = result;
+      },
+      error => {
+        console.log(error);
+      }
+    )
+
     this.airlineService.emptyTickets.subscribe((tickets:any) => {
       while(tickets.selectedSeats.length != 0){
         for(let i = 0; i < this.seatmap.length;i++){
@@ -98,7 +113,6 @@ export class SeatSelectorComponent implements OnInit {
     //Process a simple bus layout
     this.airline = this.airlineService.getAirline(this.flight.airlineName);
     
-
     this.seatConfigFun();
     this.processSeatChart(this.seatConfig);
 

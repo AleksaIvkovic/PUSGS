@@ -1,10 +1,10 @@
 <div class="row">
     <div class="col-md-1">
-        <!-- <div matTooltip="{{flight.airlineName}}"> 
+        <div matTooltip="{{flight.airlineName}}"> 
             <a [routerLink]="[backStr,flight.airlineName, 'details']">
-                <app-airline [name]="flight.airlineName"></app-airline>
+                <app-airline [image]="airlineService.images[flight.airlineName]" [name]="flight.airlineName"></app-airline>
             </a>
-        </div> -->
+        </div>
     </div>
     <div class="col-md-2 flight">
         <div class="mat-h3">

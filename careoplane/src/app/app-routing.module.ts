@@ -36,8 +36,7 @@ const routes: Routes = [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: AirlinesListComponent},
       {path: ':id/details', component: AirlineDetailsComponent},
-      {path: ':fid/:type/:passengers/reservation', component: FlightReservationComponent},
-      {path: ':fid1/:fid2/:type/:passengers/reservation', component: FlightReservationComponent}
+      {path: ':fid/:type/:passengers/reservation', component: FlightReservationComponent}
     ]},
     {path: 'rent-a-car', component: RentACarComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
@@ -60,11 +59,11 @@ const routes: Routes = [
       {path: 'edit', component: AirlineEditComponent},
       {path: 'new', component: AirlineEditComponent},
       {path: ':fid/edit-flight', component: FlightEditComponent},
+      {path: 'add-flight', component: FlightEditComponent},
       {path: ':fid/edit-seats', component: SeatsEditComponent, children:[
         {path: '', component:SeatStarterComponent, pathMatch:'full'},
         {path: ':id/seat', component: SeatDetailsComponent}
-      ]},
-      {path: 'add-flight', component: FlightEditComponent},
+      ]}
     ]},
     {path: 'new-rent-a-car-profile', component: RentACarManagerComponent, children: [
       {path: 'add-vehicle', component: VehicleManagerComponent},

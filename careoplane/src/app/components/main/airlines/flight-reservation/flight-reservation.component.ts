@@ -17,16 +17,10 @@ export class FlightReservationComponent implements OnInit {
 
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
-
   passengersControl: FormArray;
-
   flight1: Flight;
-  
-
   tickets = [] as any;
-
   passengers: number;
-  
   checked: boolean = true;
   classType: string;
 

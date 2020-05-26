@@ -15,7 +15,13 @@ export class SeatsEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.activeRoute.params.subscribe((params: Params) => {
-      this.flight = this.airlineServie.getFlight(+params['fid']);
+      this.airlineServie.getFlightDB(+params['fid']).subscribe(
+        result => {
+          this.flight = Object.assign(new Flight(),result);
+          this.airlineServie.flightLoaded(this.flight);
+        },
+        error => {console.log(error);}
+      )
     });
   }
 

@@ -18,14 +18,25 @@ export class SeatDetailsComponent implements OnInit {
   constructor(private activeRoute: ActivatedRoute,private router: Router, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
-    let fid = +this.router.url.split('/')[3];
-    this.flight = this.airlineService.getFlight(fid);
-    this.activeRoute.params.subscribe((params:Params)=>{
-      this.seat = this.flight.seats[+params['id']];
-      this.initForm();
-    });
+    this.flight = new Flight();
+    this.seat = new Seat();
 
-    this.initForm();
+    let fid = +this.router.url.split('/')[3];
+    this.airlineService.flightChosenSeat.subscribe(
+      result =>
+      {
+        this.flight = result;
+      }
+    )
+    this.activeRoute.params.subscribe((params:Params)=>{
+      for(let seat of this.flight.seats){
+        if(seat.id == +params['id'])
+        {
+          this.seat = seat;
+          this.initForm();
+        }
+      }
+    });
   }
 
   initForm(){
