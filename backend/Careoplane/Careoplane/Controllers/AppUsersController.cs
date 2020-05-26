@@ -57,19 +57,20 @@ namespace Careoplane.Controllers
 
         [HttpPut("UpdateCompany/{username}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async void UpdateCompany([FromBody]object company)
+        public async Task<Object> UpdateCompany([FromBody]object company)
         {
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
             string role = User.Claims.First(c => c.Type == "Roles").Value;
-            var user = await _userManager.FindByIdAsync(userId);
-            user.Company = company.ToString().Split(':')[1].Split("\"")[1];
-
+            
             try
             {
                 //var user = await _userManager.FindByNameAsync(username);
                 //string comp = company.ToString().Split(':')[1].Split("\"")[1]; //{\r\n  \"company\": \"Europcar\"\r\n}
                 //user.Company = comp;
+                var user = await _userManager.FindByIdAsync(userId);
+                user.Company = company.ToString().Split(':')[1].Split("\"")[1];
                 var s = await _userManager.UpdateAsync(user);
+                return Ok(new { user.Company });
             }
             catch (Exception ex)
             {
