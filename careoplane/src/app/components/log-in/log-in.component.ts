@@ -40,7 +40,7 @@ export class LogInComponent implements OnInit {
         localStorage.setItem('token', res.token);
         localStorage.setItem('username', res.username);
         localStorage.setItem('role', res.role);
-        this.dialogRef.close();
+        this.dialogRef.close('success');
       },
       err => {
         if (err.status == 400) {

@@ -27,6 +27,24 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    if (localStorage.getItem('token') != null) {
+      this.userService.getUser(this.username).subscribe(
+        (response: any) => {
+          this.user = Object.assign
+          (new User(this.role, '', '', '', '', '', '', ''), response);
+          localStorage.setItem('user', this.user);
+          localStorage.setItem('company', response['company']);
+          this.isLoggedIn = true;
+          this.role = localStorage.getItem('role');
+          this.checkUser();
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    } else {
+      this.router.navigate(['/main']);
+    }
   }
 
   onRegister() {
@@ -43,7 +61,7 @@ export class HeaderComponent implements OnInit {
     dialogRef.afterClosed()
     .subscribe(
       (result) => {
-        if (result !== "false") {
+        if (result === "success") {
           this.username = localStorage.getItem('username');
           this.role = localStorage.getItem('role');
           // this.user = this.userService.getLoggedInUser();
@@ -97,10 +115,15 @@ export class HeaderComponent implements OnInit {
   onLogOut() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('username');
+    localStorage.removeItem('company');
     localStorage.removeItem('role');
+
     this.isLoggedIn = false;
     this.isAirlineAdmin = false;
     this.isRentACarAdmin = false;
+    this.isNewAdmin = false;
+
     this.router.navigate(['/main']);
   }
 

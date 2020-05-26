@@ -57,19 +57,25 @@ namespace Careoplane.Controllers
 
         [HttpPut("UpdateCompany/{username}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async void UpdateCompany([FromBody]object company)
+        public async Task<Object> UpdateCompany([FromBody]object company)
         {
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
             string role = User.Claims.First(c => c.Type == "Roles").Value;
-            var user = await _userManager.FindByIdAsync(userId);
-            user.Company = company.ToString().Split(':')[1].Split("\"")[1];
-
+            
             try
             {
-                //var user = await _userManager.FindByNameAsync(username);
-                //string comp = company.ToString().Split(':')[1].Split("\"")[1]; //{\r\n  \"company\": \"Europcar\"\r\n}
-                //user.Company = comp;
-                var s = await _userManager.UpdateAsync(user);
+                var user = await _userManager.FindByIdAsync(userId);
+                user.Company = company.ToString().Split(':')[1].Split("\"")[1];
+                await _userManager.UpdateAsync(user);
+                await _userManager.RemoveFromRoleAsync(user, role);
+                if (role == "racAdminNew")
+                {
+                    await _userManager.AddToRoleAsync(user, "racAdmin");
+                } else
+                {
+                    await _userManager.AddToRoleAsync(user, "aeroAdmin");
+                }
+                return Ok(new { user.Company });
             }
             catch (Exception ex)
             {

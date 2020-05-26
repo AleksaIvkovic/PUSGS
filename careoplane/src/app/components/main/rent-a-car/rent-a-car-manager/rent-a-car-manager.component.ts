@@ -137,6 +137,7 @@ export class RentACarManagerComponent implements OnInit {
         response => {
           this.userService.updateCompanyName(response['name']).subscribe(
             (response: any) => {
+              localStorage.setItem('company', response.company)
               this._snackBar.open('Rent a car service created successfully', 'OK', {duration: 5000,});
               this.router.navigate(['main/rent-a-car-profile']);
             },
