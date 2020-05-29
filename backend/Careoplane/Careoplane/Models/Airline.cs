@@ -42,7 +42,6 @@ namespace Careoplane.Models
             Image = airline.Image;
             Rating = airline.Rating;
         }
-
     }
 
     public class Destination
@@ -63,6 +62,8 @@ namespace Careoplane.Models
 
         public double Value { get; set; }
 
+        public int Ordinal { get; set; }
+
         [Required]
         public Airline Airline { get; set; }
     }
@@ -74,6 +75,8 @@ namespace Careoplane.Models
 
         public double Value { get; set; }
 
+        public int Ordinal { get; set; }
+
         [Required]
         public Airline Airline { get; set; }
     }
@@ -84,6 +87,8 @@ namespace Careoplane.Models
         public int SegmentId { get; set; }
 
         public double Value { get; set; }
+
+        public int Ordinal { get; set; }
 
         [Required]
         public Airline Airline { get; set; }

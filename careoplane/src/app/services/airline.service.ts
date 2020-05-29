@@ -14,6 +14,7 @@ import { TOFlight } from '../t-o-models/t-o-flight.model';
 import { TOSeat } from '../t-o-models/t-o-seat.model';
 import { TOFastTicket } from '../t-o-models/t-o-fast-ticket.model';
 import { DatePipe } from '@angular/common';
+import { TOPriceSegmentSeat } from '../t-o-models/t-o-price-segment-seat.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +33,13 @@ export class AirlineService {
   airlineFastTicketList = new Subject<Airline>();
   flightSeatsEdit = new Subject<Flight>();
   flightChosenSeat = new Subject<Flight>();
-  reservations: FlightReservation[] = []
+  reservations: FlightReservation[] = [];
+  locationLoaded = new Subject<string>();
   images: { [airline : string] : string; } = {}
 
+  public airlineLocation(location: string){
+    this.locationLoaded.next(location);
+  }
 
   public airlineLoaded(airline :Airline){
     this.airlineFlightList.next(airline);
@@ -92,14 +97,20 @@ export class AirlineService {
     return this.http.get<TOFlight[]>(address);
   }
 
-  getSearchedFlightsDB(origin: string, destination: string,  departure: Date, num: number, classType: string){
+  getSearchedFlightsDB(origin: string, destination: string,  departure: Date, num: number, classType: string, name:string){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/Searched';
+    let single = 'false';
+    if(name == null)
+      single = 'true';
+
     var params = new HttpParams()
       .append('origin',origin)
       .append('destination',destination)
       .append('departure', this.datePipe.transform(departure, 'dd.MM.yyyy HH:mm'))
       .append('numPassengers',num.toString())
-      .append('classType',classType);
+      .append('classType',classType)
+      .append('name', name)
+      .append('singleAirline', single);
 
     return this.http.get<TOFlight[]>(address, {params: params});
   }
@@ -119,23 +130,37 @@ export class AirlineService {
   }
 
   addAirline(airline: Airline) {
-    let tempAirline = new TOAirline(airline.name,airline.address,airline.description,airline.prices,airline.seatingArrangement,airline.segments,[],airline.picture,airline.rating,airline.destinations,[]);
+    let tempAirline = new TOAirline(airline.name,airline.address,airline.description,[],[],[],[],airline.picture,airline.rating,airline.destinations,[]);
+    
+    for(let variable of airline.prices){
+      tempAirline.prices.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+    }
+
+    for(let variable of airline.seatingArrangement){
+      tempAirline.seatingArrangements.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+    }
+
+    for(let variable of airline.segments){
+      tempAirline.segmentLengths.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+    }
+    
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines';
     return this.http.post(address,tempAirline);
   }
 
   editAirline(airline: Airline) {
-    let tempAirline = new TOAirline(airline.name,airline.address,airline.description,airline.prices,airline.seatingArrangement,airline.segments,[],airline.picture,airline.rating,airline.destinations,[]);
-    for(let flight of airline.flights){
-      let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,flight.id,[]);
-      for(let seat of flight.seats){
-        tempFlight.seats.push(new TOSeat(seat.id,seat.name,seat.type,seat.occupied,seat.price,seat.discount,seat.id));
-      }
-      tempAirline.flights.push(tempFlight);
+    let tempAirline = new TOAirline(airline.name,airline.address,airline.description,[],[],[],[],airline.picture,airline.rating,airline.destinations,[]);
+
+    for(let variable of airline.prices){
+      tempAirline.prices.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
     }
-    
-    for(let fastTicket of airline.fastTickets){
-      tempAirline.fastTickets.push(new TOFastTicket(fastTicket.seat.id,fastTicket.flight.id));
+
+    for(let variable of airline.seatingArrangement){
+      tempAirline.seatingArrangements.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+    }
+
+    for(let variable of airline.segments){
+      tempAirline.segmentLengths.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
     }
 
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/' + tempAirline.name;
@@ -155,16 +180,6 @@ export class AirlineService {
   getFlightDB(id: number){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/' + id;
     return this.http.get<TOFlight>(address); 
-  }
-
-  //treba obrisati
-  verifyName(value: string) {
-    for(let tempAirline of this.airlines){
-      if(tempAirline.name.toLowerCase() === value.toLowerCase()){
-        return false;
-      }
-    }
-    return true;
   }
 
   //treba obrisati

@@ -57,7 +57,7 @@ namespace Careoplane.Controllers
 
         [HttpGet]
         [Route("Searched")]
-        public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]DateTime departure, [FromQuery]int numPassengers, [FromQuery]string classType) {
+        public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]DateTime departure, [FromQuery]int numPassengers, [FromQuery]string classType, [FromQuery]string name, [FromQuery]bool singleAirline) {
             List<Flight> flights = await _context.Flights
                 .Include(f => f.Connections)
                 .Include(f => f.Seats).ThenInclude(s => s.Flight)
@@ -67,7 +67,7 @@ namespace Careoplane.Controllers
             List<TOFlight> returnList = new List<TOFlight>();
             foreach(Flight flight in flights)
             {
-                if(flight.Origin == origin && flight.Destination == destination && flight.Departure.Date == departure.Date)
+                if(flight.Origin == origin && flight.Destination == destination && flight.Departure.Date == departure.Date && (singleAirline || flight.Airline.Name == name))
                 {
                     int count = 0;
                     foreach(Seat seat in flight.Seats)

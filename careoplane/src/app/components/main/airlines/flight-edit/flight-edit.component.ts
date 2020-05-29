@@ -20,7 +20,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./flight-edit.component.css']
 })
 export class FlightEditComponent implements OnInit {
-  flight: Flight;
+  flight: Flight = new Flight();
   group: FormGroup;
   connectionsForm: FormArray = new FormArray([]);
   visible = true;
@@ -35,13 +35,14 @@ export class FlightEditComponent implements OnInit {
   constructor(private datePipe: DatePipe, private router: Router, private activeRoute: ActivatedRoute, private airlineService: AirlineService, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.minArrivalDate = new Date();
-    this.activeRoute.params.subscribe((params: Params) => {
-      let admin: Admin = <Admin>this.userService.getLoggedInUser();
-        this.airlineService.getAirlineDB(admin.company).subscribe(
-        result => {
-          this.airline = Object.assign(new TOAirline(), result).convert();
-        
+    this.InitForm();
+
+    let admin: Admin = <Admin>this.userService.getLoggedInUser();
+    this.airlineService.getAirlineDB(admin.company).subscribe(
+      result => {
+        this.airline = Object.assign(new TOAirline(), result).convert();
+
+        this.activeRoute.params.subscribe((params: Params) => {
           if(params['fid']){
             for(let flight of this.airline.flights){
               if(flight.id == +params['fid']){
@@ -51,13 +52,10 @@ export class FlightEditComponent implements OnInit {
               }
             }
           }
-          else{
-            this.flight = new Flight();
-            this.InitForm();
-          }
-        },
-      error => {console.log(error);});
-    });
+        });
+      },
+      error => {console.log(error);}
+    );
   }
 
   InitForm(){
@@ -70,6 +68,7 @@ export class FlightEditComponent implements OnInit {
           })
         )
       }
+
       this.group = new FormGroup({
         'origin': new FormControl(this.flight.origin,Validators.required),
         'destination': new FormControl(this.flight.destination, [Validators.required, this.checkDestination.bind(this)]),
@@ -79,6 +78,10 @@ export class FlightEditComponent implements OnInit {
         'connectionsForm': this.connectionsForm
       });
 
+      this.group.controls['origin'].disable({onlySelf: true});
+      this.group.controls['destination'].disable({onlySelf: true});
+      this.group.controls['distance'].disable({onlySelf: true});
+      this.group.controls['connectionsForm'].disable({onlySelf: true});
     }
     else{
       this.group = new FormGroup({
@@ -95,13 +98,6 @@ export class FlightEditComponent implements OnInit {
       this.minArrivalDate = new Date(value);
       this.checkArrivalDate(<FormControl>this.group.controls['arrival']);
     });
-
-    if(this.edit){
-      this.group.controls['origin'].disable({onlySelf: true});
-      this.group.controls['destination'].disable({onlySelf: true});
-      this.group.controls['distance'].disable({onlySelf: true});
-      this.group.controls['connectionsForm'].disable({onlySelf: true});
-    }
   }
 
   onSubmit(){
@@ -122,10 +118,7 @@ export class FlightEditComponent implements OnInit {
       }
   
       this.flight.conCount = this.flight.connections.length;
-    }
-    
 
-    if(!this.edit){
       this.flight.airlineName = this.airline.name;
       this.airlineService.AddFlgiht(this.flight).subscribe(
         response => {
@@ -207,6 +200,9 @@ export class FlightEditComponent implements OnInit {
   }
 
   Cancel(){
-    this.router.navigate(['../../'],{relativeTo: this.activeRoute});
+    if(this.edit)
+      this.router.navigate(['../../'],{relativeTo: this.activeRoute});
+    else
+      this.router.navigate(['../'],{relativeTo: this.activeRoute});
   }
 }

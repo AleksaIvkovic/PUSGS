@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { Airline } from 'src/app/models/airline.model';
@@ -14,7 +14,7 @@ import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
   templateUrl: './airlines-list.component.html',
   styleUrls: ['./airlines-list.component.css']
 })
-export class AirlinesListComponent implements OnInit, OnDestroy {
+export class AirlinesListComponent implements OnInit {
 //#region  Lists
   airlines: Airline[] = [];
   flights: Flight[] = [];
@@ -28,6 +28,8 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
   toggleControl = new FormControl();
 //#endregion
 
+  @Input() singleAirline: boolean = false;
+  airline: Airline = null;
 
   travelType:string='one way';
   exs: boolean = true;
@@ -40,7 +42,6 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
   ret: Date;
   num: number;
 
-  
   filteredOptionsOrigin: Observable<string[]>; 
   filteredOptionsDestination: Observable<string[]>; 
   
@@ -61,25 +62,39 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initForm();
     
-    this.airlineService.getAirlinesDB().subscribe(
-      result => {
-        for(let airline of result){
-          this.airlines.push(Object.assign(new TOAirline(),airline).convert());
-          this.airlineService.images[airline.name] = airline.picture;
-
-          for(let airline of this.airlines){
-            for(let city of airline.destinations){
-              if(!this.cities.includes(city.value)){
-                this.cities.push(city.value);
+    if(!this.singleAirline){
+      this.airlineService.getAirlinesDB().subscribe(
+        result => {
+          for(let airline of result){
+            this.airlines.push(Object.assign(new TOAirline(),airline).convert());
+            this.airlineService.images[airline.name] = airline.picture;
+  
+            for(let airline of this.airlines){
+              for(let city of airline.destinations){
+                if(!this.cities.includes(city.value)){
+                  this.cities.push(city.value);
+                }
               }
             }
           }
+        },
+        error => {
+          console.log();
         }
-      },
-      error => {
-        console.log();
-      }
-    )
+      )
+    }
+    else{
+      this.airlineService.airlineFlightList.subscribe(
+        (result:Airline) => {
+          this.airline = result;
+          for(let city of this.airline.destinations){
+            if(!this.cities.includes(city.value)){
+              this.cities.push(city.value);
+            }
+          }
+        }
+      )
+    }
 
     this.filteredOptionsOrigin = this.searchForm.controls['origin'].valueChanges.pipe(
       startWith(''),
@@ -97,9 +112,6 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
     const filterValue = value.toLowerCase();
 
     return this.cities.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
-  }
-
-  ngOnDestroy(): void {
   }
 
   private initForm() {
@@ -149,20 +161,31 @@ export class AirlinesListComponent implements OnInit, OnDestroy {
 
     this.exs = false;
     this.exf = true;
+    
+    let name = null;
+    if(this.airline != null){
+      name = this.airline.name;
+    }
 
     this.airlineService.getSearchedFlightsDB(
       this.searchForm.value['origin'],
       this.searchForm.value['destination'],
       this.searchForm.value['departure'],
       this.searchForm.value['num'],
-      this.searchForm.value['classType']).subscribe(
+      this.searchForm.value['classType'],
+      name).subscribe(
       result => {
         let newFlights = [];
         for(let flight of result){
-          for(let airline of this.airlines){
-            if(airline.name == flight.airlineName){
-              newFlights.push(Object.assign(new TOFlight(),flight).convert(airline.prices));   
+          if(!this.singleAirline){
+            for(let airline of this.airlines){
+              if(airline.name == flight.airlineName){
+                newFlights.push(Object.assign(new TOFlight(),flight).convert(airline.prices));   
+              }
             }
+          }
+          else{
+            newFlights.push(Object.assign(new TOFlight(),flight).convert(this.airline.prices));
           }
         }
         this.flights = newFlights;

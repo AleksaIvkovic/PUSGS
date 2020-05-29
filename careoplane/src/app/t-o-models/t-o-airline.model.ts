@@ -3,6 +3,7 @@ import { TOFlight } from './t-o-flight.model';
 import { TOPrimaryObject } from './t-o-primary-object.model';
 import { Airline } from '../models/airline.model';
 import { FastTicket } from '../models/fast-ticket.model';
+import { TOPriceSegmentSeat } from './t-o-price-segment-seat.model';
 
 export class TOAirline {
     public convert(): Airline {
@@ -46,9 +47,9 @@ export class TOAirline {
         public name: string = null, 
         public address: string = null,
         public description: string = null, 
-        public prices : TOPrimaryObject[] = [],
-        public seatingArrangements: TOPrimaryObject[] = [],
-        public segmentLengths: TOPrimaryObject[] = [],
+        public prices : TOPriceSegmentSeat[] = [],
+        public seatingArrangements: TOPriceSegmentSeat[] = [],
+        public segmentLengths: TOPriceSegmentSeat[] = [],
         public flights: TOFlight[] = [],
         public picture: string = "",
         public rating: number = 0,

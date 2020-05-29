@@ -4,7 +4,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { Airline } from 'src/app/models/airline.model';
 import { AirlineService } from 'src/app/services/airline.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
 import { UserService } from 'src/app/services/user.service';
 import { Admin } from 'src/app/models/admin.model';
@@ -21,7 +21,6 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
   
   airline: Airline;
   paramsSub: Subscription;
-  address: string= "";
 
   origin: string = '';
   destination: string = '';
@@ -51,8 +50,8 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
           this.airlineService.getAirlineDB(this.name).subscribe(
             result => {
               this.airline = Object.assign(new TOAirline(), result).convert();
-              this.address = this.airline.address;
               this.airlineService.airlineLoaded(this.airline);
+              this.airlineService.airlineLocation(this.airline.address);
             },
             error => {console.log(error);}
           );
@@ -61,11 +60,15 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
   }
 
   ngAfterViewInit(){
-    this.mapInitializer();
+    this.airlineService.locationLoaded.subscribe(
+      result => {
+        this.mapInitializer(result);
+      }
+    )
   }
 
-  mapInitializer() {
-    this.geocodingService.LatLon(this.address, this.map, this.gmap);
+  mapInitializer(address: string) {
+    this.geocodingService.LatLon(address, this.map, this.gmap);
   }
 
   ngOnDestroy(): void {

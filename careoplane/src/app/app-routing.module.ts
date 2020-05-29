@@ -14,14 +14,12 @@ import { VehicleDetailsComponent } from './components/main/rent-a-car/rent-a-car
 import { VehicleStartComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-start/vehicle-start.component';
 import { VehicleReserveComponent } from './components/main/rent-a-car/rent-a-car-list/rent-a-car-details/vehicle-list/vehicle-item/vehicle-details/vehicle-reserve/vehicle-reserve.component';
 import { RentACarProfileComponent } from './components/main/rent-a-car/rent-a-car-profile/rent-a-car-profile.component';
-import { AirlineProfileComponent } from './components/main/airlines/airline-profile/airline-profile.component';
 import { AirlineEditComponent } from './components/main/airlines/airline-edit/airline-edit.component';
 import { VehicleManagerComponent } from './components/main/rent-a-car/rent-a-car-profile/vehicle-manager/vehicle-manager.component';
 import { FlightEditComponent } from './components/main/airlines/flight-edit/flight-edit.component';
 import { RentACarManagerComponent } from './components/main/rent-a-car/rent-a-car-manager/rent-a-car-manager.component';
 import { UserAuthentificationComponent } from './components/user-authentification/user-authentification.component';
 import { AirlineFastTicketsComponent } from './components/main/airlines/airline-details/airline-fast-tickets/airline-fast-tickets.component';
-import { AirlineFlightsListComponent } from './components/main/airlines/airline-details/airline-flights-list/airline-flights-list.component';
 import { SeatsEditComponent } from './components/main/airlines/flight-edit/seats-edit/seats-edit.component';
 import { SeatDetailsComponent } from './components/main/airlines/flight-edit/seat-details/seat-details.component';
 import { SeatStarterComponent } from './components/main/airlines/flight-edit/seat-starter/seat-starter.component';
@@ -53,7 +51,7 @@ const routes: Routes = [
       {path: 'add-vehicle', component: VehicleManagerComponent},
     ]},
     {path: 'rent-a-car-profile/edit', component: RentACarManagerComponent},
-    {path: 'airline-profile', component: AirlineProfileComponent, children:[
+    {path: 'airline-profile', component: AirlinesComponent, children:[
       {path: '', redirectTo: 'details', pathMatch: 'full'},
       {path: 'details', component: AirlineDetailsComponent},
       {path: 'edit', component: AirlineEditComponent},

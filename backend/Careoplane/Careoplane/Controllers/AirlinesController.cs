@@ -124,7 +124,8 @@ namespace Careoplane.Controllers
                 {
                     Airline = tempAirline,
                     PriceId = price.Id,
-                    Value = double.Parse(price.Value.ToString())
+                    Value = double.Parse(price.Value.ToString()),
+                    Ordinal = price.Ordinal
                 });
             }
 
@@ -155,7 +156,8 @@ namespace Careoplane.Controllers
                 {
                     Airline = tempAirline,
                     SegmentId = segment.Id,
-                    Value = int.Parse(segment.Value.ToString())
+                    Value = int.Parse(segment.Value.ToString()),
+                    Ordinal = segment.Ordinal
                 });
             }
 
@@ -186,7 +188,8 @@ namespace Careoplane.Controllers
                 {
                     Airline = tempAirline,
                     SeatArrangementId = seatArrangement.Id,
-                    Value = int.Parse(seatArrangement.Value.ToString())
+                    Value = int.Parse(seatArrangement.Value.ToString()),
+                    Ordinal = seatArrangement.Ordinal
                 });
             }
 
@@ -208,6 +211,7 @@ namespace Careoplane.Controllers
                 }
             }
             #endregion
+
             try
             {
                 await _context.SaveChangesAsync();

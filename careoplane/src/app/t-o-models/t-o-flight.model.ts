@@ -1,6 +1,7 @@
 import { TOSeat } from './t-o-seat.model';
 import { TOPrimaryObject } from './t-o-primary-object.model';
 import { Flight } from '../models/flight.model';
+import { PriceSegmentSeat } from '../models/price-segment-seat.model';
 
 export class TOFlight {
     constructor(
@@ -15,7 +16,7 @@ export class TOFlight {
         public seats: TOSeat[] = []
         ){}
 
-        public convert(prices: TOPrimaryObject[]): Flight {
+        public convert(prices: PriceSegmentSeat[]): Flight {
             let flight: Flight = new Flight(this.airlineName,this.origin,this.destination,new Date(this.departure), new Date(this.arrival),this.distance,this.connections,this.flightId,[]);
             flight.prices = []
             flight.prices.push(prices[0].value * flight.distance);

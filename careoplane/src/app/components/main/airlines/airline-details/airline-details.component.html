@@ -75,8 +75,7 @@
 <mat-tab-group>
     <mat-tab label="Flights">
         <div class="example-large-box mat-elevation-z4">
-            <app-airline-flights-list style="width: 100%;" [airline]="airline" [admin]="admin" *ngIf="!admin">
-            </app-airline-flights-list>
+            <app-airlines-list style="width: 100%;" [singleAirline]="true" *ngIf="!admin"></app-airlines-list>
             <app-admin-flights style="width: 100%;" [admin]="admin" *ngIf="admin">
             </app-admin-flights>
         </div>

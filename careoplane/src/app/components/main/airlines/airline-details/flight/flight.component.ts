@@ -69,6 +69,7 @@ export class FlightComponent implements OnInit {
     }
   }
 
+  //#region buttons
   Edit(){
     this.router.navigate(['../',this.flight.id,'edit-flight'],{relativeTo:this.activeRoute});
   }
@@ -105,4 +106,5 @@ export class FlightComponent implements OnInit {
       }
     )
   }
+  //#endregion
 }

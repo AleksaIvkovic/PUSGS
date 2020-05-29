@@ -1,4 +1,4 @@
-<div class="container testimonial-group">
+<div class="container testimonial-group" *ngIf="!singleAirline">
   <div class="row text-center">
       <div *ngFor="let airline of airlines" id="pictureDiv" matTooltip="{{airline.name}}">
           <a [routerLink]="['../',airline.name, 'details']">
@@ -105,7 +105,7 @@
     </mat-expansion-panel-header>
 
     <div class="row">
-      <div class="col-md text-center">
+      <div class="col-md text-center" *ngIf="!singleAirline">
         <mat-form-field  appearance="fill">
           <mat-label>Airline</mat-label>
           <mat-select [(ngModel)]="airlineName">
@@ -123,7 +123,7 @@
             <mat-option [value]="'price'" selected="true">
               Price
             </mat-option>
-            <mat-option [value]="'airlineName'">
+            <mat-option [value]="'airlineName'" *ngIf="!singleAirline">
               Airline name
             </mat-option>
             <mat-option [value]="'duration'">
