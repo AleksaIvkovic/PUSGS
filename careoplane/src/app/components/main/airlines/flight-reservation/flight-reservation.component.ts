@@ -6,6 +6,7 @@ import { Flight } from 'src/app/models/flight.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { FlightReservation } from 'src/app/models/flight-reservation.model';
 import { UserService } from 'src/app/services/user.service';
+import { TOFlight } from 'src/app/t-o-models/t-o-flight.model';
 
 
 @Component({
@@ -30,10 +31,18 @@ export class FlightReservationComponent implements OnInit {
     this.activeRoute.params.subscribe(
       (params: Params) => {
           if(params['fid']){
-            this.flight1 = this.airlineService.getFlight(+params['fid']);
-            this.classType = params['type'];
-            this.passengers = params['passengers'];
+            this.airlineService.getFlightDB(+params['fid']).subscribe(
+              response => {
+                this.flight1 = Object.assign(new TOFlight(), response).convert();
+                this.airlineService.flightLoaded(this.flight1);
+              },
+              error => {
+                console.log(error);
+              }
+            )
           }
+          this.classType = params['type'];
+          this.passengers = params['passengers'];
       }
     );
   

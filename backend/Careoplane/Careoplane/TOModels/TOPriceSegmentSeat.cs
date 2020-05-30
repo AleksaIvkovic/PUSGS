@@ -10,16 +10,16 @@ namespace Careoplane.TOModels
         public int Id { get; set; }
         public double Value { get; set; }
         public int Ordinal { get; set; }
-        public string Airline { get; set; }
+        public string Reference { get; set; }
 
         public TOPriceSegmentSeat() { }
 
-        public TOPriceSegmentSeat(int id, double value, int ordinal, string airline)
+        public TOPriceSegmentSeat(int id, double value, int ordinal, string reference)
         {
             Id = id;
             Value = value;
             Ordinal = ordinal;
-            Airline = airline;
+            Reference = reference;
         }
     }
 }

@@ -20,7 +20,7 @@
             <button type="button" mat-raised-button color="warn" (click)="Cancel()">Cancel</button>
         </div>
         <div class="col-md-5">
-            <button type="submit" mat-raised-button color="primary">Save</button>
+            <button type="submit" mat-raised-button color="primary" [disabled]="!seatForm.valid">Save</button>
         </div>
     </div>
 </form>

@@ -149,6 +149,7 @@ export class AirlinesListComponent implements OnInit {
     this.classType = this.searchForm.value['classType'];
     this.origin = this.searchForm.value['origin'];
     this.destination = this.searchForm.value['destination'];
+    this.num = this.searchForm.value['num'];
 
     if(this.travelType === "round trip"){
       this.twoWay = true;
@@ -177,15 +178,10 @@ export class AirlinesListComponent implements OnInit {
       result => {
         let newFlights = [];
         for(let flight of result){
-          if(!this.singleAirline){
-            for(let airline of this.airlines){
-              if(airline.name == flight.airlineName){
-                newFlights.push(Object.assign(new TOFlight(),flight).convert(airline.prices));   
-              }
+          for(let airline of this.airlines){
+            if(airline.name == flight.airlineName){
+              newFlights.push(Object.assign(new TOFlight(),flight).convert());   
             }
-          }
-          else{
-            newFlights.push(Object.assign(new TOFlight(),flight).convert(this.airline.prices));
           }
         }
         this.flights = newFlights;

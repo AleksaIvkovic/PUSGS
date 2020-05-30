@@ -1,5 +1,6 @@
 import { Seat } from './seat.model';
 import { TOPrimaryObject } from '../t-o-models/t-o-primary-object.model';
+import { PriceSegmentSeat } from './price-segment-seat.model';
 
 export class Flight {
     public conCount: number;
@@ -16,7 +17,9 @@ export class Flight {
         public connections: TOPrimaryObject[] = [],
         public id: number = 0,
         public seats: Seat[] = [],
-        public prices: number[] = []
+        public prices: number[] = [],
+        public seatingArangement : PriceSegmentSeat[] = [],
+        public segments : PriceSegmentSeat[] = []
         ){
             this.conCount = connections.length;
             let time = new Date(arrival).valueOf() - new Date(departure).valueOf();

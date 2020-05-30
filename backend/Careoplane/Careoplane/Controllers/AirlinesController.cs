@@ -34,6 +34,8 @@ namespace Careoplane.Controllers
                 .Include(a => a.Prices)
                 .Include(a => a.Flights).ThenInclude(f => f.Seats)
                 .Include(a => a.Flights).ThenInclude(f => f.Connections)
+                .Include(a => a.Flights).ThenInclude(f => f.SeatingArrangements)
+                .Include(a => a.Flights).ThenInclude(f => f.SegmentLengths)
                 .Include(a => a.FastTickets)
                 .ToListAsync();
             List<TOAirline> result = new List<TOAirline>();
@@ -51,7 +53,9 @@ namespace Careoplane.Controllers
                 .Include(a => a.SegmentLengths)
                 .Include(a => a.Prices)
                 .Include(a => a.Flights).ThenInclude(f => f.Seats)
-                .Include(a => a.Flights).ThenInclude(f => f.Connections)
+                .Include(a => a.Flights).ThenInclude(f => f.Connections)   
+                .Include(a => a.Flights).ThenInclude(f => f.SeatingArrangements)
+                .Include(a => a.Flights).ThenInclude(f => f.SegmentLengths)
                 .Include(a => a.FastTickets)
                 .FirstOrDefaultAsync(a => a.Name == id);
 
@@ -274,6 +278,7 @@ namespace Careoplane.Controllers
                 {
                     Airline = tempAirline,
                     PriceId = price.Id,
+                    Ordinal = price.Ordinal,
                     Value = double.Parse(price.Value.ToString())
                 });
             }
@@ -285,6 +290,7 @@ namespace Careoplane.Controllers
                 {
                     Airline = tempAirline,
                     SegmentId = segment.Id,
+                    Ordinal = segment.Ordinal,
                     Value = int.Parse(segment.Value.ToString())
                 });
             }
@@ -296,6 +302,7 @@ namespace Careoplane.Controllers
                 {
                     Airline = tempAirline,
                     SeatArrangementId = seatArrangement.Id,
+                    Ordinal = seatArrangement.Ordinal,
                     Value = int.Parse(seatArrangement.Value.ToString())
                 });
             }

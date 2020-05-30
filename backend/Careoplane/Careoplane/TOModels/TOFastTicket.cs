@@ -8,17 +8,14 @@ namespace Careoplane.TOModels
 {
     public class TOFastTicket
     {
-        public int FastTicketId { get; set; }
+        public int SeatId { get; set; }
 
-        public TOSeat Seat { get; set; }
+        public int FlightId { get; set; }
 
-        public TOFlight Flight { get; set; }
-
-        public TOFastTicket()
-        {
-        }
-        public TOFastTicket(FastTicket fastTicket)
-        {
+        public TOFastTicket() { }
+        public TOFastTicket(FastTicket fastTicket) {
+            SeatId = fastTicket.SeatId;
+            FlightId = fastTicket.FlightId;
         }
     }
 }

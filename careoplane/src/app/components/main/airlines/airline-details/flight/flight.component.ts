@@ -75,7 +75,6 @@ export class FlightComponent implements OnInit {
   }
 
   EditSeats(){
-    this.airlineService.flightLoaded(this.flight);
     this.router.navigate(['../',this.flight.id,'edit-seats'],{relativeTo:this.activeRoute});
   }
 

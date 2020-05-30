@@ -17,7 +17,6 @@ namespace Careoplane.Controllers
     public class FlightsController : ControllerBase
     {
         private readonly DatabaseContext _context;
-        private Flight DBFlight;
         public FlightsController(DatabaseContext context)
         {
             _context = context;
@@ -29,8 +28,10 @@ namespace Careoplane.Controllers
         {
             List<Flight> flights = await _context.Flights
                 .Include(f => f.Connections)
+                .Include(f => f.SeatingArrangements)
+                .Include(f => f.SegmentLengths)
                 .Include(f => f.Seats).ThenInclude(s => s.Flight)
-                .Include(f => f.Airline)
+                .Include(f => f.Airline).ThenInclude(a => a.Prices)
                 .ToListAsync();
             List<TOFlight> returnList = new List<TOFlight>();
             flights.ForEach(flight => returnList.Add(new TOFlight(flight)));
@@ -43,8 +44,10 @@ namespace Careoplane.Controllers
         {
             var flight = await _context.Flights
                 .Include(f => f.Connections)
+                .Include(f => f.SeatingArrangements)
+                .Include(f => f.SegmentLengths)
                 .Include(f => f.Seats).ThenInclude(s => s.Flight)
-                .Include(f => f.Airline)
+                .Include(f => f.Airline).ThenInclude(a => a.Prices)
                 .FirstOrDefaultAsync(f => f.FlightId == id);
 
             if (flight == null)
@@ -57,17 +60,19 @@ namespace Careoplane.Controllers
 
         [HttpGet]
         [Route("Searched")]
-        public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]DateTime departure, [FromQuery]int numPassengers, [FromQuery]string classType, [FromQuery]string name, [FromQuery]bool singleAirline) {
+        public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]DateTime departure, [FromQuery]int numPassengers, [FromQuery]string classType, [FromQuery]string name, [FromQuery]bool notSingleAirline) {
             List<Flight> flights = await _context.Flights
                 .Include(f => f.Connections)
+                .Include(f => f.SeatingArrangements)
+                .Include(f => f.SegmentLengths)
                 .Include(f => f.Seats).ThenInclude(s => s.Flight)
-                .Include(f => f.Airline)
+                .Include(f => f.Airline).ThenInclude(a => a.Prices)
                 .ToListAsync();
 
             List<TOFlight> returnList = new List<TOFlight>();
             foreach(Flight flight in flights)
             {
-                if(flight.Origin == origin && flight.Destination == destination && flight.Departure.Date == departure.Date && (singleAirline || flight.Airline.Name == name))
+                if(flight.Origin == origin && flight.Destination == destination && flight.Departure.Date == departure.Date && (notSingleAirline || flight.Airline.Name == name))
                 {
                     int count = 0;
                     foreach(Seat seat in flight.Seats)
@@ -94,45 +99,10 @@ namespace Careoplane.Controllers
                 return BadRequest();
             }
 
-            Flight tempFlight = new Flight(flight,_context);
+            Flight tempFlight = new Flight(flight, _context);
 
-            Flight oldFlight = await _context.Flights
-                .Include(f => f.Connections)
-                .Include(f => f.Seats)
-                .FirstOrDefaultAsync(f => f.FlightId == flight.FlightId);
+            _context.Entry(tempFlight).State = EntityState.Modified;
 
-            _context.Entry(oldFlight).CurrentValues.SetValues(tempFlight);
-
-            #region connectins
-            tempFlight.Connections = new List<Connection>();
-            foreach (var connection in flight.Connections)
-            {
-                tempFlight.Connections.Add(new Connection()
-                {
-                    ConntectionId = connection.Id,
-                    Flight = tempFlight,
-                    Value = connection.Value.ToString()
-                });
-            }
-
-            var connections = oldFlight.Connections.ToList();
-            foreach (var connection in connections)
-            {
-                var conn = tempFlight.Connections.SingleOrDefault(i => i.ConntectionId == connection.ConntectionId);
-                if (conn != null)
-                    _context.Entry(connection).CurrentValues.SetValues(conn);
-                else
-                    _context.Remove(connection);
-            }
-
-            foreach (var conn in tempFlight.Connections)
-            {
-                if (connections.All(i => i.ConntectionId != conn.ConntectionId))
-                {
-                    oldFlight.Connections.Add(conn);
-                }
-            }
-            #endregion
 
             try
             {
@@ -175,6 +145,30 @@ namespace Careoplane.Controllers
             }
 
             tempFlight.GenerateSeats();
+
+            tempFlight.SegmentLengths = new List<SegmentFlight>();
+            foreach (var segment in tempFlight.Airline.SegmentLengths)
+            {
+                tempFlight.SegmentLengths.Add(new SegmentFlight()
+                {
+                    Flight = tempFlight,
+                    SegmentFlightId = 0,
+                    Ordinal = segment.Ordinal,
+                    Value = int.Parse(segment.Value.ToString())
+                });
+            }
+
+            tempFlight.SeatingArrangements = new List<SeatArrangementFlight>();
+            foreach (var seatArrangement in tempFlight.Airline.SeatingArrangements)
+            {
+                tempFlight.SeatingArrangements.Add(new SeatArrangementFlight()
+                {
+                    Flight = tempFlight,
+                    SeatArrangementFlightId = 0,
+                    Ordinal = seatArrangement.Ordinal,
+                    Value = int.Parse(seatArrangement.Value.ToString())
+                });
+            }
 
             _context.Entry(tempFlight).State = EntityState.Modified;
 

@@ -99,9 +99,9 @@ export class AirlineService {
 
   getSearchedFlightsDB(origin: string, destination: string,  departure: Date, num: number, classType: string, name:string){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/Searched';
-    let single = 'false';
+    let notSingle = 'false';
     if(name == null)
-      single = 'true';
+      notSingle = 'true';
 
     var params = new HttpParams()
       .append('origin',origin)
@@ -110,7 +110,7 @@ export class AirlineService {
       .append('numPassengers',num.toString())
       .append('classType',classType)
       .append('name', name)
-      .append('singleAirline', single);
+      .append('notSingleAirline', notSingle);
 
     return this.http.get<TOFlight[]>(address, {params: params});
   }
@@ -133,15 +133,15 @@ export class AirlineService {
     let tempAirline = new TOAirline(airline.name,airline.address,airline.description,[],[],[],[],airline.picture,airline.rating,airline.destinations,[]);
     
     for(let variable of airline.prices){
-      tempAirline.prices.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+      tempAirline.prices.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.reference));
     }
 
     for(let variable of airline.seatingArrangement){
-      tempAirline.seatingArrangements.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+      tempAirline.seatingArrangements.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.reference));
     }
 
     for(let variable of airline.segments){
-      tempAirline.segmentLengths.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+      tempAirline.segmentLengths.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.reference));
     }
     
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines';
@@ -152,15 +152,15 @@ export class AirlineService {
     let tempAirline = new TOAirline(airline.name,airline.address,airline.description,[],[],[],[],airline.picture,airline.rating,airline.destinations,[]);
 
     for(let variable of airline.prices){
-      tempAirline.prices.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+      tempAirline.prices.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.reference));
     }
 
     for(let variable of airline.seatingArrangement){
-      tempAirline.seatingArrangements.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+      tempAirline.seatingArrangements.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.reference));
     }
 
     for(let variable of airline.segments){
-      tempAirline.segmentLengths.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.airline));
+      tempAirline.segmentLengths.push(new TOPriceSegmentSeat(variable.id,variable.value,variable.ordinal,variable.reference));
     }
 
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/' + tempAirline.name;
@@ -182,11 +182,6 @@ export class AirlineService {
     return this.http.get<TOFlight>(address); 
   }
 
-  //treba obrisati
-  getCurrentAirline(): Airline {
-    return this.airlines[1];
-  }
-
   //izmeni da radi sa DB
   EditFlight(flight: Flight) {
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/' + flight.id.toString();
@@ -206,20 +201,29 @@ export class AirlineService {
     return this.http.delete(address);
   }
 
+  getSeat(id: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Seats/' + id;
+    return this.http.get<TOSeat>(address);
+  }
+
   //izmeni da radi sa DB
   changeSeatDiscount(seat: Seat) {
-    let flight = this.getFlight(seat.flightId)
-    let airline = this.getAirline(flight.airlineName);
-    if(seat.discount != 0){
-      airline.fastTickets.push(new FastTicket(0,seat,this.getFlight(seat.flightId)));
-    }
-    else{
-      for(let fastTicket of airline.fastTickets){
-        if(fastTicket.seat.name === seat.name){
-          airline.fastTickets.splice(airline.fastTickets.indexOf(fastTicket),1);
-          return;
-        }
-      }
-    }
+    // let flight = this.getFlight(seat.flightId)
+    // let airline = this.getAirline(flight.airlineName);
+    // if(seat.discount != 0){
+    //   airline.fastTickets.push(new FastTicket(0,seat,this.getFlight(seat.flightId)));
+    // }
+    // else{
+    //   for(let fastTicket of airline.fastTickets){
+    //     if(fastTicket.seat.name === seat.name){
+    //       airline.fastTickets.splice(airline.fastTickets.indexOf(fastTicket),1);
+    //       return;
+    //     }
+    //   }
+    // }
+
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Seats/' + seat.seatId.toString();
+    let seatTemp = new TOSeat(seat.flightId,seat.name,seat.type,seat.occupied,seat.price,seat.discount,seat.seatId);
+    return this.http.put(address,seatTemp);
   }
 }

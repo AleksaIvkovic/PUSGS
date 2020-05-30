@@ -36,7 +36,7 @@ namespace Careoplane.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TOSeat>> GetSeat(int id)
         {
-            var seat = await _context.Seats.FindAsync(id);
+            var seat = await _context.Seats.Include(x=>x.Flight).FirstOrDefaultAsync(s => s.SeatId == id);
 
             if (seat == null)
             {
@@ -57,8 +57,28 @@ namespace Careoplane.Controllers
                 return BadRequest();
             }
 
-            Seat tempSeat = new Seat(seat,_context);
-            _context.Entry(tempSeat).State = EntityState.Modified;
+            Seat oldSeat = await _context.Seats
+                .Include(s => s.Flight)
+                .FirstOrDefaultAsync(s => s.SeatId == seat.SeatId);
+
+            Seat tempSeat = new Seat(seat, _context);
+
+            if(oldSeat.Discount == 0 && tempSeat.Discount != 0)
+            {
+                FastTicket fastTicket = new FastTicket()
+                {
+                    FlightId = tempSeat.Flight.FlightId,
+                    SeatId = tempSeat.SeatId
+                };
+                _context.Add(fastTicket);
+            }
+            else if(seat.Discount == 0)
+            {
+                FastTicket fastTicket = await _context.FastTickets.FindAsync(tempSeat.SeatId);
+                _context.Remove(fastTicket);
+            }
+
+            _context.Entry(oldSeat).CurrentValues.SetValues(tempSeat);
 
             try
             {

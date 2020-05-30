@@ -5,13 +5,13 @@ export class TOPriceSegmentSeat {
         public id: number = 0,
         public value: number = 0,
         public ordinal: number = 0,
-        public airline: string = null
+        public reference: string = null
         ){}
 
     public convert(): PriceSegmentSeat{
         let pSS = new PriceSegmentSeat();
 
-        pSS.airline = this.airline;
+        pSS.reference = this.reference;
         pSS.id = this.id;
         pSS.ordinal = this.ordinal;
         pSS.value = this.value;

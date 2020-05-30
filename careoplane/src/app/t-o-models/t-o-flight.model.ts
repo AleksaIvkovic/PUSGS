@@ -2,6 +2,7 @@ import { TOSeat } from './t-o-seat.model';
 import { TOPrimaryObject } from './t-o-primary-object.model';
 import { Flight } from '../models/flight.model';
 import { PriceSegmentSeat } from '../models/price-segment-seat.model';
+import { TOPriceSegmentSeat } from './t-o-price-segment-seat.model';
 
 export class TOFlight {
     constructor(
@@ -13,20 +14,21 @@ export class TOFlight {
         public distance: number = null, 
         public connections: TOPrimaryObject[] = [],
         public flightId: number = null,
-        public seats: TOSeat[] = []
+        public seats: TOSeat[] = [],
+        public prices: number[] = [],
+        public seatingArangement : TOPriceSegmentSeat[] = [],
+        public segments : TOPriceSegmentSeat[] = []
         ){}
 
-        public convert(prices: PriceSegmentSeat[]): Flight {
-            let flight: Flight = new Flight(this.airlineName,this.origin,this.destination,new Date(this.departure), new Date(this.arrival),this.distance,this.connections,this.flightId,[]);
-            flight.prices = []
-            flight.prices.push(prices[0].value * flight.distance);
-            flight.prices.push(prices[1].value * flight.distance);
-            flight.prices.push(prices[2].value * flight.distance);
+        public convert(): Flight {
+            let flight: Flight = new Flight(this.airlineName,this.origin,this.destination,new Date(this.departure), new Date(this.arrival),this.distance,this.connections,this.flightId,[],this.prices,this.seatingArangement,this.segments);
 
             for(let seat of this.seats){
                 let toSeat: TOSeat = Object.assign(new TOSeat(),seat);
                 flight.seats.push(toSeat.convert());
             }
+
+            
 
             flight.conCount = this.connections.length;
             let time = new Date(this.arrival).valueOf() - new Date(this.departure).valueOf();
