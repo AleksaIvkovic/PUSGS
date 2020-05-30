@@ -48,7 +48,7 @@ namespace Careoplane.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFastTicket(int id, FastTicket fastTicket)
         {
-            if (id != fastTicket.FastTicketId)
+            if (id != fastTicket.SeatId)
             {
                 return BadRequest();
             }
@@ -83,7 +83,7 @@ namespace Careoplane.Controllers
             _context.FastTickets.Add(fastTicket);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetFastTicket", new { id = fastTicket.FastTicketId }, fastTicket);
+            return CreatedAtAction("GetFastTicket", new { id = fastTicket.SeatId }, fastTicket);
         }
 
         // DELETE: api/FastTickets/5
@@ -104,7 +104,7 @@ namespace Careoplane.Controllers
 
         private bool FastTicketExists(int id)
         {
-            return _context.FastTickets.Any(e => e.FastTicketId == id);
+            return _context.FastTickets.Any(e => e.SeatId == id);
         }
     }
 }

@@ -4,6 +4,7 @@ import { Airline } from 'src/app/models/airline.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Subject } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
+import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 
 @Component({
   selector: 'app-seat-selector',
@@ -15,7 +16,6 @@ export class SeatSelectorComponent implements OnInit {
 
   admin: boolean;
   flight: Flight;
-  airline: Airline;
 
   private seatConfig: any = null;
   seatmap = [];
@@ -34,52 +34,11 @@ export class SeatSelectorComponent implements OnInit {
     eventId : 0
   };
 
-  title = 'seat-chart-generator';
   rowLength: number;
   lastSeat: any = null;
   unselect: boolean = false;
 
   constructor(private airlineService: AirlineService,private router: Router, private activeRoute: ActivatedRoute){
-  }
-
-  private seatConfigFun(){
-    this.seatConfig = [];
-    let temp = [] as  any;
-    let count = 1;
-    let row:string = "";
-    this.rowLength = 0;
-    for(let k = 0;k < this.airline.seatingArrangement.length;k++)
-    {
-      for(let q = 0;q < this.airline.seatingArrangement[k].value;q++){
-        row += "g";
-        this.rowLength++;
-      }
-      if(k != this.airline.seatingArrangement.length - 1){
-        row +="_";
-      }
-    }
-    
-    for(let segment = 0; segment < this.airline.segments.length; segment++)
-    {
-      let price = this.airline.prices[segment].value * this.flight.distance;
-      temp = [];
-      for(let i = 0; i < this.airline.segments[segment].value;i++)
-      {
-          let tempObj = {
-            "seat_label": count.toString(),
-            "layout": row
-          }
-
-          temp.push(tempObj);
-          count++
-      }
-      let seatCon = {
-        "seat_price": price,
-        "seat_map": temp
-      }
-
-      this.seatConfig.push(seatCon);
-    }
   }
 
   ngOnInit(): void {
@@ -93,6 +52,19 @@ export class SeatSelectorComponent implements OnInit {
     this.airlineService.flightSeatsEdit.subscribe(
       result => {
         this.flight = result;
+
+        this.seatConfigFun();
+        this.processSeatChart(this.seatConfig);
+
+        if(this.router.url.includes('/seat')){
+          for(let i = 0; i < this.seatmap.length;i++){
+            for(let j = 0; j < this.seatmap[i].seats.length;j++){
+              if(this.seatmap[i].seats[j].key === +this.router.url.split('/')[5]){
+                this.selectSeat(this.seatmap[i].seats[j]);
+              }
+            }
+          }
+        }
       },
       error => {
         console.log(error);
@@ -110,21 +82,6 @@ export class SeatSelectorComponent implements OnInit {
         }
       }
     });
-    //Process a simple bus layout
-    this.airline = this.airlineService.getAirline(this.flight.airlineName);
-    
-    this.seatConfigFun();
-    this.processSeatChart(this.seatConfig);
-
-    if(this.router.url.includes('seat')){
-      for(let i = 0; i < this.seatmap.length;i++){
-        for(let j = 0; j < this.seatmap[i].seats.length;j++){
-          if(this.seatmap[i].seats[j].key === +this.router.url.split('/')[5]){
-            this.selectSeat(this.seatmap[i].seats[j]);
-          }
-        }
-      }
-    }
 
     this.airlineService.ticketDone.subscribe(value => {
       this.unselect = true;
@@ -132,32 +89,74 @@ export class SeatSelectorComponent implements OnInit {
     })
   }
 
+  private seatConfigFun(){
+    this.seatConfig = [];
+    let temp = [] as  any;
+    let count = 1;
+    let row:string = "";
+    this.rowLength = 0;
+    for(let k = 0;k < this.flight.seatingArangement.length;k++)
+    {
+      for(let q = 0;q < this.flight.seatingArangement[k].value;q++){
+        row += "g";
+        this.rowLength++;
+      }
+      if(k != this.flight.seatingArangement.length - 1){
+        row +="_";
+      }
+    }
+    
+    for(let segment = 0; segment < this.flight.segments.length; segment++)
+    {
+      let price = this.flight.prices[segment];
+      temp = [];
+      for(let i = 0; i < this.flight.segments[segment].value;i++)
+      {
+          let tempObj = {
+            "row_label": count.toString(),
+            "layout": row
+          }
+
+          temp.push(tempObj);
+          count++
+      }
+      let seatCon = {
+        "segment_price": price,
+        "segment_map": temp
+      }
+
+      this.seatConfig.push(seatCon);
+    }
+  }
+
   public processSeatChart ( map_data : any[] )
   {
       let start:number = 0;
+      let classCounter: number = 0;
       let end: number = map_data.length;
 
       if(this.type === 'first'){
-        end = this.airline.segments[0].value;
+        end = 1;
       }
       else if(this.type === 'business'){
-        start = this.airline.segments[0].value
-        end = this.airline.segments[0].value + this.airline.segments[1].value;
+        start = 1;
+        end = 2;
+        classCounter = 1;
       }
       else if(this.type ==='economy'){
-        start = this.airline.segments[0].value + this.airline.segments[1].value;
+        start = 2;
+        classCounter = 2;
       }
 
-      let myCounter: number = start * this.rowLength;
       let chars: string[] = ['','A','B','C','D','E','F','G','H','I','J'];
       let classes: string[] = ['First','Business','Economy'];
-      let classCounter: number = 0;
+      
       if( map_data.length > 0 )
       {
         var seatNoCounter = 1;
         for (let __counter = start; __counter < end; __counter++) {
           var row_label = "";
-          var item_map = map_data[__counter].seat_map;
+          var item_map = map_data[__counter].segment_map;
 
           //Get the label name and price
           row_label = classes[classCounter];
@@ -165,7 +164,7 @@ export class SeatSelectorComponent implements OnInit {
           
           item_map.forEach(map_element => {
             var mapObj = {
-              "seatRowLabel" : map_element.seat_label,
+              "seatRowLabel" : map_element.row_label,
               "seats" : [],
               "seatPricingInformation" : row_label
             };
@@ -178,40 +177,44 @@ export class SeatSelectorComponent implements OnInit {
             var totalItemCounter = 1;
             seatValArr.forEach(item => {
               let status: string;
-              if(this.flight.seats[myCounter].occupied || this.flight.seats[myCounter].discount != 0){
-                if(this.admin && this.flight.seats[myCounter].discount != 0){
-                  status = 'sale';
+              for(let seat of this.flight.seats){
+                if(seat.name == map_element.row_label+chars[seatNoCounter]){
+                  if(seat.occupied || seat.discount != 0){
+                    if(this.admin && seat.discount != 0){
+                      status = 'sale';
+                    }
+                    else{
+                      status = 'unavailable';
+                    }
+                  }
+                  else{
+                      status = 'available';
+                  }
+    
+                  var seatObj = {
+                    "key" : seat.seatId, //sam racunaj
+                    "price" : map_data[__counter]["segment_price"],
+                    "status" : status
+                  };
+                   
+                  if( item != '_')
+                  {
+                    seatObj["seatLabel"] = map_element.row_label+chars[seatNoCounter];
+                    if(seatNoCounter < 10)
+                    { seatObj["seatNo"] = chars[seatNoCounter]; }
+                    else { seatObj["seatNo"] = ""+chars[seatNoCounter]; }
+                    
+                    seatNoCounter++;
+                  }
+                  else
+                  {
+                    seatObj["seatLabel"] = "";
+                  }
+                  totalItemCounter++;
+                  mapObj["seats"].push(seatObj);
+                  break;
                 }
-                else{
-                  status = 'unavailable';
-                }
               }
-              else{
-                  status = 'available';
-              }
-
-              var seatObj = {
-                "key" : myCounter, //sam racunaj
-                "price" : map_data[__counter]["seat_price"],
-                "status" : status
-              };
-               
-              if( item != '_')
-              {
-                seatObj["seatLabel"] = map_element.seat_label+chars[seatNoCounter];
-                if(seatNoCounter < 10)
-                { seatObj["seatNo"] = chars[seatNoCounter]; }
-                else { seatObj["seatNo"] = ""+chars[seatNoCounter]; }
-                
-                seatNoCounter++;
-                myCounter++;
-              }
-              else
-              {
-                seatObj["seatLabel"] = "";
-              }
-              totalItemCounter++;
-              mapObj["seats"].push(seatObj);
             });
             this.seatmap.push( mapObj );
           });
@@ -273,7 +276,6 @@ export class SeatSelectorComponent implements OnInit {
         this.cart.selectedSeats.push(seatObject.seatLabel);
         this.cart.seatstoStore.push(seatObject.key);
         this.cart.totalamount += seatObject.price;
-  
       }
       else if( seatObject.status = "booked" )
       {
@@ -285,7 +287,6 @@ export class SeatSelectorComponent implements OnInit {
           this.cart.seatstoStore.splice(seatIndex , 1);
           this.cart.totalamount -= seatObject.price;
         }
-        
       }
       this.airlineService.ticketsChanged.next(this.cart);
     }
@@ -293,22 +294,31 @@ export class SeatSelectorComponent implements OnInit {
       if(seatObject.status == "available" || seatObject.status == "booked" || seatObject.status == "sale")
       {
         if(this.lastSeat){
-          if(this.flight.seats[this.lastSeat.key].discount == 0){
-            this.lastSeat.status = "available";
-          }
-          else{
-            this.lastSeat.status = "sale";
+          for(let seat of this.flight.seats){
+            if(seat.seatId = this.lastSeat.key){
+              if(seat.discount == 0){
+                this.lastSeat.status = "available";
+              }
+              else{
+                this.lastSeat.status = "sale";
+              }
+            }
           }
         }
         
-       
         this.lastSeat = seatObject;
         
         if(!this.unselect){
           seatObject.status = "booked";
         }
         
-        this.router.navigate([seatObject.key,'seat'],{relativeTo:this.activeRoute});
+        let id;
+        for(let seat of this.flight.seats){
+          if(seat.name == seatObject.seatLabel)
+            id = seat.seatId;
+        }
+
+        this.router.navigate([id,'seat'],{relativeTo:this.activeRoute});
         this.unselect = false;
       }
     }

@@ -21,7 +21,7 @@ export class TOAirline {
 
         for(let flight of this.flights){
             let toFlight: TOFlight = Object.assign(new TOFlight(),flight);
-            airline.flights.push(toFlight.convert(airline.prices));
+            airline.flights.push(toFlight.convert());
         }
 
         for(let fastTicket of this.fastTickets){
@@ -31,13 +31,13 @@ export class TOAirline {
                 if(fastTicket.flightId == flight.id){
                     flight = flightTemp;
                     for(let seatTemp of flightTemp.seats){
-                        if(seatTemp.id == fastTicket.seatId){
+                        if(seatTemp.seatId == fastTicket.seatId){
                             seat = seatTemp;
                         }
                     }
                 }
             }
-            airline.fastTickets.push(new FastTicket(fastTicket.fastTicketId, seat, flight));
+            airline.fastTickets.push(new FastTicket(seat, flight));
         }
 
         return airline;

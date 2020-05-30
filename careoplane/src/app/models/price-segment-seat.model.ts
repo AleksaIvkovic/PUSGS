@@ -3,6 +3,6 @@ export class PriceSegmentSeat {
         public id: number = 0,
         public value: number = 0,
         public ordinal: number = 0,
-        public airline: string = null
+        public reference: string = null
         ){}
 }

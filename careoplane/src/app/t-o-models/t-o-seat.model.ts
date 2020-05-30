@@ -6,7 +6,7 @@ export class TOSeat {
         let seat : Seat = new Seat();
         seat.discount = this.discount;
         seat.flightId = this.flightId;
-        seat.id = this.seatId;
+        seat.seatId = this.seatId;
         seat.name = this.name;
         seat.occupied = this.occupied;
         seat.price = this.price;

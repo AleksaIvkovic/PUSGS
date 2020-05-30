@@ -33,6 +33,10 @@ namespace Careoplane.Models
 
         public ICollection<Seat> Seats { get; set; }
 
+        public ICollection<SeatArrangementFlight> SeatingArrangements { get; set; }
+
+        public ICollection<SegmentFlight> SegmentLengths { get; set; }
+
         public Flight() { }
 
         public Flight(TOFlight flight, DatabaseContext _context) {
@@ -122,5 +126,31 @@ namespace Careoplane.Models
 
         public Connection() { }
         public Connection(int id, string value, Flight flight) { ConntectionId = id; Value = value; Flight = flight; }
+    }
+
+    public class SeatArrangementFlight
+    {
+        [Key]
+        public int SeatArrangementFlightId { get; set; }
+
+        public double Value { get; set; }
+
+        public int Ordinal { get; set; }
+
+        [Required]
+        public Flight Flight { get; set; }
+    }
+
+    public class SegmentFlight
+    {
+        [Key]
+        public int SegmentFlightId { get; set; }
+
+        public double Value { get; set; }
+
+        public int Ordinal { get; set; }
+
+        [Required]
+        public Flight Flight { get; set; }
     }
 }

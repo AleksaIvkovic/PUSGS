@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-import { Flight } from 'src/app/models/flight.model';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Seat } from 'src/app/models/seat.model';
+import { TOSeat } from 'src/app/t-o-models/t-o-seat.model';
 
 @Component({
   selector: 'app-seat-details',
@@ -12,54 +12,54 @@ import { Seat } from 'src/app/models/seat.model';
 })
 export class SeatDetailsComponent implements OnInit {
   seatForm: FormGroup
-  flight: Flight;
-  seat: Seat;
+  seat: Seat = new Seat();
 
   constructor(private activeRoute: ActivatedRoute,private router: Router, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
-    this.flight = new Flight();
-    this.seat = new Seat();
+    this.initForm();
 
-    let fid = +this.router.url.split('/')[3];
-    this.airlineService.flightChosenSeat.subscribe(
-      result =>
-      {
-        this.flight = result;
+    this.activeRoute.params.subscribe(
+      (params : Params) => {
+        this.airlineService.getSeat(+params['id']).subscribe(
+          result => {
+            this.seat = Object.assign(new TOSeat(), result).convert();
+            this.initForm();
+          }
+        )
       }
     )
-    this.activeRoute.params.subscribe((params:Params)=>{
-      for(let seat of this.flight.seats){
-        if(seat.id == +params['id'])
-        {
-          this.seat = seat;
-          this.initForm();
-        }
-      }
-    });
   }
 
   initForm(){
     this.seatForm = new FormGroup({
-      'id': new FormControl(this.seat.name),
+      'name': new FormControl(this.seat.name),
       'category': new FormControl(this.seat.type),
       'price': new FormControl(this.seat.price),
-      'discount': new FormControl(this.seat.discount, [Validators.required,Validators.min(0)])
+      'discount': new FormControl(this.seat.discount, [Validators.required,Validators.min(0),Validators.max(100)])
     });
 
-    this.seatForm.controls['id'].disable({onlySelf: true});
+
+    this.seatForm.controls['name'].disable({onlySelf: true});
     this.seatForm.controls['category'].disable({onlySelf: true});
     this.seatForm.controls['price'].disable({onlySelf: true});
   }
 
   Cancel(){
+    this.airlineService.ticketDoneChange();
     this.router.navigate(['../../'], {relativeTo: this.activeRoute});
   }
 
   Change(){
     this.seat.discount = this.seatForm.controls['discount'].value;
-    this.airlineService.changeSeatDiscount(this.seat);
-    this.airlineService.ticketDoneChange();
-    this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+    this.airlineService.changeSeatDiscount(this.seat).subscribe(
+      response => {
+        this.airlineService.ticketDoneChange();
+        this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+      },
+      error => {
+        console.log(error);
+      }
+    )
   }
 }

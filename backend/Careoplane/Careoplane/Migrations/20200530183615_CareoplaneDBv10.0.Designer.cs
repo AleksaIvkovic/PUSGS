@@ -4,14 +4,16 @@ using Careoplane.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Careoplane.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200530183615_CareoplaneDBv10.0")]
+    partial class CareoplaneDBv100
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -279,29 +281,6 @@ namespace Careoplane.Migrations
                     b.ToTable("SeatArrangement");
                 });
 
-            modelBuilder.Entity("Careoplane.Models.SeatArrangementFlight", b =>
-                {
-                    b.Property<int>("SeatArrangementFlightId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("FlightId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Ordinal")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
-
-                    b.HasKey("SeatArrangementFlightId");
-
-                    b.HasIndex("FlightId");
-
-                    b.ToTable("SeatArrangementFlight");
-                });
-
             modelBuilder.Entity("Careoplane.Models.Segment", b =>
                 {
                     b.Property<int>("SegmentId")
@@ -324,29 +303,6 @@ namespace Careoplane.Migrations
                     b.HasIndex("AirlineName");
 
                     b.ToTable("Segment");
-                });
-
-            modelBuilder.Entity("Careoplane.Models.SegmentFlight", b =>
-                {
-                    b.Property<int>("SegmentFlightId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("FlightId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Ordinal")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
-
-                    b.HasKey("SegmentFlightId");
-
-                    b.HasIndex("FlightId");
-
-                    b.ToTable("SegmentFlight");
                 });
 
             modelBuilder.Entity("Careoplane.Models.UnavailableDate", b =>
@@ -534,29 +490,11 @@ namespace Careoplane.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Careoplane.Models.SeatArrangementFlight", b =>
-                {
-                    b.HasOne("Careoplane.Models.Flight", "Flight")
-                        .WithMany("SeatingArrangements")
-                        .HasForeignKey("FlightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Careoplane.Models.Segment", b =>
                 {
                     b.HasOne("Careoplane.Models.Airline", "Airline")
                         .WithMany("SegmentLengths")
                         .HasForeignKey("AirlineName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Careoplane.Models.SegmentFlight", b =>
-                {
-                    b.HasOne("Careoplane.Models.Flight", "Flight")
-                        .WithMany("SegmentLengths")
-                        .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
