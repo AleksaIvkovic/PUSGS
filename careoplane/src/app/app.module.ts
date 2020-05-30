@@ -98,6 +98,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { TokenInterceptor } from './auth/tokenInterceptor';
+import { DiscountsComponent } from './components/main/discounts/discounts.component';
 
 @NgModule({
   declarations: [
@@ -143,6 +144,7 @@ import { TokenInterceptor } from './auth/tokenInterceptor';
     ReservationListComponent,
     AdminFlightsComponent,
     ReservationItemComponent,
+    DiscountsComponent,
   ],
   entryComponents: [
     LogInComponent

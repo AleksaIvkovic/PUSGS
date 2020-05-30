@@ -122,13 +122,22 @@ namespace Careoplane.Controllers
         //POST : /api/AppUsers/Login
         public async Task<IActionResult> Login(LoginModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.UserName);
+            AppUser user;
+
+            if (model.UserName.Contains('@'))
+            {
+                user = await _userManager.FindByEmailAsync(model.UserName);
+            } else
+            {
+                user = await _userManager.FindByNameAsync(model.UserName);
+            }
+             
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 var Subject = new ClaimsIdentity(new Claim[]
                     {
-                        new Claim("UserID",user.Id.ToString()),
+                        new Claim("UserID", user.Id.ToString()),
                         new Claim("Roles", roles[0].ToString())
                     });
                 var Expires = DateTime.UtcNow.AddDays(1);

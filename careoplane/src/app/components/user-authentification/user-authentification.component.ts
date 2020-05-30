@@ -13,6 +13,7 @@ import { ConfirmPasswordValidator } from 'src/app/validators/confirm-password.va
 })
 export class UserAuthentificationComponent implements OnInit {
   registerForm: FormGroup;
+  addForm: FormGroup;
   hide1 = true;
   hide2 = true;
   hide3 = true;
@@ -24,6 +25,10 @@ export class UserAuthentificationComponent implements OnInit {
   loggedInUser: any;
   isChangePassword = false;
   isAdmin = false;
+  isAddAdmin = false;
+  adminType: string[] = ['Airline Admin', 'Rent A Car Admin'];
+
+  role: string;
 
   constructor(
     private userService: UserService,
@@ -33,62 +38,64 @@ export class UserAuthentificationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.loggedInUser = new User('', '', '', '', '', '', '', '');
     this.userService.loggedInUserChanged.subscribe(
       (user: User) => {
         this.loggedInUser = user;
       }
     );
-    if (this.router.url.includes('main')) {
-      this.isProfile = true;
-      this.loggedInUser = this.userService.getLoggedInUser();
-      this.isAdmin = this.loggedInUser.type !== undefined ? true : false;
+    if (this.router.url.includes('main') && !this.router.url.includes('add-admin')) {
+      this.userService.getUser().subscribe(
+        (response: any) => {
+          this.role = localStorage.getItem('role');
+          this.loggedInUser = Object.assign
+          (new User(this.role, '', '', '', '', '', '', ''), response);
+          this.isProfile = true;
+          this.isAdmin = this.role.includes('dmin') ? true : false;
+          this.initForm();
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    } else if (this.router.url.includes('add-admin'))
+    {
+      this.isAddAdmin = true;
     } else {
       this.isChangePassword = true;
     }
+
     this.initForm();
   }
 
   initForm() {
-    this.registerForm = new FormGroup({
-      'username': this.isProfile ? new FormControl({'value': this.loggedInUser.userName, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
-      'email': this.isProfile ? new FormControl({'value': this.loggedInUser.email, disabled: !this.isEdit}, [Validators.required, Validators.email]) : new FormControl(null, [Validators.required, Validators.email]),
-      'password': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : new FormControl(null, [Validators.required]),
-      'confirmPassword': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : this.confirmPasswordFormControl,
-      'oldPassword': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : new FormControl(null),
-      'name': this.isProfile ? new FormControl({'value': this.loggedInUser.name, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
-      'surname': this.isProfile ? new FormControl({'value': this.loggedInUser.surname, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
-      'city': this.isProfile ? new FormControl({'value': this.loggedInUser.city, disabled: !this.isEdit}) :  new FormControl(null, [Validators.required]),
-      'phone': this.isProfile ? new FormControl({'value': this.loggedInUser.phoneNumber, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
-    }, 
-    {validators: ConfirmPasswordValidator.MatchPassword});
-
-    this.confirmPasswordFormControl.valueChanges
-    .subscribe(
-      (data: string) => {
-        this.confirmPassword = data;
-      }
-    );
+    if (this.isAddAdmin) {
+      this.addForm = new FormGroup({
+        'email': new FormControl(null, [Validators.required, Validators.email]),
+        'type':  new FormControl(this.adminType[0]),
+      });
+    } else {
+      this.registerForm = new FormGroup({
+        'username': this.isProfile ? new FormControl({'value': this.loggedInUser.userName, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
+        'email': this.isProfile ? new FormControl({'value': this.loggedInUser.email, disabled: !this.isEdit}, [Validators.required, Validators.email]) : new FormControl(null, [Validators.required, Validators.email]),
+        'password': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : new FormControl(null, [Validators.required]),
+        'confirmPassword': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : this.confirmPasswordFormControl,
+        'oldPassword': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : new FormControl(null),
+        'name': this.isProfile ? new FormControl({'value': this.loggedInUser.name, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
+        'surname': this.isProfile ? new FormControl({'value': this.loggedInUser.surname, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
+        'city': this.isProfile ? new FormControl({'value': this.loggedInUser.city, disabled: !this.isEdit}) :  new FormControl(null, [Validators.required]),
+        'phone': this.isProfile ? new FormControl({'value': this.loggedInUser.phoneNumber, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
+      }, 
+      {validators: ConfirmPasswordValidator.MatchPassword});
+  
+      this.confirmPasswordFormControl.valueChanges
+      .subscribe(
+        (data: string) => {
+          this.confirmPassword = data;
+        }
+      );
+    }
   }
-
-  // comparePasswords(control: FormControl): {[s: string]: boolean} {
-  //   //Ako je dobro onda null, ako je lose {'Lose': true}
-  //   if (!this.registerForm) {
-  //     return null;
-  //   }
-
-  //   // if (!control.get('password'))
-  //   // return null;
-  //   // const password: string = control.get('password').value;
-  //   // const confirmPassword: string = control.get('confirmPassword').value; 
-  //   // if (password !== confirmPassword) {
-  //   //   control.get('confirmPassword').setErrors({ NoPassswordMatch: true });
-  //   // }
-  //   if (this.registerForm.value['password'] === control.value) {
-  //     return null;
-  //   } else {
-  //     return {'noMatch': true};
-  //   }
-  // }
 
   onEdit() {
     this.isEdit = true;
@@ -100,6 +107,56 @@ export class UserAuthentificationComponent implements OnInit {
     this.registerForm.controls.surname.enable();
     this.registerForm.controls.city.enable();
     this.registerForm.controls.phone.enable();
+  }
+
+  onAdd() {
+    if (!this.addForm.valid) {
+      return;
+    }
+
+    let role = this.addForm.value['type'] === 'Airline Admin' ? 'aeroAdminNew' : 'racAdminNew';
+    let pass = Math.random().toString(36).substring(7);
+
+    let user = new User(
+      role,
+      this.addForm.value['email'],
+      this.addForm.value['email'],
+      pass,
+      '',
+      '',
+      '',
+      '',
+    );
+
+    this.userService.register(user).subscribe(
+      (response: any) => {
+        if (response.succeeded) {
+          // this.initForm();
+          // this.addForm.reset();
+          // this.addForm.markAsPristine();
+          // this.addForm.markAsUntouched();
+          this.addForm.patchValue({
+            email: '',
+          });
+          this._snackBar.open('Admin was created successfully. Pass: ' + pass, 'OK', {duration: 5000,});
+          // this.router.navigate(['/main/add-admin']);
+      } else {
+        response.errors.forEach(element => {
+          switch (element.code) {
+            case 'DuplicateUserName':
+              this._snackBar.open('Username is already taken', 'OK', {duration: 5000,});
+              break;
+
+            default:
+              this._snackBar.open(element.description, 'OK', {duration: 5000,});
+              break;
+          }
+        });
+      }
+      },
+      error => {
+        console.log(error);
+      });
   }
 
   onSubmit() {

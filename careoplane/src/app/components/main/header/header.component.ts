@@ -18,6 +18,7 @@ export class HeaderComponent implements OnInit {
   isRentACarAdmin = false;
   isAirlineAdmin = false;
   isNewAdmin = false;
+  isSysAdmin = false;
 
   constructor(
     private userService: UserService,
@@ -28,14 +29,14 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     if (localStorage.getItem('token') != null) {
-      this.userService.getUser(this.username).subscribe(
+      this.userService.getUser().subscribe(
         (response: any) => {
+          this.role = localStorage.getItem('role');
           this.user = Object.assign
           (new User(this.role, '', '', '', '', '', '', ''), response);
           localStorage.setItem('user', this.user);
           localStorage.setItem('company', response['company']);
           this.isLoggedIn = true;
-          this.role = localStorage.getItem('role');
           this.checkUser();
         },
         error => {
@@ -68,7 +69,7 @@ export class HeaderComponent implements OnInit {
           if (this.username === undefined) {
             return;
           }
-          this.userService.getUser(this.username).subscribe(
+          this.userService.getUser().subscribe(
             (response: any) => {
               this.user = Object.assign
               (new User(this.role, '', '', '', '', '', '', ''), response);
@@ -104,7 +105,8 @@ export class HeaderComponent implements OnInit {
       this.isNewAdmin = true;
       this.router.navigate(['main/airline-profile/new']);
     } else if (this.role === 'sysAdmin') {
-
+      this.isSysAdmin = true;
+      this.router.navigate(['main/discounts']);
     }
   }
 
@@ -123,6 +125,7 @@ export class HeaderComponent implements OnInit {
     this.isAirlineAdmin = false;
     this.isRentACarAdmin = false;
     this.isNewAdmin = false;
+    this.isSysAdmin = false;
 
     this.router.navigate(['/main']);
   }
