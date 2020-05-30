@@ -7,15 +7,17 @@ import { HttpClient } from '@angular/common/http';
 export class GeoCodingServiceService {
   public constructor() { }
 
-  public checkAddress(address: string): boolean{
+  public checkAddress(address: string, addressValid: boolean, dirty: boolean){
     var geocoder = new google.maps.Geocoder();
 
     geocoder.geocode({'address':address}, function(results, status) {
       if (status === 'OK') {
-        return true;
+        addressValid = true;
+        dirty = false;
       }
       else{
-        return false;
+        addressValid = false;
+        dirty = false;
       }
     });
 

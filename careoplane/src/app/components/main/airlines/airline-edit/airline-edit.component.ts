@@ -23,12 +23,13 @@ export class AirlineEditComponent implements OnInit {
 
   airline: Airline = new Airline();
   seats: FormArray = new FormArray([],this.checkArray.bind(this));
-  edit: boolean 
+  edit: boolean;
   addressValid: boolean = false;
   group: FormGroup;
   visible = true;
   removable = true;
   addOnBlur = true;
+  dirty = false;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -47,6 +48,7 @@ export class AirlineEditComponent implements OnInit {
         error => {console.log(error);}
       );
       this.edit = true;
+      this.addressValid = true;
     }
   }
 
@@ -54,7 +56,11 @@ export class AirlineEditComponent implements OnInit {
     if(this.airline.name == null){
       this.group = new FormGroup({
         'name': new FormControl(this.airline.name, Validators.required),
-        'address': new FormControl(this.airline.address, Validators.required),
+        'address': new FormGroup({
+          'street' : new FormControl(null,Validators.required),
+          'city' : new FormControl(null,Validators.required),
+          'country' : new FormControl(null,Validators.required)
+        }),
         'description': new FormControl(this.airline.description,Validators.required),
         'priceFirstClass': new FormControl(new PriceSegmentSeat(),Validators.required),
         'priceBusinessClass': new FormControl(new PriceSegmentSeat(),Validators.required),
@@ -76,7 +82,11 @@ export class AirlineEditComponent implements OnInit {
 
       this.group = new FormGroup({
         'name': new FormControl(this.airline.name, Validators.required),
-        'address': new FormControl(this.airline.address, Validators.required),
+        'address': new FormGroup({
+          'street' : new FormControl(this.airline.address.split(',')[0],Validators.required),
+          'city' : new FormControl(this.airline.address.split(',')[1],Validators.required),
+          'country' : new FormControl(this.airline.address.split(',')[2],Validators.required)
+        }),
         'description': new FormControl(this.airline.description,Validators.required),
         'priceFirstClass': new FormControl(this.airline.prices[0].value,Validators.required),
         'priceBusinessClass': new FormControl(this.airline.prices[1].value,Validators.required),
@@ -92,11 +102,14 @@ export class AirlineEditComponent implements OnInit {
     
     this.group.controls['address'].valueChanges.subscribe(value => {
       this.addressValid = false;
+      this.dirty = true;
     });
   }
 
   verifyAddress(){
-    this.addressValid = true;//this.geocoderService.checkAddress(this.group.controls['address'].value);
+    this.geocoderService.checkAddress((<FormGroup>this.group.controls['address']).controls['street'].value + ',' +
+      (<FormGroup>this.group.controls['address']).controls['city'].value + ',' +
+      (<FormGroup>this.group.controls['address']).controls['country'].value, this.addressValid, this.dirty)
   }
 
   onSubmit()
@@ -115,7 +128,9 @@ export class AirlineEditComponent implements OnInit {
     } 
 
     this.airline.name = this.group.controls['name'].value;
-    this.airline.address = this.group.controls['address'].value;
+    this.airline.address = (<FormGroup>this.group.controls['address']).controls['street'].value + ',' +
+                           (<FormGroup>this.group.controls['address']).controls['city'].value + ',' +
+                           (<FormGroup>this.group.controls['address']).controls['country'].value;
     this.airline.description = this.group.controls['description'].value;
     let prices: PriceSegmentSeat[] = [];
     if(!this.edit){
