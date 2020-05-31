@@ -41,8 +41,7 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.vehicle = new Vehicle('', '', 0, 0, 0);
-    let u = localStorage.getItem('username');
-    this.isLoggedIn = localStorage.getItem('username') === null ? false : true;
+    this.isLoggedIn = localStorage.getItem('role') === null ? false : true;
     this.subscription = this.route.params
     .subscribe(
       (params: Params) => {

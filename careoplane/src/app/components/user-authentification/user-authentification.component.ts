@@ -99,7 +99,6 @@ export class UserAuthentificationComponent implements OnInit {
 
   onEdit() {
     this.isEdit = true;
-    this.registerForm.controls.email.enable();
     this.registerForm.controls.oldPassword.enable();
     this.registerForm.controls.password.enable();
     this.registerForm.controls.confirmPassword.enable();

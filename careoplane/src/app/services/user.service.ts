@@ -101,4 +101,9 @@ export class UserService {
         let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/GetUserProfile';
         return this.http.get(address);
     }
+
+    externalLogin(formData){
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/SocialLogin';
+        return this.http.post(address, formData);
+    }
 }

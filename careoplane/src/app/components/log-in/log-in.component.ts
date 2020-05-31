@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
 @Component({
   selector: 'app-log-in',
@@ -14,12 +15,14 @@ export class LogInComponent implements OnInit {
   hide = true;
   usermail: string;
   password: string;
+  socialProvider = "google";
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {usermail: string, password: string},
     private dialogRef:MatDialogRef<LogInComponent>,
     private userService: UserService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private OAuth: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -31,6 +34,24 @@ export class LogInComponent implements OnInit {
       'usermail': new FormControl(null, Validators.required),
       'password': new FormControl(null, Validators.required),
     });
+  }
+
+  LoginWithGoogle(){
+    let socialPlatformProvider;  
+    if (this.socialProvider === 'facebook') {  
+      socialPlatformProvider = FacebookLoginProvider.PROVIDER_ID;  
+    } else if (this.socialProvider === 'google') {  
+      socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;  
+    }
+    this.OAuth.signIn(socialPlatformProvider).then(socialusers => {  
+      console.log(socialusers);   
+      this.userService.externalLogin(socialusers).subscribe((res:any)=>{
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('role', 'regular');
+        this.dialogRef.close('success');
+      }); 
+    });  
+
   }
 
   onLogin() {

@@ -99,6 +99,23 @@ import { DatePipe } from '@angular/common';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { TokenInterceptor } from './auth/tokenInterceptor';
 import { DiscountsComponent } from './components/main/discounts/discounts.component';
+import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider, AuthService, SocialLoginModule } from 'angularx-social-login';
+
+export function socialConfigs() {  
+  const config = new AuthServiceConfig(  
+    [  
+      {  
+        id: FacebookLoginProvider.PROVIDER_ID,  
+        provider: new FacebookLoginProvider('app -id')  
+      },  
+      {  
+        id: GoogleLoginProvider.PROVIDER_ID,  
+        provider: new GoogleLoginProvider('29677269628-nklev10der165c58p1duoqn7r89kkgt6.apps.googleusercontent.com')  
+      }  
+    ]  
+  );  
+  return config;  
+}  
 
 @NgModule({
   declarations: [
@@ -202,6 +219,7 @@ import { DiscountsComponent } from './components/main/discounts/discounts.compon
     MatTableFilterModule,
     TooltipModule.forRoot(),
     HttpClientModule,
+    SocialLoginModule
   ],
   providers: [
     DatePipe,
@@ -209,13 +227,18 @@ import { DiscountsComponent } from './components/main/discounts/discounts.compon
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
-      },
-      {
-        provide: HTTP_INTERCEPTORS,
-        useClass: TokenInterceptor,
-        multi: true,
-        },
-      ],
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+    AuthService,
+    {  
+      provide: AuthServiceConfig,  
+      useFactory: socialConfigs  
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
