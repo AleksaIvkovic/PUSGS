@@ -58,7 +58,7 @@ namespace Careoplane.Controllers
             }
 
             Seat oldSeat = await _context.Seats
-                .Include(s => s.Flight)
+                .Include(s => s.Flight).ThenInclude(f => f.Airline)
                 .FirstOrDefaultAsync(s => s.SeatId == seat.SeatId);
 
             Seat tempSeat = new Seat(seat, _context);
@@ -68,7 +68,8 @@ namespace Careoplane.Controllers
                 FastTicket fastTicket = new FastTicket()
                 {
                     FlightId = tempSeat.Flight.FlightId,
-                    SeatId = tempSeat.SeatId
+                    SeatId = tempSeat.SeatId,
+                    Airline = tempSeat.Flight.Airline
                 };
                 _context.Add(fastTicket);
             }

@@ -99,6 +99,9 @@ import { DatePipe } from '@angular/common';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { TokenInterceptor } from './auth/tokenInterceptor';
 import { DiscountsComponent } from './components/main/discounts/discounts.component';
+import { FriendsComponent } from './components/main/friends/friends.component';
+import { FriendsListComponent } from './components/main/friends/friends-list/friends-list.component';
+import { FriendComponent } from './components/main/friends/friends-list/friend/friend.component';
 import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider, AuthService, SocialLoginModule } from 'angularx-social-login';
 
 export function socialConfigs() {  
@@ -115,7 +118,7 @@ export function socialConfigs() {
     ]  
   );  
   return config;  
-}  
+}
 
 @NgModule({
   declarations: [
@@ -162,6 +165,9 @@ export function socialConfigs() {
     AdminFlightsComponent,
     ReservationItemComponent,
     DiscountsComponent,
+    FriendsListComponent,
+    FriendComponent,
+    FriendsComponent,
   ],
   entryComponents: [
     LogInComponent

@@ -16,7 +16,6 @@ namespace Careoplane.Models
         public int FlightId { get; set; }
 
         [Required]
-
         public Airline Airline { get; set; }
 
         public string Origin { get; set; }

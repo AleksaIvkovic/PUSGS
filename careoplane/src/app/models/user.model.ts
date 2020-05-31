@@ -9,6 +9,8 @@ export class User {
         public city: string,
         public phoneNumber: string,
         public reservations: any[] = [],
-        public company: string = ''
+        public company: string = '',
+        public requests: any[] = [],
+        public friends: any[] = [],
     ) {}
 }

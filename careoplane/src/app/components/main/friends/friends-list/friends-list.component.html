@@ -1,0 +1,15 @@
+<mat-list>
+    <div *ngFor="let request of user.requests">
+        <app-friend [user]="request" [request]="true"></app-friend>
+        <mat-divider></mat-divider>
+    </div>
+</mat-list>
+<br/>
+<hr/>
+<br/>
+<mat-list>
+    <div *ngFor="let friend of user.friends">
+        <app-friend [user]="friend" [friend]="true"></app-friend>
+        <mat-divider></mat-divider>
+    </div>
+</mat-list>

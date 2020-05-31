@@ -69,6 +69,10 @@ export class FlightComponent implements OnInit {
     }
   }
 
+  checkRole(){
+    return localStorage.getItem('role');
+  }
+
   //#region buttons
   Edit(){
     this.router.navigate(['../',this.flight.id,'edit-flight'],{relativeTo:this.activeRoute});

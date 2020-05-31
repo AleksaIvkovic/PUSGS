@@ -12,10 +12,13 @@ namespace Careoplane.TOModels
 
         public int FlightId { get; set; }
 
+        public string AirlineName { get; set; }
+
         public TOFastTicket() { }
         public TOFastTicket(FastTicket fastTicket) {
             SeatId = fastTicket.SeatId;
             FlightId = fastTicket.FlightId;
+            AirlineName = fastTicket.Airline.Name;
         }
     }
 }
