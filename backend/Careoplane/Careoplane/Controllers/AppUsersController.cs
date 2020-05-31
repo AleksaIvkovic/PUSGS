@@ -83,7 +83,6 @@ namespace Careoplane.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("Register")]
         //POST : /api/AppUsers/Register

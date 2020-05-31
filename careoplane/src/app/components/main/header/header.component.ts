@@ -114,6 +114,17 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/main/user-profile']);
   }
 
+  onFriends(){
+    this.router.navigate(['/main/friends']);
+  }
+
+  showFriends() : boolean{
+    if(localStorage.getItem('role') == 'regular')
+      return true;
+    else
+      return false;
+  }
+
   onLogOut() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
