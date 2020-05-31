@@ -28,153 +28,14 @@ export class UserService {
         '123456789'
     );
 
-    // private userWithReservations: User = new User(
-    //     'resUsername',
-    //     'test@gmail.com',
-    //     'pass',
-    //     'Name',
-    //     'Surname',
-    //     'City',
-    //     '123456789',
-    //     [
-    //         new VehicleReservation(
-    //             new Vehicle('BMW', 'Car', 5, 2019, 200, 'Novi Sad', 0, [], false, 'INEX'),
-    //             new Date(2020, 4, 25),
-    //             'Novi Sad',
-    //             new Date(2020, 4, 27),
-    //             'Novi Sad',
-    //             3,
-    //             400
-    //         ),
-    //         new VehicleReservation(
-    //             new Vehicle('Mercedes-Benz', 'Van', 3, 2015, 150, 'Novi Sad', 0, [], false, 'Europcar'),
-    //             new Date(2020, 4, 26),
-    //             'Novi Sad',
-    //             new Date(2020, 4, 27),
-    //             'Novi Sad',
-    //             2,
-    //             300
-    //         ),
-    //     ]
-    // );
-
-    private rentACarAdminWithCompany: Admin = new Admin(
-        'admin123',
-        'admin1@gmail.com',
-        'admin',
-        'rent-a-car',
-        'UNI LINE TTR'
-    );
-
-    private rentACarAdminWithoutCompany: Admin = new Admin(
-        'admin456',
-        'admin2@gmail.com',
-        'admin',
-        'rent-a-car',
-        'rent a car 1'
-    );
-
-    private airlineAdminWithComapny: Admin = new Admin(
-        'jaty',
-        'jaty@gmail.com',
-        'admin',
-        'airline',
-        'Jat'
-    )
-
-    private airlineAdminWithoutComapny: Admin = new Admin(
-        'lufty',
-        'lufty@gmail.com',
-        'admin',
-        'airline',
-        'Lufthansa'
-    )
-
-    //private loggedInUser: any;
-    private loggedInUser: any = this.airlineAdminWithoutComapny;
-    // private loggedInUser;
+    private loggedInUser: any;
 
     private users: User[] = [
         this.user,
-        // this.userWithReservations
     ];
-
-    private admins: Admin[] = [
-        this.rentACarAdminWithCompany,
-        this.rentACarAdminWithoutCompany,
-        this.airlineAdminWithComapny,
-        this.airlineAdminWithoutComapny
-    ];
-
-    getMockUpUser(): User {
-        return this.user;
-    }
 
     getLoggedInUser() {
         return this.loggedInUser;
-    }
-
-    getLoggedInUsername() {
-        return this.loggedInUser.userName;
-    }
-
-    getMockUpRentACarAdmin(): Admin {
-        return this.loggedInUser;
-    }
-
-    // logIn(usermail: string, password: string): boolean {
-    //     if (usermail === undefined || password === undefined) {
-    //         return false;
-    //     }
-        
-    //     let isMail = usermail.includes('@') ? true : false;
-    //     for (let user of this.users) {
-    //         if (isMail) {
-    //             if (user.email === usermail && user.password === password) {
-    //                 this.loggedInUser = user;
-    //                 this.loggedInUserChanged.next(this.loggedInUser);
-    //                 return true;
-    //             }
-    //         } else {
-    //             if (user.username === usermail && user.password === password) {
-    //                 this.loggedInUser = user;
-    //                 this.loggedInUserChanged.next(this.loggedInUser);
-    //                 return true;
-    //             }
-    //         }
-    //     }
-
-    //     for (let admin of this.admins) {
-    //         if (isMail) {
-    //             if (admin.email === usermail && admin.password === password) {
-    //                 this.loggedInUser = admin;
-    //                 this.loggedInUserChanged.next(this.loggedInUser);
-    //                 return true;
-    //             }
-    //         } else {
-    //             if (admin.username === usermail && admin.password === password) {
-    //                 this.loggedInUser = admin;
-    //                 this.loggedInUserChanged.next(this.loggedInUser);
-    //                 return true;
-    //             }
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    logOut() {
-        this.loggedInUser = null;
-    }
-
-    registerUser(newUser: User): boolean {
-        for (let user of this.users) {
-            if (user.userName === newUser.userName) {
-                return false;
-            }
-        }
-        this.users.push(newUser);
-        this.loggedInUser = newUser; //Ovo je samo privremeno, mora prvo da potvrdi preko mejla
-        return true;
     }
 
     checkPassword(password: string) {
@@ -199,19 +60,17 @@ export class UserService {
         this.loggedInUserChanged.next(this.users[index]);
     }
 
+    addReservation(reservation: any){
+        this.loggedInUser.reservations.push(reservation);
+    }
+
     updateCompanyName(companyName: string) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/AppUsers/UpdateCompany/' + localStorage.getItem('username');
-        // var user: User = localStorage.getItem('user');
-        // user.company = companyName;
         return this.http
         .put(
             address,
             {company: companyName}
         );
-    }
-
-    addReservation(reservation: any){
-        this.loggedInUser.reservations.push(reservation);
     }
 
     register(user: User) {
@@ -238,7 +97,7 @@ export class UserService {
         return this.http.post(address, user);
     }
 
-    getUser(username: string) {
+    getUser() {
         let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/GetUserProfile';
         return this.http.get(address);
     }

@@ -1,6 +1,60 @@
 <div class="row">
     <div class="col-md-12">
+    <form
+        *ngIf="isAddAdmin"
+        [formGroup]="addForm"
+        (ngSubmit)="onAdd()">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-5">
+                        <mat-form-field appearance="fill" style="width: 200px;">
+                            <mat-label>Email *</mat-label>
+                            <input
+                                matInput
+                                placeholder="address@example.com"
+                                name="email"
+                                [formControlName]="'email'"
+                                id="email">
+                            <mat-icon matSuffix>email</mat-icon>
+                            <mat-error *ngIf="addForm.controls['email'].hasError('required')">
+                                Email is <strong>required</strong>
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Type *</mat-label>
+                            <mat-select 
+                                name="type"
+                                id="type"
+                                [formControlName]="'type'">
+                                <mat-option *ngFor="let type of adminType" [value]="type">
+                                {{type}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <button 
+                        [disabled]="addForm.invalid || !addForm.dirty"
+                        style="margin-left: 225px;"
+                        mat-raised-button 
+                        class="btn-success"
+                        type="submit">
+                        Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
     <form 
+        *ngIf="!isAddAdmin"
         style="margin-left: 420px;"
         [formGroup]="registerForm" 
         (ngSubmit)="onSubmit()">

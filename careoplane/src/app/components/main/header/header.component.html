@@ -2,19 +2,21 @@
   <a routerLink="main/airlines" class="navbar-brand">Careoplane</a>
   <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-          <li routerLinkActive="active" class="nav-item" *ngIf="!isAirlineAdmin && !isRentACarAdmin"><a class="nav-link with-icon" routerLink="main/airlines"><mat-icon>airplanemode_active</mat-icon> Airlines</a></li>
-          <li routerLinkActive="active" class="nav-item" *ngIf="!isAirlineAdmin && !isRentACarAdmin"><a class="nav-link with-icon" routerLink="main/rent-a-car"><mat-icon>directions_car</mat-icon> Rent A Car</a></li>
+          <li routerLinkActive="active" class="nav-item" *ngIf="!isAirlineAdmin && !isRentACarAdmin && !isSysAdmin"><a class="nav-link with-icon" routerLink="main/airlines"><mat-icon>airplanemode_active</mat-icon> Airlines</a></li>
+          <li routerLinkActive="active" class="nav-item" *ngIf="!isAirlineAdmin && !isRentACarAdmin && !isSysAdmin"><a class="nav-link with-icon" routerLink="main/rent-a-car"><mat-icon>directions_car</mat-icon> Rent A Car</a></li>
           <li routerLinkActive="active" class="nav-item" *ngIf="isRentACarAdmin && !isNewAdmin"><a class="nav-link" routerLink="main/rent-a-car-profile">Rent A Car Profile</a></li>
           <li routerLinkActive="active" class="nav-item" *ngIf="isAirlineAdmin && !isNewAdmin"><a class="nav-link" routerLink="main/airline-profile/details">Airline Profile</a></li>
           <!-- <li routerLinkActive="active" class="nav-item"><a class="nav-link" routerLink="main/reservations">Reservations</a></li> -->
-          <li routerLinkActive="active" *ngIf="isLoggedIn && !isAirlineAdmin && !isRentACarAdmin" class="nav-item"><a class="nav-link" routerLink="main/reservations">Reservations</a></li>
+          <li routerLinkActive="active" *ngIf="isLoggedIn && !isAirlineAdmin && !isRentACarAdmin && !isSysAdmin" class="nav-item"><a class="nav-link" routerLink="main/reservations">Reservations</a></li>
+          <li routerLinkActive="active" *ngIf="isLoggedIn && isSysAdmin" class="nav-item"><a class="nav-link" routerLink="main/discounts">Discounts</a></li>
+          <li routerLinkActive="active" *ngIf="isLoggedIn && isSysAdmin" class="nav-item"><a class="nav-link" routerLink="main/add-admin">Add Admin</a></li>
           <!-- <li routerLinkActive="active" class="nav-item"><a class="nav-link" routerLink="main/new-rent-a-car-profile">New Rent A Car Profile</a></li> -->
       </ul>
       <ul class="nav navbar-nav ml-auto">
           <button mat-raised-button *ngIf="!isLoggedIn" style="height: 35px; width: 80px; margin-right: 10px;" (click)="onRegister()" type="button">Register</button>
           <button mat-raised-button *ngIf="!isLoggedIn" style="height: 35px; width: 80px;" (click)="onLogIn()" type="button">Log in</button>
           <li class="nav-item" *ngIf="isLoggedIn">
-            <a class="nav-link with-icon" style="cursor: pointer;" [matMenuTriggerFor]="menu">{{user.userName}} <mat-icon>arrow_drop_down_circle</mat-icon></a>
+            <a class="nav-link with-icon" style="cursor: pointer;" [matMenuTriggerFor]="menu">{{user.userName == undefined ? user.email : user.userName}} <mat-icon>arrow_drop_down_circle</mat-icon></a>
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="onProfile()">Profile</button>
               <button mat-menu-item (click)="onLogOut()">Log Out</button>
