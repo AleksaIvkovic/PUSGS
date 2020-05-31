@@ -28,7 +28,7 @@ export class TOAirline {
             let flight;
             let seat;
             for(let flightTemp of airline.flights){
-                if(fastTicket.flightId == flight.id){
+                if(fastTicket.flightId == flightTemp.id){
                     flight = flightTemp;
                     for(let seatTemp of flightTemp.seats){
                         if(seatTemp.seatId == fastTicket.seatId){
@@ -37,7 +37,7 @@ export class TOAirline {
                     }
                 }
             }
-            airline.fastTickets.push(new FastTicket(seat, flight));
+            airline.fastTickets.push(new FastTicket(seat, flight, fastTicket.airlineName));
         }
 
         return airline;

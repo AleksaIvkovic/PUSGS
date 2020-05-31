@@ -79,7 +79,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" *ngIf="checkRole()">
             <button mat-raised-button color="primary" style="margin: 0 auto;" (click)="Reserve()" *ngIf="!admin && fastTicket == null && !roundTrip">
                 Reserve
             </button>

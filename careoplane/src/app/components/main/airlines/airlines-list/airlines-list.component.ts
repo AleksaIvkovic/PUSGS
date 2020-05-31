@@ -178,11 +178,7 @@ export class AirlinesListComponent implements OnInit {
       result => {
         let newFlights = [];
         for(let flight of result){
-          for(let airline of this.airlines){
-            if(airline.name == flight.airlineName){
-              newFlights.push(Object.assign(new TOFlight(),flight).convert());   
-            }
-          }
+          newFlights.push(Object.assign(new TOFlight(),flight).convert());
         }
         this.flights = newFlights;
       },
