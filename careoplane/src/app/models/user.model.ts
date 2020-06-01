@@ -1,3 +1,5 @@
+import { TOUser } from '../t-o-models/t-o-user.model';
+
 export class User {
     constructor(
         public role: string,
@@ -13,4 +15,14 @@ export class User {
         public requests: any[] = [],
         public friends: any[] = [],
     ) {}
+
+    public ToTO(): TOUser {
+        return new TOUser(
+            this.password,
+            this.name,
+            this.surname,
+            this.city,
+            this.phoneNumber
+        );
+    }
 }

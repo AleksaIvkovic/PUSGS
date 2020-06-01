@@ -64,6 +64,15 @@ export class UserService {
         this.loggedInUser.reservations.push(reservation);
     }
 
+    editUser(updatedUser: User) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/AppUsers/UpdateUser';
+        return this.http
+        .put(
+            address,
+            updatedUser.ToTO()
+        );
+    }
+
     updateCompanyName(companyName: string) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/AppUsers/UpdateCompany/' + localStorage.getItem('username');
         return this.http

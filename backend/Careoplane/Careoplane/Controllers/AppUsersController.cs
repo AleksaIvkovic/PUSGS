@@ -58,6 +58,29 @@ namespace Careoplane.Controllers
             };
         }
 
+        [HttpPut("UpdateUser")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<Object> UpdateUser([FromBody]TOAppUser updatedUser)
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                user.Name = updatedUser.Name;
+                user.Surname = updatedUser.Surname;
+                user.City = updatedUser.City;
+                user.PhoneNumber = updatedUser.PhoneNumber;
+                await _userManager.UpdateAsync(user);
+                return Ok(new { user });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         [HttpPut("UpdateCompany/{username}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<Object> UpdateCompany([FromBody]object company)

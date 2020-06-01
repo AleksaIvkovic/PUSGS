@@ -39,31 +39,36 @@ export class UserAuthentificationComponent implements OnInit {
 
   ngOnInit(): void {
     this.loggedInUser = new User('', '', '', '', '', '', '', '');
-    this.userService.loggedInUserChanged.subscribe(
-      (user: User) => {
-        this.loggedInUser = user;
-      }
-    );
+    // this.userService.loggedInUserChanged.subscribe(
+    //   (user: User) => {
+    //     this.loggedInUser = user;
+    //   }
+    // );
     if (this.router.url.includes('main') && !this.router.url.includes('add-admin')) {
-      this.userService.getUser().subscribe(
-        (response: any) => {
-          this.role = localStorage.getItem('role');
-          this.loggedInUser = Object.assign
-          (new User(this.role, '', '', '', '', '', '', ''), response);
-          this.isProfile = true;
-          this.isAdmin = this.role.includes('dmin') ? true : false;
-          this.initForm();
-        },
-        error => {
-          console.log(error);
-        }
-      );
+      this.loggedInUser = JSON.parse(localStorage.getItem('user'));
+      this.role = localStorage.getItem('role');
+      this.isProfile = true;
+      this.isAdmin = this.role.includes('dmin') ? true : false;
+      
+      // this.userService.getUser().subscribe(
+      //   (response: any) => {
+      //     this.role = localStorage.getItem('role');
+      //     this.loggedInUser = Object.assign
+      //     (new User(this.role, '', '', '', '', '', '', ''), response);
+      //     this.isProfile = true;
+      //     this.isAdmin = this.role.includes('dmin') ? true : false;
+      //     this.initForm();
+      //   },
+      //   error => {
+      //     console.log(error);
+      //   }
+      // );
     } else if (this.router.url.includes('add-admin'))
     {
       this.isAddAdmin = true;
-    } else {
-      this.isChangePassword = true;
-    }
+    } //else {
+    //   this.isChangePassword = true;
+    // }
 
     this.initForm();
   }
@@ -132,13 +137,13 @@ export class UserAuthentificationComponent implements OnInit {
         if (response.succeeded) {
           // this.initForm();
           // this.addForm.reset();
-          // this.addForm.markAsPristine();
-          // this.addForm.markAsUntouched();
           this.addForm.patchValue({
             email: '',
           });
+          this.addForm.markAsPristine();
+          this.addForm.markAsUntouched();
+
           this._snackBar.open('Admin was created successfully. Pass: ' + pass, 'OK', {duration: 5000,});
-          // this.router.navigate(['/main/add-admin']);
       } else {
         response.errors.forEach(element => {
           switch (element.code) {
@@ -183,36 +188,38 @@ export class UserAuthentificationComponent implements OnInit {
           this.userService.updatePassword(this.registerForm.value['password']);
         }
       }
-        this.userService.updateUser(
-          this.loggedInUser.userName,
-          this.registerForm.value['email'],
-          // this.registerForm.value['password'],
-          this.registerForm.value['name'],
-          this.registerForm.value['surname'],
-          this.registerForm.value['city'],
-          this.registerForm.value['phone'],
-        );
-        this.registerForm.controls.email.disable();
-        this.registerForm.controls.password.disable();
-        this.registerForm.controls.confirmPassword.disable();
-        this.registerForm.controls.name.disable();
-        this.registerForm.controls.surname.disable();
-        this.registerForm.controls.city.disable();
-        this.registerForm.controls.phone.disable();
-        this.isEdit = false;
-        this.isChangePassword = false;
 
-        this.registerForm.patchValue({
-          oldPassword: '',
-          password: '',
-          confirmPassword: ''
-        });
+      let updatedUser = new User('', '','','',
+        this.registerForm.value['name'],
+        this.registerForm.value['surname'],
+        this.registerForm.value['city'],
+        this.registerForm.value['phone']);
+      this.userService.editUser(updatedUser).subscribe(
+        (response: any) => {
+          this.loggedInUser = Object.assign(new User(this.role, '', '', '', '', '', '', ''), response);
+          localStorage.setItem('user', JSON.stringify(this.loggedInUser));
+          this.registerForm.controls.email.disable();
+          this.registerForm.controls.password.disable();
+          this.registerForm.controls.confirmPassword.disable();
+          this.registerForm.controls.name.disable();
+          this.registerForm.controls.surname.disable();
+          this.registerForm.controls.city.disable();
+          this.registerForm.controls.phone.disable();
+          this.isEdit = false;
+          this.isChangePassword = false;
 
-        this.registerForm.markAsPristine();
-  
-        this._snackBar.open('User Data updated successfully', 'OK', {
-          duration: 5000,
-        });
+          this.registerForm.patchValue({
+            oldPassword: '',
+            password: '',
+            confirmPassword: ''
+          });
+
+          this.registerForm.markAsPristine();
+          this._snackBar.open('Information updated successfully', 'OK', {duration: 5000,});
+        },
+        error => {}
+      );
+        
     } else {
       let user = new User(
         'regular',
@@ -272,7 +279,8 @@ export class UserAuthentificationComponent implements OnInit {
     this.registerForm.controls.phone.disable();
     this.isEdit = false;
     this.isChangePassword = false;
-    
+    this.registerForm.markAsPristine();
+    this.registerForm.markAsUntouched();
   }
 
 }
