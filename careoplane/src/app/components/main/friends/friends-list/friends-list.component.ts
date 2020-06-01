@@ -12,6 +12,7 @@ export class FriendsListComponent implements OnInit {
   @Input() type = "";
   user: User = new User(null,null,null,null,null,null,null,null,[],null);
   friends: TOFriend[] = [];
+  users: User[] = []
 
   constructor(private userService: UserService) { }
   ngOnInit(): void {
@@ -43,6 +44,33 @@ export class FriendsListComponent implements OnInit {
             }
           }
         }
+      )
+    }
+
+    if(this.type == "search"){
+      this.userService.searchUser.subscribe(
+        response => {
+          this.user = response;
+
+          this.userService.getAllUsers().subscribe(
+            response => {
+              this.users = response;
+
+              let id = this.users.indexOf(this.user);
+              this.users.splice(id,1);
+
+              for(let friend of this.user.tOFriendsA){
+                id = this.users.indexOf(friend.friendB);
+                this.users.splice(id,1);
+              }
+
+              for(let friend of this.user.tOFriendsB){
+                id = this.users.indexOf(friend.friendA);
+                this.users.splice(id,1);
+              }
+            }
+          );
+        } 
       )
     }
   }

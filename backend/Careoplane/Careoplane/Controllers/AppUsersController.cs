@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Careoplane.Controllers
 {
@@ -306,9 +307,27 @@ namespace Careoplane.Controllers
         [HttpPost]
         [Route("AddFriendship")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<Object> AddFrienship()
+        public async Task<Object> AddFrienship([FromBody]JObject Obj)
         {
-            return await _userManager.GetUsersInRoleAsync("regular");
+            var userA = Obj["userA"].ToObject<AppUser>();
+            var userB = Obj["userB"].ToObject<AppUser>();
+
+            AppUser tempUserA = await _userManager.FindByNameAsync(userA.UserName);
+            AppUser tempUserB = await _userManager.FindByNameAsync(userB.UserName);
+
+            Friend friend = new Friend()
+            {
+                Id = 0,
+                FriendA = tempUserA,
+                FriendB = tempUserB,
+                Status = "pending"
+            };
+
+            _context.Friends.Add(friend);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         private const string GoogleApiTokenInfoUrl = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token={0}";

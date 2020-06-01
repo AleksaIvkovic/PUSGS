@@ -16,12 +16,14 @@ export class FriendComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    this.user = JSON.parse(localStorage.getItem('user'));
-    if(this.friend.friendA.userName == this.user.userName){
-      this.user = this.friend.friendB;
-    }
-    else{
-      this.user = this.friend.friendA;
+    if(this.type != 'search'){
+      this.user = JSON.parse(localStorage.getItem('user'));
+      if(this.friend.friendA.userName == this.user.userName){
+        this.user = this.friend.friendB;
+      }
+      else{
+        this.user = this.friend.friendA;
+      }
     }
   }
 

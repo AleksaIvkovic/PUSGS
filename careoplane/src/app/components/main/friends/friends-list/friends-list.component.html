@@ -1,6 +1,12 @@
-<mat-list>
+<mat-list *ngIf="type != 'search'">
     <div *ngFor="let friend of friends">
         <app-friend [friend]="friend" [type]="type"></app-friend>
+        <mat-divider></mat-divider>
+    </div>
+</mat-list>
+<mat-list *ngIf="type == 'search'">
+    <div *ngFor="let user of users">
+        <app-friend [user]="user" [type]="type"></app-friend>
         <mat-divider></mat-divider>
     </div>
 </mat-list>

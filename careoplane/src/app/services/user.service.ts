@@ -126,7 +126,7 @@ export class UserService {
     }
 
     MakeRequest(userA: User, userB: User){
-        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/MakeRequest';
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/AddFriendship';
         return this.http.post(address, {userA: userA, userB: userB});
     }
 
@@ -138,5 +138,10 @@ export class UserService {
     DeclineRequest(id: number){
         let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/DeleteFriendship/' + id.toString();
         return this.http.delete(address);
+    }
+
+    getAllUsers(){
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/AllUsers';
+        return this.http.get<User[]>(address);
     }
 }
