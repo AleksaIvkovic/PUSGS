@@ -257,9 +257,6 @@ namespace Careoplane.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<Object> updateFriendshipStatus(int id, [FromBody]object status)
         {
-            string userId = User.Claims.First(c => c.Type == "UserID").Value;
-            string role = User.Claims.First(c => c.Type == "Roles").Value;
-
             try
             {
                 var friendship = await _context.Friends.FindAsync(id);
@@ -304,6 +301,23 @@ namespace Careoplane.Controllers
             return await _userManager.GetUsersInRoleAsync("regular");
         }
 
+        [HttpGet("GetFriend/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<Friend>> GetFriend (int id)
+        {
+            var friend = await _context.Friends
+                .Include(f => f.FriendA)
+                .Include(f => f.FriendB)
+                .FirstOrDefaultAsync(f => f.Id == id);
+
+            if (friend == null)
+            {
+                return NotFound();
+            }
+
+            return friend;
+        }
+
         [HttpPost]
         [Route("AddFriendship")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -327,7 +341,7 @@ namespace Careoplane.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return CreatedAtAction("GetFriend", new { id = friend.Id }, friend);
         }
 
         private const string GoogleApiTokenInfoUrl = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token={0}";

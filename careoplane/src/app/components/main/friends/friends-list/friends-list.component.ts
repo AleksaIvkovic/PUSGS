@@ -13,18 +13,14 @@ export class FriendsListComponent implements OnInit {
   user: User = new User(null,null,null,null,null,null,null,null,[],null);
   friends: TOFriend[] = [];
   users: User[] = []
+  text: string = null;
 
   constructor(private userService: UserService) { }
   ngOnInit(): void {
     if(this.type == "requests"){
       this.userService.requestUser.subscribe(
         result => {
-          this.user = result;
-          for(let friend of this.user.tOFriendsB){
-            if(friend.status == 'pending'){
-              this.friends.push(friend);
-            }
-          }
+          this.friends = result;
         }
       )
     }
@@ -32,44 +28,21 @@ export class FriendsListComponent implements OnInit {
     if(this.type == "friends"){
       this.userService.friendsUser.subscribe(
         result => {
-          this.user = result;
-          for(let friend of this.user.tOFriendsA){
-            if(friend.status == 'accepted'){
-              this.friends.push(friend);
-            }
-          }
-          for(let friend of this.user.tOFriendsB){
-            if(friend.status == 'accepted'){
-              this.friends.push(friend);
-            }
-          }
+          this.friends = result;
         }
       )
     }
 
     if(this.type == "search"){
       this.userService.searchUser.subscribe(
-        response => {
-          this.user = response;
+        result => {
+          this.users = result;
+        } 
+      )
 
-          this.userService.getAllUsers().subscribe(
-            response => {
-              this.users = response;
-
-              let id = this.users.indexOf(this.user);
-              this.users.splice(id,1);
-
-              for(let friend of this.user.tOFriendsA){
-                id = this.users.indexOf(friend.friendB);
-                this.users.splice(id,1);
-              }
-
-              for(let friend of this.user.tOFriendsB){
-                id = this.users.indexOf(friend.friendA);
-                this.users.splice(id,1);
-              }
-            }
-          );
+      this.userService.sentUser.subscribe(
+        result => {
+          this.friends = result;
         } 
       )
     }
