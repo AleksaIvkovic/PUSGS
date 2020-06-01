@@ -90,7 +90,18 @@ namespace Careoplane.Controllers
                 user.City = updatedUser.City;
                 user.PhoneNumber = updatedUser.PhoneNumber;
                 await _userManager.UpdateAsync(user);
-                return Ok(new { user });
+
+                return new
+                {
+                    user.Name,
+                    user.Surname,
+                    user.Email,
+                    user.UserName,
+                    user.City,
+                    user.Company,
+                    user.PhoneNumber,
+                    role,
+                };
             }
             catch (Exception ex)
             {

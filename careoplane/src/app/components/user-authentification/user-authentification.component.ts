@@ -22,7 +22,7 @@ export class UserAuthentificationComponent implements OnInit {
 
   isProfile = false;
   isEdit = false;
-  loggedInUser: any;
+  loggedInUser: User;
   isChangePassword = false;
   isAdmin = false;
   isAddAdmin = false;
@@ -196,8 +196,11 @@ export class UserAuthentificationComponent implements OnInit {
         this.registerForm.value['phone']);
       this.userService.editUser(updatedUser).subscribe(
         (response: any) => {
-          this.loggedInUser = Object.assign(new User(this.role, '', '', '', '', '', '', ''), response);
-          localStorage.setItem('user', JSON.stringify(this.loggedInUser));
+          let tempUser: User = Object.assign(new User(this.role, '', '', '', '', '', '', ''), response);
+          tempUser.tOFriendsA = this.loggedInUser.tOFriendsA;
+          tempUser.tOFriendsB = this.loggedInUser.tOFriendsB;
+          localStorage.setItem('user', JSON.stringify(tempUser));
+          this.loggedInUser = tempUser;
           this.registerForm.controls.email.disable();
           this.registerForm.controls.password.disable();
           this.registerForm.controls.confirmPassword.disable();
