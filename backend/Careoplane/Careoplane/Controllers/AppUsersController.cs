@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Careoplane.Database;
 using Careoplane.Models;
 using Careoplane.TOModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -27,13 +29,15 @@ namespace Careoplane.Controllers
         private UserManager<AppUser> _userManager;
         private SignInManager<AppUser> _signInManager;
         private readonly ApplicationSettings _appSettings;
+        private readonly AuthenticationContext _context;
 
         public AppUsersController(UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager, IOptions<ApplicationSettings> appSettings)
+            SignInManager<AppUser> signInManager, IOptions<ApplicationSettings> appSettings, AuthenticationContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _appSettings = appSettings.Value;
+            _context = context;
         }
 
         [HttpGet]
@@ -45,6 +49,17 @@ namespace Careoplane.Controllers
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
             string role = User.Claims.First(c => c.Type == "Roles").Value;
             var user = await _userManager.FindByIdAsync(userId);
+            List<Friend> friendsA = new List<Friend>();
+            List<Friend> friendsB = new List<Friend>();
+            friendsA = await _context.Friends.Include(f => f.FriendA).Include(f => f.FriendB).Where(f => f.FriendA == user).ToListAsync();
+            friendsB = await _context.Friends.Include(f => f.FriendA).Include(f => f.FriendB).Where(f => f.FriendB == user).ToListAsync();
+            
+            List<TOFriend> tOFriendsA = new List<TOFriend>();
+            List<TOFriend> tOFriendsB = new List<TOFriend>();
+
+            friendsA.ForEach(f => tOFriendsA.Add(new TOFriend(f)));
+            friendsB.ForEach(f => tOFriendsB.Add(new TOFriend(f)));
+
             return new
             {
                 user.Name,
@@ -54,7 +69,9 @@ namespace Careoplane.Controllers
                 user.City,
                 user.Company,
                 user.PhoneNumber,
-                role
+                role,
+                tOFriendsA,
+                tOFriendsB
             };
         }
 
@@ -210,6 +227,65 @@ namespace Careoplane.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPut("FriendshipStatus/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<Object> updateFriendshipStatus(int id, [FromBody]object status)
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            try
+            {
+                var friendship = await _context.Friends.FindAsync(id);
+                var stat = status.ToString().Split(':')[1].Split("\"")[1];
+                friendship.Status = stat;
+
+                _context.Entry(friendship).State = EntityState.Modified;
+
+                _context.SaveChanges();
+
+                return Ok(new { status });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeleteFriendship/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<Friend>> deleteFriendship(int id)
+        {
+            var friendship = await _context.Friends.FindAsync(id);
+
+            if(friendship == null)
+            {
+                return NotFound();
+            }
+
+            _context.Friends.Remove(friendship);
+            await _context.SaveChangesAsync();
+
+            return friendship;
+        }
+
+        [HttpGet]
+        [Route("AllUsers")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<Object> GetAllusers()
+        {
+            return await _userManager.GetUsersInRoleAsync("regular");
+        }
+
+        [HttpPost]
+        [Route("AddFriendship")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<Object> AddFrienship()
+        {
+            return await _userManager.GetUsersInRoleAsync("regular");
         }
 
         private const string GoogleApiTokenInfoUrl = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token={0}";

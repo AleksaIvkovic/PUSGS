@@ -1,3 +1,5 @@
+import { TOFriend } from '../t-o-models/t-o-friend.model';
+
 export class User {
     constructor(
         public role: string,
@@ -10,7 +12,7 @@ export class User {
         public phoneNumber: string,
         public reservations: any[] = [],
         public company: string = '',
-        public requests: any[] = [],
-        public friends: any[] = [],
+        public tOFriendsA: TOFriend[] = [],
+        public tOFriendsB: TOFriend[] = []
     ) {}
 }

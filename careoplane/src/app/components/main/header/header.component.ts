@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
           this.role = localStorage.getItem('role');
           this.user = Object.assign
           (new User(this.role, '', '', '', '', '', '', ''), response);
-          localStorage.setItem('user', this.user);
+          localStorage.setItem('user', JSON.stringify(this.user));
           localStorage.setItem('company', response['company']);
           this.isLoggedIn = true;
           this.checkUser();
@@ -73,7 +73,7 @@ export class HeaderComponent implements OnInit {
             (response: any) => {
               this.user = Object.assign
               (new User(this.role, '', '', '', '', '', '', ''), response);
-              localStorage.setItem('user', this.user);
+              localStorage.setItem('user', JSON.stringify(this.user));
               localStorage.setItem('company', response['company']);
               this.isLoggedIn = true;
               this.checkUser();

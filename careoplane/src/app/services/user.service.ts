@@ -16,6 +16,9 @@ export class UserService {
     ) {}
 
     loggedInUserChanged = new Subject<User>();
+    requestUser = new Subject<User>();
+    friendsUser = new Subject<User>();
+    searchUser = new Subject<User>();
 
     private user: User = new User(
         'regular',
@@ -105,5 +108,26 @@ export class UserService {
     externalLogin(formData){
         let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/SocialLogin';
         return this.http.post(address, formData);
+    }
+
+    gotUser(user: User){
+        this.requestUser.next(user);
+        this.friendsUser.next(user);
+        this.searchUser.next(user);
+    }
+
+    MakeRequest(userA: User, userB: User){
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/MakeRequest';
+        return this.http.post(address, {userA: userA, userB: userB});
+    }
+
+    UpdateStatus(id: number, status: string){
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/FriendshipStatus/' + id.toString();
+        return this.http.put(address,{status: status});
+    }
+
+    DeclineRequest(id: number){
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/DeleteFriendship/' + id.toString();
+        return this.http.delete(address);
     }
 }
