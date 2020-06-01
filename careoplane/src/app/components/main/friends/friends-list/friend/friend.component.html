@@ -1,22 +1,39 @@
 <div class="row">
     <div class="col-md-3">
-        {{user.name}} {{user.surname}}    
+        <div class="row">
+            <div class="col-md">
+                {{user.name}} 
+            </div>
+            <div class="col-md">
+                {{user.surname}}  
+            </div>
+        </div>  
     </div>
     <div class="col-md-3">
         {{user.userName}}
     </div>
     <div class="col-md-6">
-        <button mat-raised-button color="primary" (click)="Accept()" *ngIf="request">
-            Accept Request
-        </button>
-        <button mat-raised-button color="warn" (click)="Decline()" *ngIf="request">
-            Decline Request
-        </button>
-        <button mat-raised-button color="primary" (click)="Add()">
-            Add Friend
-        </button>
-        <button mat-raised-button color="warn" (click)="Remove()" *ngIf="friend">
-            Remove Friend
-        </button>
+        <div class="row">
+            <div class="col-md">
+                <button mat-raised-button color="primary" (click)="Accept()" *ngIf="type == 'requests'">
+                    Accept Request
+                </button>    
+            </div>
+            <div class="col-md">
+                <button mat-raised-button color="warn" (click)="Decline()" *ngIf="type == 'requests'">
+                    Decline Request
+                </button>    
+            </div>
+            <div class="col-md">
+                <button mat-raised-button color="primary" (click)="Add()" *ngIf="type == 'search'">
+                    Add Friend
+                </button>
+            </div>
+            <div class="col-md">
+                <button mat-raised-button color="warn" (click)="Remove()" *ngIf="type == 'friends'">
+                    Remove Friend
+                </button>
+            </div>
+        </div>
     </div>
 </div>

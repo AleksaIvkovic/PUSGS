@@ -14,6 +14,8 @@ namespace Careoplane.Models
         public string Surname { get; set; }
         public string City { get; set; }
         public string Company { get; set; }
+        public List<Friend> FriendsA { get; set; }
+        public List<Friend> FriendsB { get; set; }
 
         public TOAppUser ToTO()
         {

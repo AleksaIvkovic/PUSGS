@@ -20,7 +20,6 @@ import { PriceSegmentSeat } from 'src/app/models/price-segment-seat.model';
   styleUrls: ['./airline-edit.component.css']
 })
 export class AirlineEditComponent implements OnInit {
-
   airline: Airline = new Airline();
   seats: FormArray = new FormArray([],this.checkArray.bind(this));
   edit: boolean;
@@ -39,8 +38,7 @@ export class AirlineEditComponent implements OnInit {
     this.formInit();
 
     if(this.router.url.includes('edit')){
-      let admin: Admin = <Admin>this.userService.getLoggedInUser();
-      this.airlineService.getAirlineDB(admin.company).subscribe(
+      this.airlineService.getAirlineDB(localStorage.getItem('company')).subscribe(
         result => {
           this.airline = Object.assign(new TOAirline(), result).convert();
           this.formInit();

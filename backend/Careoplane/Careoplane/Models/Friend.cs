@@ -8,11 +8,10 @@ namespace Careoplane.Models
 {
     public class Friend
     {
-        public int FriendAId { get; set; }
-        [Required]
+        [Key]
+        public int Id { get; set; }
         public AppUser FriendA { get; set; }
-        public int FriendBId { get; set; }
-        [Required]
         public AppUser FriendB { get; set; }
+        public string Status { get; set; }
     }
 }
