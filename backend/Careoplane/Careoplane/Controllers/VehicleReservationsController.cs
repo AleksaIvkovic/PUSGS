@@ -94,7 +94,21 @@ namespace Careoplane.Controllers
             _context.VehicleReservation.Add(vehicleReservation);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetVehicleReservation", new { id = vehicleReservation.ReservationId }, vehicleReservation);
+            //Treba popuniti Unavailable Dates
+            Vehicle vehicle = await _context.Vehicles.Include(v => v.UnavailableDates).FirstOrDefaultAsync(v=> v.VehicleId == vehicleReservation.VehicleId);
+
+            for (int i = 0; i < vehicleReservation.NumOfDays; i++)
+            {
+                vehicle.UnavailableDates.Add(new UnavailableDate()
+                {
+                    DateId = 0,
+                    Vehicle = vehicle,
+                    Date = vehicleReservation.FromDate.AddDays(i)
+                });
+            }
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         // DELETE: api/VehicleReservations/5

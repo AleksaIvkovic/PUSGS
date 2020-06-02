@@ -1,8 +1,11 @@
 import { Vehicle } from './vehicle.model';
+import { TOVehicleReservation } from '../t-o-models/t-o-vehicle-reservation.model';
+import { RentACar } from './rent-a-car.model';
+import { User } from './user.model';
 
 export class VehicleReservation {
     constructor(
-        public vehicle: Vehicle,
+        public vehicleId: number,
         public fromDate: Date,
         public fromLocation: string,
         public toDate: Date,
@@ -11,4 +14,20 @@ export class VehicleReservation {
         public price: number,
         public type = 'vehicle'
     ) {}
+
+    public ToTO(rentACar: RentACar): TOVehicleReservation {
+        let user: User = JSON.parse(localStorage.getItem('user'));
+
+        return new TOVehicleReservation(
+            rentACar.ToTO(),
+            user.userName,
+            this.vehicleId,
+            this.fromDate.toDateString(),
+            this.fromLocation,
+            this.toDate.toDateString(),
+            this.toLocation,
+            this.numOfDays,
+            this.price
+        )
+    }
 }

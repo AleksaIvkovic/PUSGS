@@ -26,7 +26,7 @@ namespace Careoplane.Database
 
         public DbSet<Vehicle> Vehicles { get; set; }
 
-        public DbSet<Careoplane.Models.VehicleReservation> VehicleReservation { get; set; }
+        public DbSet<VehicleReservation> VehicleReservation { get; set; }
 
         #endregion
     }

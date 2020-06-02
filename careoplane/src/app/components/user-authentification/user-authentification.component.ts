@@ -66,9 +66,9 @@ export class UserAuthentificationComponent implements OnInit {
     } else if (this.router.url.includes('add-admin'))
     {
       this.isAddAdmin = true;
-    } //else {
-    //   this.isChangePassword = true;
-    // }
+    } else {
+      this.isChangePassword = true;
+    }
 
     this.initForm();
   }
