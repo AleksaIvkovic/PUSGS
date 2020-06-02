@@ -9,7 +9,8 @@ namespace Careoplane.TOModels
     {
         public int ReservationId { get; set; }
 
-        public TOVehicle Vehicle { get; set; }
+        //public TOVehicle Vehicle { get; set; }
+        public int VehicleId { get; set; }
         
         public string FromDate { get; set; }
         
@@ -24,5 +25,9 @@ namespace Careoplane.TOModels
         public double Price { get; set; }
         
         public string Type { get; set; }
+
+        public string UserName { get; set; }
+
+        public TORentACar RentACar { get; set; }
     }
 }

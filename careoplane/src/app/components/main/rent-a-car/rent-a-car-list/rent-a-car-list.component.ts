@@ -73,7 +73,7 @@ export class RentACarListComponent implements OnInit, OnDestroy {
         this.length = this.rentACars.length;
       },
       error => {
-
+        console.log(error);
       }
     );
   }

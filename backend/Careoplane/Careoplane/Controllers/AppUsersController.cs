@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,7 +101,18 @@ namespace Careoplane.Controllers
                 user.City = updatedUser.City;
                 user.PhoneNumber = updatedUser.PhoneNumber;
                 await _userManager.UpdateAsync(user);
-                return Ok(new { user });
+
+                return new
+                {
+                    user.Name,
+                    user.Surname,
+                    user.Email,
+                    user.UserName,
+                    user.City,
+                    user.Company,
+                    user.PhoneNumber,
+                    role,
+                };
             }
             catch (Exception ex)
             {
@@ -158,6 +170,30 @@ namespace Careoplane.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(applicationUser, model.Role);
+
+                    MailAddress to = new MailAddress(applicationUser.Email);
+                    MailAddress from = new MailAddress("careoplane@gmail.com");
+
+                    MailMessage message = new MailMessage(from, to);
+                    message.Subject = "Careoplane - Verify Account";
+                    message.Body = string.Format("Hello {0},\n\n\tPlease verify your account via the link down bellow:", applicationUser.Name);
+
+                    SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
+                    {
+                        Credentials = new NetworkCredential("smtp_username", "smtp_password"),
+                        EnableSsl = true
+                    };
+                    // code in brackets above needed if authentication required 
+
+                    try
+                    {
+                        client.Send(message);
+                    }
+                    catch (SmtpException ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                        throw ex;
+                    }
                 }
                 
                 return Ok(result);
@@ -182,9 +218,13 @@ namespace Careoplane.Controllers
             {
                 user = await _userManager.FindByNameAsync(model.UserName);
             }
-             
+
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
+                if (!(await _userManager.IsEmailConfirmedAsync(user)))
+                {
+                    return BadRequest(new { message = "Email not verified." });
+                }
                 var roles = await _userManager.GetRolesAsync(user);
                 var Subject = new ClaimsIdentity(new Claim[]
                     {
@@ -212,7 +252,7 @@ namespace Careoplane.Controllers
         public async Task<IActionResult> SocialLogin([FromBody]LoginModel model)
         {
             var test = _appSettings.JWT_Secret;
-            if (VerifyToken(model.IdToken))
+            if (VerifyToken(model.IdToken) || model.Email != "")
             {
                 var applicationUser = new AppUser()
                 {

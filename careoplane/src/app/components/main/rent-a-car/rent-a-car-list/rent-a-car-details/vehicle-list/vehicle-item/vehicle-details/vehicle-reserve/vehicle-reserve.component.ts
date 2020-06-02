@@ -7,6 +7,7 @@ import { Subscription, Observable } from 'rxjs';
 import { VehicleReservation } from 'src/app/models/vehicle-reservation.model';
 import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { VehicleService } from 'src/app/services/vehicle.service';
 
 @Component({
   selector: 'app-vehicle-reserve',
@@ -29,6 +30,7 @@ export class VehicleReserveComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private rentACarService: RentACarService,
+    private vehicleService: VehicleService,
     private router: Router,
     private route: ActivatedRoute,
     private _snackBar: MatSnackBar) 
@@ -63,21 +65,28 @@ export class VehicleReserveComponent implements OnInit, OnDestroy {
 
   onReserve() {
     let reservation = new VehicleReservation(
-      this.vehicle,
+      this.vehicle.vehicleId,
       this.pickUpDate,
-      this.pickUpLocation,
+      this.vehicle.location,
       this.returnDate,
       this.returnLocation,
       this.numOfDays,
       this.rentACar.pricelist[this.vehicle.type] + this.vehicle.pricePerDay * this.numOfDays
     );
 
-    this.userService.addReservation(reservation);
-    this.rentACarService.reserveVehicle(this.rentACar, this.indexVehicle, reservation);
-    this.router.navigate(['../../'], {relativeTo: this.route});
-    this._snackBar.open('Reservation made successfully', 'OK', {
-      duration: 5000,
-    });
+    this.vehicleService.reserveVehicle(reservation, this.rentACar).subscribe(
+      response => {
+        console.log(response)
+        this.router.navigate(['../../'], {relativeTo: this.route});
+        this._snackBar.open('Reservation made successfully', 'OK', { duration: 5000, });
+      },
+      error => {
+        console.log(error);
+      }
+    );
+
+    //this.userService.addReservation(reservation);
+    //this.rentACarService.reserveVehicle(this.rentACar, this.indexVehicle, reservation);
   }
 
   ngOnDestroy() {

@@ -32,5 +32,16 @@ namespace Careoplane.Models
                 Role = ""
             };
         }
+
+        public void FromTO(TOAppUser toAppUser)
+        {
+            UserName = toAppUser.UserName;
+            Email = toAppUser.Password;
+            Name = toAppUser.Name;
+            Surname = toAppUser.Surname;
+            City = toAppUser.City;
+            PhoneNumber = toAppUser.PhoneNumber;
+            Company = toAppUser.Company;
+        }
     }
 }

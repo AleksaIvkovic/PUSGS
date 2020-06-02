@@ -4,14 +4,16 @@ using Careoplane.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Careoplane.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200602191141_UnavailableDates2")]
+    partial class UnavailableDates2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,27 +134,6 @@ namespace Careoplane.Migrations
                     b.HasIndex("AirlineName");
 
                     b.ToTable("Flights");
-                });
-
-            modelBuilder.Entity("Careoplane.Models.FlightReservation", b =>
-                {
-                    b.Property<int>("ReservationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("FlightId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SeatId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("appUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ReservationId");
-
-                    b.ToTable("FlightReservations");
                 });
 
             modelBuilder.Entity("Careoplane.Models.Location", b =>

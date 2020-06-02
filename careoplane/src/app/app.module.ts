@@ -110,7 +110,7 @@ export function socialConfigs() {
     [  
       {  
         id: FacebookLoginProvider.PROVIDER_ID,  
-        provider: new FacebookLoginProvider('app -id')  
+        provider: new FacebookLoginProvider('868105937025589')  
       },  
       {  
         id: GoogleLoginProvider.PROVIDER_ID,  
