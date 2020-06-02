@@ -1,6 +1,27 @@
-<mat-list>
+<mat-list *ngIf="type != 'search'">
     <div *ngFor="let friend of friends">
         <app-friend [friend]="friend" [type]="type"></app-friend>
         <mat-divider></mat-divider>
     </div>
 </mat-list>
+<div *ngIf="type == 'search'">
+    <mat-form-field appearance="fill">
+        <mat-label>Search</mat-label>
+        <input matInput [(ngModel)]="text">
+    </mat-form-field>
+    <mat-list>
+        <div *ngFor="let friend of friends| userSearch: text: true">
+            <app-friend [friend]="friend" [type]="'sent'"></app-friend>
+            <mat-divider></mat-divider>
+        </div>
+    </mat-list>
+    <br/>
+    <hr/>
+    <br/>
+    <mat-list>
+        <div *ngFor="let user of users| userSearch: text: false">
+            <app-friend [user]="user" [type]="type"></app-friend>
+            <mat-divider></mat-divider>
+        </div>
+    </mat-list>
+</div>

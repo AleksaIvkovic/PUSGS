@@ -12,18 +12,15 @@ export class FriendsListComponent implements OnInit {
   @Input() type = "";
   user: User = new User(null,null,null,null,null,null,null,null,[],null);
   friends: TOFriend[] = [];
+  users: User[] = []
+  text: string = null;
 
   constructor(private userService: UserService) { }
   ngOnInit(): void {
     if(this.type == "requests"){
       this.userService.requestUser.subscribe(
         result => {
-          this.user = result;
-          for(let friend of this.user.tOFriendsB){
-            if(friend.status == 'pending'){
-              this.friends.push(friend);
-            }
-          }
+          this.friends = result;
         }
       )
     }
@@ -31,18 +28,22 @@ export class FriendsListComponent implements OnInit {
     if(this.type == "friends"){
       this.userService.friendsUser.subscribe(
         result => {
-          this.user = result;
-          for(let friend of this.user.tOFriendsA){
-            if(friend.status == 'accepted'){
-              this.friends.push(friend);
-            }
-          }
-          for(let friend of this.user.tOFriendsB){
-            if(friend.status == 'accepted'){
-              this.friends.push(friend);
-            }
-          }
+          this.friends = result;
         }
+      )
+    }
+
+    if(this.type == "search"){
+      this.userService.searchUser.subscribe(
+        result => {
+          this.users = result;
+        } 
+      )
+
+      this.userService.sentUser.subscribe(
+        result => {
+          this.friends = result;
+        } 
       )
     }
   }

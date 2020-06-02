@@ -6,6 +6,7 @@ import { VehicleReservation } from '../models/vehicle-reservation.model';
 import { FlightReservation } from '../models/flight-reservation.model';
 import { Vehicle } from '../models/vehicle.model';
 import { HttpClient } from '@angular/common/http';
+import { TOFriend } from '../t-o-models/t-o-friend.model';
 
 @Injectable({
     providedIn: 'root'
@@ -15,10 +16,16 @@ export class UserService {
         private http: HttpClient
     ) {}
 
+    friends: TOFriend[] = [];
+    requests: TOFriend[] = [];
+    sent: TOFriend[] = [];
+    people: User[] = [];
+
     loggedInUserChanged = new Subject<User>();
-    requestUser = new Subject<User>();
-    friendsUser = new Subject<User>();
-    searchUser = new Subject<User>();
+    requestUser = new Subject<TOFriend[]>();
+    friendsUser = new Subject<TOFriend[]>();
+    sentUser = new Subject<TOFriend[]>();
+    searchUser = new Subject<User[]>();
 
     private user: User = new User(
         'regular',
@@ -120,14 +127,158 @@ export class UserService {
     }
 
     gotUser(user: User){
-        this.requestUser.next(user);
-        this.friendsUser.next(user);
-        this.searchUser.next(user);
+        this.friends = [];
+        this.sent = [];
+        this.requests = [];
+        this.people = [];
+
+        for(let friend of user.tOFriendsB){
+            if(friend.status == "pending"){
+                this.requests.push(friend);
+            }
+            else{
+                this.friends.push(friend);
+            }
+        }
+
+        this.requestUser.next(this.requests);
+
+        for(let friend of user.tOFriendsA){
+            if(friend.status == "pending"){
+                this.sent.push(friend);
+            }
+            else{
+                this.friends.push(friend);
+            }
+        }
+        
+        this.friendsUser.next(this.friends);
+
+        this.getAllUsers().subscribe(
+            response => {
+              this.people = response;
+
+              let counter = 0;
+              for(let person of this.people){
+                  if(person.userName == user.userName){
+                    this.people.splice(counter,1);
+                    break;
+                  }
+                  counter++;
+              }
+
+              counter = 0;
+              for(let person of this.people){
+                for(let friend of this.requests){
+                    if(person.userName == friend.friendA.userName){
+                        this.people.splice(counter,1);
+                        break;
+                    }
+                }
+                counter++;
+              }
+              
+              counter = 0;
+              for(let person of this.people){
+                for(let friend of this.friends){
+                    if(person.userName == friend.friendA.userName){
+                        this.people.splice(counter,1);
+                        break;
+                    }
+                    else if(person.userName == friend.friendB.userName){
+                        this.people.splice(counter,1);
+                        break;
+                    }
+                }
+                counter++;
+              }
+
+              this.searchUser.next(this.people);
+            }
+        );
+        
+    }
+
+    peopleListChange(user: User, friend: TOFriend){
+        let index = this.people.indexOf(user);
+        this.people.splice(index,1);
+        this.searchUser.next(this.people);
+        this.sent.push(friend);
+        this.sentUser.next(this.sent);
+    }
+
+    requestListChange(id: number){
+        let tempFriend: TOFriend;
+        let counter = 0;
+        for(let friend of this.requests){
+            if(friend.id == id){
+                tempFriend = friend;
+                this.requests.splice(counter,1);
+                break;
+            }
+            counter++;
+        }
+        this.people.push(tempFriend.friendA);
+        this.requestUser.next(this.requests);
+        this.searchUser.next(this.people);
+    }
+
+    friendListChange(id: number){
+        let tempFriend: TOFriend;
+        let counter = 0;
+        for(let friend of this.friends){
+            if(friend.id == id){
+                tempFriend = friend;
+                this.friends.splice(counter,1);
+                break;
+            }
+            counter++;
+        }
+        let user = JSON.parse(localStorage.getItem('user'));
+        if(user.userName == tempFriend.friendA.userName)
+            this.people.push(tempFriend.friendB);
+        else
+            this.people.push(tempFriend.friendA);
+        this.searchUser.next(this.people);
+        this.friendsUser.next(this.friends);
+    }
+
+    sentListChange(id: number){
+        let tempFriend: TOFriend;
+        let counter = 0;
+        for(let friend of this.sent){
+            if(friend.id == id){
+                tempFriend = friend;
+                this.sent.splice(counter,1);
+                break;
+            }
+            counter++;
+        }
+        this.people.push(tempFriend.friendB);
+        this.requestUser.next(this.sent);
+        this.searchUser.next(this.people);
+    }
+
+    moveToFriends(id: number){
+        let counter = 0;
+        let tempFriend;
+        for(let friend of this.requests){
+            if(friend.id == id){
+                tempFriend = friend;
+                this.requests.splice(counter,1);
+                break;
+            }
+            counter++;
+        }
+        tempFriend.status = "accepted";
+        this.friends.push(tempFriend);
+        this.requestUser.next(this.requests);
+        this.friendsUser.next(this.friends);
     }
 
     MakeRequest(userA: User, userB: User){
-        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/MakeRequest';
-        return this.http.post(address, {userA: userA, userB: userB});
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/AddFriendship';
+        return this.http.post<TOFriend>(address, {userA: userA, userB: userB});
     }
 
     UpdateStatus(id: number, status: string){
@@ -138,5 +289,10 @@ export class UserService {
     DeclineRequest(id: number){
         let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/DeleteFriendship/' + id.toString();
         return this.http.delete(address);
+    }
+
+    getAllUsers(){
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/AllUsers';
+        return this.http.get<User[]>(address);
     }
 }

@@ -30,6 +30,11 @@
                 </button>
             </div>
             <div class="col-md">
+                <button mat-raised-button color="warn" (click)="Cancel()" *ngIf="type == 'sent'">
+                    Cancel Request
+                </button>
+            </div>
+            <div class="col-md">
                 <button mat-raised-button color="warn" (click)="Remove()" *ngIf="type == 'friends'">
                     Remove Friend
                 </button>

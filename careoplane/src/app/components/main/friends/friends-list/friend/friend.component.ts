@@ -16,22 +16,24 @@ export class FriendComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    this.user = JSON.parse(localStorage.getItem('user'));
-    if(this.friend.friendA.userName == this.user.userName){
-      this.user = this.friend.friendB;
-    }
-    else{
-      this.user = this.friend.friendA;
+    if(this.type != 'search'){
+      this.user = JSON.parse(localStorage.getItem('user'));
+      if(this.friend.friendA.userName == this.user.userName){
+        this.user = this.friend.friendB;
+      }
+      else{
+        this.user = this.friend.friendA;
+      }
     }
   }
 
   Add(){
     this.userService.MakeRequest(JSON.parse(localStorage.getItem('user')),this.user).subscribe(
       result =>{
-
+        this.userService.peopleListChange(this.user,result);
       },
       error => {
-
+        console.log(error);
       }
     )
   }
@@ -39,7 +41,7 @@ export class FriendComponent implements OnInit {
   Decline(){
     this.userService.DeclineRequest(this.friend.id).subscribe(
       result =>{
-
+        this.userService.requestListChange(this.friend.id);
       },
       error => {
         
@@ -50,7 +52,7 @@ export class FriendComponent implements OnInit {
   Accept(){
     this.userService.UpdateStatus(this.friend.id, "accepted").subscribe(
       result =>{
-
+        this.userService.moveToFriends(this.friend.id);
       },
       error => {
         
@@ -61,7 +63,18 @@ export class FriendComponent implements OnInit {
   Remove(){
     this.userService.DeclineRequest(this.friend.id).subscribe(
       result =>{
+        this.userService.friendListChange(this.friend.id);
+      },
+      error => {
+        
+      }
+    )    
+  }
 
+  Cancel(){
+    this.userService.DeclineRequest(this.friend.id).subscribe(
+      result =>{
+        this.userService.sentListChange(this.friend.id);
       },
       error => {
         

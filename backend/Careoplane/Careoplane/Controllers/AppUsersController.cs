@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Careoplane.Controllers
 {
@@ -267,9 +268,6 @@ namespace Careoplane.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<Object> updateFriendshipStatus(int id, [FromBody]object status)
         {
-            string userId = User.Claims.First(c => c.Type == "UserID").Value;
-            string role = User.Claims.First(c => c.Type == "Roles").Value;
-
             try
             {
                 var friendship = await _context.Friends.FindAsync(id);
@@ -314,12 +312,47 @@ namespace Careoplane.Controllers
             return await _userManager.GetUsersInRoleAsync("regular");
         }
 
+        [HttpGet("GetFriend/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<Friend>> GetFriend (int id)
+        {
+            var friend = await _context.Friends
+                .Include(f => f.FriendA)
+                .Include(f => f.FriendB)
+                .FirstOrDefaultAsync(f => f.Id == id);
+
+            if (friend == null)
+            {
+                return NotFound();
+            }
+
+            return friend;
+        }
+
         [HttpPost]
         [Route("AddFriendship")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<Object> AddFrienship()
+        public async Task<Object> AddFrienship([FromBody]JObject Obj)
         {
-            return await _userManager.GetUsersInRoleAsync("regular");
+            var userA = Obj["userA"].ToObject<AppUser>();
+            var userB = Obj["userB"].ToObject<AppUser>();
+
+            AppUser tempUserA = await _userManager.FindByNameAsync(userA.UserName);
+            AppUser tempUserB = await _userManager.FindByNameAsync(userB.UserName);
+
+            Friend friend = new Friend()
+            {
+                Id = 0,
+                FriendA = tempUserA,
+                FriendB = tempUserB,
+                Status = "pending"
+            };
+
+            _context.Friends.Add(friend);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetFriend", new { id = friend.Id }, friend);
         }
 
         private const string GoogleApiTokenInfoUrl = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token={0}";
