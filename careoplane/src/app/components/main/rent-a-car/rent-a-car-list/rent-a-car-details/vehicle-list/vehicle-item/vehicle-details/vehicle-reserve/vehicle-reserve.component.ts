@@ -72,7 +72,7 @@ export class VehicleReserveComponent implements OnInit, OnDestroy {
       this.rentACar.pricelist[this.vehicle.type] + this.vehicle.pricePerDay * this.numOfDays
     );
 
-    this.userService.addReservation(reservation);
+    //this.userService.addReservation(reservation);
     this.rentACarService.reserveVehicle(this.rentACar, this.indexVehicle, reservation);
     this.router.navigate(['../../'], {relativeTo: this.route});
     this._snackBar.open('Reservation made successfully', 'OK', {

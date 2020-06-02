@@ -213,7 +213,7 @@ namespace Careoplane.Controllers
         public async Task<IActionResult> SocialLogin([FromBody]LoginModel model)
         {
             var test = _appSettings.JWT_Secret;
-            if (VerifyToken(model.IdToken))
+            if (VerifyToken(model.IdToken) || model.Email != "")
             {
                 var applicationUser = new AppUser()
                 {

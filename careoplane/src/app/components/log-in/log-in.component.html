@@ -57,10 +57,13 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-2">
-            <div class="form-group col-md-8 offset-md-2">
-                <button (click)="LoginWithGoogle()" class="btn btn-lg btn-block">Login with Google</button>
-              </div>
+        <div class="col-md-6">
+            <button type="button" (click)="LoginWithGoogle()" mat-flat-button color="primary"><img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Google-512.png" width="25" height="25">Login with Google</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <button type="button" (click)="logInWithFB()" mat-flat-button color="primary">Log In With Facebook</button>
         </div>
     </div>
 </mat-dialog-content>

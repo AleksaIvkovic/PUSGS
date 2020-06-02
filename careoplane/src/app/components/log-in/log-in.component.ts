@@ -29,6 +29,13 @@ export class LogInComponent implements OnInit {
     this.initForm();
   }
 
+  // let socialPlatformProvider;  
+  //   if (this.socialProvider === 'facebook') {  
+  //     socialPlatformProvider = FacebookLoginProvider.PROVIDER_ID;  
+  //   } else if (this.socialProvider === 'google') {  
+  //     socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;  
+  //   }
+
   initForm() {
     this.logInForm = new FormGroup({
       'usermail': new FormControl(null, Validators.required),
@@ -36,14 +43,19 @@ export class LogInComponent implements OnInit {
     });
   }
 
+  logInWithFB(): void {
+    this.OAuth.signIn(FacebookLoginProvider.PROVIDER_ID).then(socialusers => {  
+      console.log(socialusers);   
+      this.userService.externalLogin(socialusers).subscribe((res:any)=>{
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('role', 'regular');
+        this.dialogRef.close('success');
+      }); 
+    });  
+  }
+
   LoginWithGoogle(){
-    let socialPlatformProvider;  
-    if (this.socialProvider === 'facebook') {  
-      socialPlatformProvider = FacebookLoginProvider.PROVIDER_ID;  
-    } else if (this.socialProvider === 'google') {  
-      socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;  
-    }
-    this.OAuth.signIn(socialPlatformProvider).then(socialusers => {  
+    this.OAuth.signIn(GoogleLoginProvider.PROVIDER_ID).then(socialusers => {  
       console.log(socialusers);   
       this.userService.externalLogin(socialusers).subscribe((res:any)=>{
         localStorage.setItem('token', res.token);
