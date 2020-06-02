@@ -7,6 +7,7 @@ import { AirlineService } from 'src/app/services/airline.service';
 import { FlightReservation } from 'src/app/models/flight-reservation.model';
 import { UserService } from 'src/app/services/user.service';
 import { TOFlight } from 'src/app/t-o-models/t-o-flight.model';
+import { User } from 'src/app/models/user.model';
 
 
 @Component({
@@ -24,10 +25,28 @@ export class FlightReservationComponent implements OnInit {
   passengers: number;
   checked: boolean = true;
   classType: string;
+  friends: User[] = [];
 
   constructor(private userService: UserService, private router: Router, private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
 
   ngOnInit(): void {
+    this.userService.getUser().subscribe(
+      response => {
+        let user = Object.assign(new User("","","","","","","",""),response);
+        for(let friend of user.tOFriendsA){
+          if(friend.status != "pending")
+            this.friends.push(friend.friendB);
+        }
+
+        for(let friend of user.tOFriendsB){
+          if(friend.status != "pending")
+            this.friends.push(friend.friendA);
+        }
+
+        this.friends.push(user);
+      }
+    )
+
     this.activeRoute.params.subscribe(
       (params: Params) => {
           if(params['fid']){
@@ -49,7 +68,8 @@ export class FlightReservationComponent implements OnInit {
     this.airlineService.ticketsChanged.subscribe((tickets:any) => {
       this.tickets = tickets;
       this.checkTickets();
-      this.fillSeats();
+      if(!this.checked)
+        this.fillSeats();
     });
     
     this.firstFormGroup = this._formBuilder.group({
@@ -75,26 +95,26 @@ export class FlightReservationComponent implements OnInit {
   }
 
   Done(){
-    let reservation: FlightReservation = new FlightReservation(this.flight1.id);
+    // let reservation: FlightReservation = new FlightReservation(this.flight1.id);
     
-    let i = 0;
-    for(let ticket of this.tickets.seatstoStore){
-      this.flight1.seats[ticket].occupied = true;
-      reservation.seats.push(ticket);
-      reservation.people.push({
-        name: (<FormGroup>((<FormGroup>(this.passengersControl.controls[i])).controls['full name'])).controls['name'].value,
-        surname: (<FormGroup>((<FormGroup>(this.passengersControl.controls[i])).controls['full name'])).controls['surname'].value,
-        id: i
-      });
-      i++;
-    }
+    // let i = 0;
+    // for(let ticket of this.tickets.seatstoStore){
+    //   this.flight1.seats[ticket].occupied = true;
+    //   reservation.seats.push(ticket);
+    //   reservation.people.push({
+    //     name: (<FormGroup>((<FormGroup>(this.passengersControl.controls[i])).controls['full name'])).controls['name'].value,
+    //     surname: (<FormGroup>((<FormGroup>(this.passengersControl.controls[i])).controls['full name'])).controls['surname'].value,
+    //     id: i
+    //   });
+    //   i++;
+    // }
 
-    this.userService.addReservation(reservation);
+    // this.userService.addReservation(reservation);
 
-    this.router.navigate(['../../../../'], {relativeTo: this.activeRoute});
+    // this.router.navigate(['../../../../'], {relativeTo: this.activeRoute});
   }
 
-  public checkTickets(): void{
+  checkTickets(){
     if(this.tickets != []){
       if(this.tickets.selectedSeats.length == this.passengers){
         this.checked = false;

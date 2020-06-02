@@ -87,7 +87,10 @@ export class FlightComponent implements OnInit {
   }
 
   FastReservation(){
-    this.fastTicket.seat.occupied = true;
+    this.airlineService.changeFastTicket(this.fastTicket).subscribe(
+      response => {},
+      error => {console.log(error);}
+    );
   }
 
   EditFastReservation(){

@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
+using Careoplane.TOModels;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Careoplane.Controllers
 {
@@ -15,9 +20,11 @@ namespace Careoplane.Controllers
     public class FastTicketsController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private UserManager<AppUser> _userManager;
 
-        public FastTicketsController(DatabaseContext context)
+        public FastTicketsController(UserManager<AppUser> userManager, DatabaseContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -46,18 +53,43 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFastTicket(int id, FastTicket fastTicket)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> PutFastTicket(int id, [FromBody]JObject Obj)
         {
+            TOFastTicket fastTicket = Obj["fastTicket"].ToObject<TOFastTicket>();
+            bool occupied = Obj["occupied"].ToObject<bool>();
+
             if (id != fastTicket.SeatId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(fastTicket).State = EntityState.Modified;
+            Seat seat = await _context.Seats.FindAsync(fastTicket.SeatId);
+            seat.Occupied = occupied;
+
+            _context.Entry(seat).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
+
+                string userId = User.Claims.First(c => c.Type == "UserID").Value;
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (occupied == true)
+                {
+                    FlightReservation flightReservation = new FlightReservation()
+                    {
+                        ReservationId = 0,
+                        FlightId = fastTicket.FlightId,
+                        SeatId = fastTicket.SeatId,
+                        AppUserName = user.UserName
+                    };
+
+                    _context.FlightReservations.Add(flightReservation);
+
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (DbUpdateConcurrencyException)
             {

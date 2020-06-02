@@ -1,5 +1,7 @@
 import { TOUser } from '../t-o-models/t-o-user.model';
 import { TOFriend } from '../t-o-models/t-o-friend.model';
+import { TOFlightReservation } from '../t-o-models/t-o-flight-reservation.model';
+import { FlightReservation } from './flight-reservation.model';
 
 export class User {
     constructor(
@@ -14,7 +16,8 @@ export class User {
         public reservations: any[] = [],
         public company: string = '',
         public tOFriendsA: TOFriend[] = [],
-        public tOFriendsB: TOFriend[] = []
+        public tOFriendsB: TOFriend[] = [],
+        public toFlightReservation: FlightReservation[] = []
     ) {}
 
     public ToTO(): TOUser {

@@ -5,7 +5,8 @@ export class TOFlightReservation {
 
     constructor(
         public flightId: number,
-        public seats: TOPrimaryObject[] = [],
-        public people: {name: string, surname: string, id: number}[] = []
+        public seatId: number,
+        public appUserName: string,
+        public reservationId: number
     ) {}
 }

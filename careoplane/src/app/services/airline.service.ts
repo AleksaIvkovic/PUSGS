@@ -206,24 +206,15 @@ export class AirlineService {
     return this.http.get<TOSeat>(address);
   }
 
-  //izmeni da radi sa DB
-  changeSeatDiscount(seat: Seat) {
-    // let flight = this.getFlight(seat.flightId)
-    // let airline = this.getAirline(flight.airlineName);
-    // if(seat.discount != 0){
-    //   airline.fastTickets.push(new FastTicket(0,seat,this.getFlight(seat.flightId)));
-    // }
-    // else{
-    //   for(let fastTicket of airline.fastTickets){
-    //     if(fastTicket.seat.name === seat.name){
-    //       airline.fastTickets.splice(airline.fastTickets.indexOf(fastTicket),1);
-    //       return;
-    //     }
-    //   }
-    // }
-
+  changeSeat(seat: Seat) {
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Seats/' + seat.seatId.toString();
     let seatTemp = new TOSeat(seat.flightId,seat.name,seat.type,seat.occupied,seat.price,seat.discount,seat.seatId);
     return this.http.put(address,seatTemp);
+  }
+
+  changeFastTicket(fastTicket: FastTicket){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FastTickets/' + fastTicket.seat.seatId;
+    let tempFastTicket = new TOFastTicket(fastTicket.seat.seatId,fastTicket.flight.id,fastTicket.airlineName);
+    return this.http.put(address,{fastTicket: tempFastTicket, occupied: true});
   }
 }

@@ -1,4 +1,5 @@
-﻿using Careoplane.TOModels;
+﻿using Careoplane.Database;
+using Careoplane.TOModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,8 +21,11 @@ namespace Careoplane.Models
 
         public FastTicket() { }
         
-        public FastTicket(TOFastTicket fastTicket)
+        public FastTicket(TOFastTicket fastTicket, DatabaseContext _context)
         {
+            SeatId = fastTicket.SeatId;
+            FlightId = fastTicket.FlightId;
+            Airline = _context.Airlines.Find(fastTicket.AirlineName);
         }
     }
 }

@@ -31,14 +31,16 @@ namespace Careoplane.Controllers
         private SignInManager<AppUser> _signInManager;
         private readonly ApplicationSettings _appSettings;
         private readonly AuthenticationContext _context;
+        private readonly DatabaseContext _contextDB;
 
         public AppUsersController(UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager, IOptions<ApplicationSettings> appSettings, AuthenticationContext context)
+            SignInManager<AppUser> signInManager, IOptions<ApplicationSettings> appSettings, AuthenticationContext context, DatabaseContext contextDB)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _appSettings = appSettings.Value;
             _context = context;
+            _contextDB = contextDB;
         }
 
         [HttpGet]
@@ -61,6 +63,12 @@ namespace Careoplane.Controllers
             friendsA.ForEach(f => tOFriendsA.Add(new TOFriend(f)));
             friendsB.ForEach(f => tOFriendsB.Add(new TOFriend(f)));
 
+            List<FlightReservation> flightReservations = new List<FlightReservation>();
+            flightReservations = await _contextDB.FlightReservations.Where(r => r.AppUserName == user.UserName).ToListAsync();
+
+            List<TOFlightReservation> tOFlightReservations = new List<TOFlightReservation>();
+            flightReservations.ForEach(f => tOFlightReservations.Add(new TOFlightReservation(f)));
+
             return new
             {
                 user.Name,
@@ -72,7 +80,8 @@ namespace Careoplane.Controllers
                 user.PhoneNumber,
                 role,
                 tOFriendsA,
-                tOFriendsB
+                tOFriendsB,
+                tOFlightReservations
             };
         }
 

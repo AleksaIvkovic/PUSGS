@@ -153,6 +153,7 @@ export class UserService {
         }
         
         this.friendsUser.next(this.friends);
+        this.sentUser.next(this.sent);
 
         this.getAllUsers().subscribe(
             response => {

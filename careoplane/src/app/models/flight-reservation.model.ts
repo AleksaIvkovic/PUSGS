@@ -2,8 +2,9 @@ export class FlightReservation {
     public type = 'flight';
 
     constructor(
-        public flightId: number,
-        public seats: number[] = [],
-        public people: {name: string, surname: string, id: number}[] = []
+        public flightId: number, 
+        public seatId: number,
+        public appUserName: string,
+        public reservationId: number
     ) {}
 }
