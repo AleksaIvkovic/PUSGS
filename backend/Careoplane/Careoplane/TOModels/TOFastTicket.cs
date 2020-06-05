@@ -1,4 +1,5 @@
-﻿using Careoplane.Models;
+﻿using Careoplane.Database;
+using Careoplane.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +9,16 @@ namespace Careoplane.TOModels
 {
     public class TOFastTicket
     {
-        public int SeatId { get; set; }
-
-        public int FlightId { get; set; }
+        public TOSeat Seat { get; set; }
 
         public string AirlineName { get; set; }
+        public double NewPrice { get; set; }
 
         public TOFastTicket() { }
-        public TOFastTicket(FastTicket fastTicket) {
-            SeatId = fastTicket.SeatId;
-            FlightId = fastTicket.FlightId;
+        public TOFastTicket(FastTicket fastTicket, DatabaseContext _context) {
+            Seat = new TOSeat(_context.Seats.Find(fastTicket.SeatId));
             AirlineName = fastTicket.Airline.Name;
+            NewPrice = fastTicket.NewPrice;
         }
     }
 }

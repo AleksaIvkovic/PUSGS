@@ -5,9 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Careoplane.Database;
 using Careoplane.Models;
 using Careoplane.TOModels;
@@ -171,16 +173,26 @@ namespace Careoplane.Controllers
                 {
                     await _userManager.AddToRoleAsync(applicationUser, model.Role);
 
-                    MailAddress to = new MailAddress(applicationUser.Email);
-                    MailAddress from = new MailAddress("careoplane@gmail.com");
+                    MailAddress to = new MailAddress(applicationUser.Email, applicationUser.Name);
+                    MailAddress from = new MailAddress("careoplane@gmail.com", "Careoplane");
 
                     MailMessage message = new MailMessage(from, to);
                     message.Subject = "Careoplane - Verify Account";
-                    message.Body = string.Format("Hello {0},\n\n\tPlease verify your account via the link down bellow:", applicationUser.Name);
+
+                    var link = string.Format("http://localhost:4200/main/confirmation?username={0}&token={1}", applicationUser.UserName, await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser));
+
+                    string text = string.Format("Hello {0},\n\n\tPlease verify your account by visiting the link below\n\t{1}", applicationUser.Name, link);
+                    string html = "Hello " + applicationUser.Name + ",\n\n\tPlease verify your account by visiting the link : <a href=\"" + link + "\">link</a><br/><br/>";
+
+                    html += HttpUtility.HtmlEncode(@"Or click on the copy the following link on the browser: " + link);
+
+                    message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(text, null, MediaTypeNames.Text.Plain));
+                    message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
+
 
                     SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
                     {
-                        Credentials = new NetworkCredential("smtp_username", "smtp_password"),
+                        Credentials = new NetworkCredential("careoplane@gmail.com", "Careoplane11-9"),
                         EnableSsl = true
                     };
                     // code in brackets above needed if authentication required 
@@ -202,6 +214,19 @@ namespace Careoplane.Controllers
             {
                 throw ex;
             }
+        }
+
+
+        [HttpGet]
+        [Route("Confirmation")]
+        public async Task<IActionResult> EmailConfirmation([FromQuery] string username, [FromQuery] string token)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            token = token.Replace(' ', '+');
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            return Ok(result);
+
         }
 
         [HttpPost]

@@ -13,19 +13,19 @@ namespace Careoplane.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int SeatId { get; set; }
-
-        public int FlightId { get; set; }
         
         [Required]
         public Airline Airline { get; set; }
+
+        public double NewPrice { get; set; }
 
         public FastTicket() { }
         
         public FastTicket(TOFastTicket fastTicket, DatabaseContext _context)
         {
-            SeatId = fastTicket.SeatId;
-            FlightId = fastTicket.FlightId;
+            SeatId = fastTicket.Seat.SeatId;
             Airline = _context.Airlines.Find(fastTicket.AirlineName);
+            NewPrice = fastTicket.NewPrice;
         }
     }
 }

@@ -47,7 +47,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
             this.name = localStorage.getItem('company');
             this.admin = true;
           }
-          this.airlineService.getAirlineDB(this.name).subscribe(
+          this.airlineService.getAirlineDisplay(this.name).subscribe(
             result => {
               this.airline = Object.assign(new TOAirline(), result).convert();
               this.airlineService.airlineLoaded(this.airline);

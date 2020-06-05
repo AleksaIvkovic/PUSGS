@@ -84,6 +84,19 @@ export class SeatSelectorComponent implements OnInit {
     });
 
     this.airlineService.ticketDone.subscribe(value => {
+      if(value != null){
+        for(let seat of this.flight.seats){
+          if(seat.name == value.name){
+            seat.discount = value.discount;
+          }
+        }
+
+        for(let seatRow of this.seatmap){
+          for(let seat of seatRow.seats){
+            seat.price = Math.round(value.price * (1 - (0.01 * value.discount)));
+          }
+        }
+      }
       this.unselect = true;
       this.selectSeat(this.lastSeat);
     })
@@ -190,13 +203,22 @@ export class SeatSelectorComponent implements OnInit {
                   else{
                       status = 'available';
                   }
-    
-                  var seatObj = {
-                    "key" : seat.seatId, //sam racunaj
-                    "price" : map_data[__counter]["segment_price"],
-                    "status" : status
-                  };
-                   
+                  
+                  let tempPrice: string = Math.round(seat.price * (1 - (0.01 * seat.discount))).toString();
+
+                  if( item != '_')
+                    var seatObj = {
+                      "key" : seat.seatId,
+                      "price" : tempPrice,
+                      "status" : status
+                    };
+                  else
+                    var seatObj = {
+                      "key" : 0,
+                      "price" : "0",
+                      "status" : status
+                    };
+
                   if( item != '_')
                   {
                     seatObj["seatLabel"] = map_element.row_label+chars[seatNoCounter];
@@ -295,7 +317,7 @@ export class SeatSelectorComponent implements OnInit {
       {
         if(this.lastSeat){
           for(let seat of this.flight.seats){
-            if(seat.seatId = this.lastSeat.key){
+            if(seat.name == this.lastSeat.seatLabel){
               if(seat.discount == 0){
                 this.lastSeat.status = "available";
               }

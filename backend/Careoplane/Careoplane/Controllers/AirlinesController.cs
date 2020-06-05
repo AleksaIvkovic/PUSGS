@@ -39,7 +39,7 @@ namespace Careoplane.Controllers
                 .Include(a => a.FastTickets)
                 .ToListAsync();
             List<TOAirline> result = new List<TOAirline>();
-            airlines.ForEach(airline => result.Add(new TOAirline(airline)));
+            airlines.ForEach(airline => result.Add(new TOAirline(airline,_context)));
             return result;
         }
 
@@ -64,7 +64,53 @@ namespace Careoplane.Controllers
                 return NotFound();
             }
 
-            return new TOAirline(airline);
+            return new TOAirline(airline,_context);
+        }
+
+        [HttpGet("Display/{id}")]
+        public async Task<ActionResult<TOAirline>> GetAirlineDisplay(string id)
+        {
+            var airline = await _context.Airlines
+                .Include(a => a.Destinations)
+                .Include(a => a.Prices)
+                .Include(a => a.Flights).ThenInclude(f => f.Connections)
+                .Include(a => a.FastTickets)
+                .FirstOrDefaultAsync(a => a.Name == id);
+
+            if (airline == null)
+            {
+                return NotFound();
+            }
+
+            return new TOAirline(airline, _context);
+        }
+
+        [HttpGet("Destinations/{id}")]
+        public async Task<ActionResult<IEnumerable<TOPrimaryObject>>> GetDestinations(string id)
+        {
+            var airline = await _context.Airlines
+                .Include(a => a.Destinations)
+                .FirstOrDefaultAsync(a => a.Name == id);
+
+            if (airline == null)
+            {
+                return NotFound();
+            }
+
+            List<TOPrimaryObject> result = new List<TOPrimaryObject>();
+            foreach(var destination in airline.Destinations)
+            {
+                result.Add(new TOPrimaryObject()
+                {
+                    Id = destination.DestinationId,
+                    Reference = destination.Airline.Name,
+                    Value = destination.Value
+                });
+            }
+
+            result = result.OrderBy(d => d.Value).ToList();
+
+            return result;
         }
 
         // PUT: api/Airlines/5
@@ -268,7 +314,7 @@ namespace Careoplane.Controllers
                     Airline = tempAirline,
                     DestinationId = destination.Id,
                     Value = destination.Value.ToString()
-                });
+                }); ;
             }
 
             tempAirline.Prices = new List<Price>();
@@ -327,7 +373,7 @@ namespace Careoplane.Controllers
             _context.Airlines.Remove(airline);
             await _context.SaveChangesAsync();
 
-            return new TOAirline(airline);
+            return new TOAirline(airline, _context);
         }
 
         private bool AirlineExists(string id)

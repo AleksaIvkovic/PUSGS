@@ -37,14 +37,14 @@ export class HeaderComponent implements OnInit {
           localStorage.setItem('user', JSON.stringify(this.user));
           localStorage.setItem('company', response['company']);
           this.isLoggedIn = true;
-          this.checkUser();
+          //this.checkUser();
         },
         error => {
           console.log(error);
         }
       );
     } else {
-      this.router.navigate(['/main']);
+      //this.router.navigate(['/main']);
     }
   }
 

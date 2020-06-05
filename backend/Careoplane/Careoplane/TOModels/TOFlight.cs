@@ -40,38 +40,44 @@ namespace Careoplane.TOModels
             Destination = flight.Destination;
 
             Prices = new List<double>();
-            List<Price> prices = flight.Airline.Prices.ToList();
-            Prices.Add(Distance * prices[0].Value);
-            Prices.Add(Distance * prices[1].Value);
-            Prices.Add(Distance * prices[2].Value);
+
+            if (flight.Airline.Prices != null)
+            {
+                List<Price> prices = flight.Airline.Prices.ToList();
+                Prices.Add(Distance * prices[0].Value);
+                Prices.Add(Distance * prices[1].Value);
+                Prices.Add(Distance * prices[2].Value);
+            }
 
             Connections = new List<TOPrimaryObject>();
-            foreach (var connection in flight.Connections)
-            {
-                Connections.Add(new TOPrimaryObject(connection.ConntectionId, connection.Value, connection.Flight.FlightId));
-            }
+            if(flight.Connections != null)
+                foreach (var connection in flight.Connections)
+                {
+                    Connections.Add(new TOPrimaryObject(connection.ConntectionId, connection.Value, connection.Flight.FlightId));
+                }
 
             Segments = new List<TOPriceSegmentSeat>();
-            foreach (var segment in flight.SegmentLengths)
-            {
-                Segments.Add(new TOPriceSegmentSeat(segment.SegmentFlightId, segment.Value, segment.Ordinal, segment.Flight.FlightId.ToString()));
-            }
+            if (flight.SegmentLengths != null)
+                foreach (var segment in flight.SegmentLengths)
+                {
+                    Segments.Add(new TOPriceSegmentSeat(segment.SegmentFlightId, segment.Value, segment.Ordinal, segment.Flight.FlightId.ToString()));
+                }
             Segments = Segments.OrderBy(f => f.Ordinal).ToList();
 
             SeatingArangement = new List<TOPriceSegmentSeat>();
-            foreach (var seatArrangement in flight.SeatingArrangements)
-            {
-                SeatingArangement.Add(new TOPriceSegmentSeat(seatArrangement.SeatArrangementFlightId, seatArrangement.Value, seatArrangement.Ordinal , seatArrangement.Flight.FlightId.ToString()));
-            }
+            if (flight.SeatingArrangements != null)
+                foreach (var seatArrangement in flight.SeatingArrangements)
+                {
+                    SeatingArangement.Add(new TOPriceSegmentSeat(seatArrangement.SeatArrangementFlightId, seatArrangement.Value, seatArrangement.Ordinal , seatArrangement.Flight.FlightId.ToString()));
+                }
             SeatingArangement = SeatingArangement.OrderBy(f => f.Ordinal).ToList();
 
             Seats = new List<TOSeat>();
-            foreach (var seat in flight.Seats)
-            {
-                Seats.Add(new TOSeat(seat));
-            }
-
-            //Seats = Seats.OrderBy(s => s.Name).ToList();
+            if (flight.Seats != null)
+                foreach (var seat in flight.Seats)
+                {
+                    Seats.Add(new TOSeat(seat));
+                }
         }
     }
 }

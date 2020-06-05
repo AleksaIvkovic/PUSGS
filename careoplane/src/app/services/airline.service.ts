@@ -27,7 +27,7 @@ export class AirlineService {
   ticketsChanged = new Subject<any>();
   emptyTickets = new Subject<any>();
   classType = new Subject<string>();
-  ticketDone = new Subject<string>();
+  ticketDone = new Subject<Seat>();
   flightListChange = new Subject<number>();
   airlineFlightList = new Subject<Airline>();
   airlineFastTicketList = new Subject<Airline>();
@@ -35,6 +35,7 @@ export class AirlineService {
   flightChosenSeat = new Subject<Flight>();
   reservations: FlightReservation[] = [];
   locationLoaded = new Subject<string>();
+  fastTicketListChange = new Subject<number>();
   images: { [airline : string] : string; } = {}
 
   public airlineLocation(location: string){
@@ -54,12 +55,16 @@ export class AirlineService {
     this.flightChosenSeat.next(flight);
   }
 
-  public ticketDoneChange(){
-    this.ticketDone.next('');
+  public ticketDoneChange(seat: Seat){
+    this.ticketDone.next(seat);
   }
 
   public flightListChanged(id: number){
     this.flightListChange.next(id);
+  }
+
+  fastTicektListChanged(id: number){
+    this.fastTicketListChange.next(id);
   }
 
   public updateClassType(newClass: string){
@@ -85,6 +90,16 @@ export class AirlineService {
   getAirlinesDB(){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines';
     return this.http.get<TOAirline[]>(address);
+  }
+
+  getAirlineDisplay(name: string){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/Display/' + name;
+    return this.http.get<TOAirline>(address);
+  }
+
+  getDestinations(){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/Destinations/' + localStorage.getItem('company');
+    return this.http.get<TOPrimaryObject[]>(address);
   }
 
   //treba obrisati
@@ -214,7 +229,15 @@ export class AirlineService {
 
   changeFastTicket(fastTicket: FastTicket){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/FastTickets/' + fastTicket.seat.seatId;
-    let tempFastTicket = new TOFastTicket(fastTicket.seat.seatId,fastTicket.flight.id,fastTicket.airlineName);
+    let tempFastTicket = new TOFastTicket(
+      new TOSeat(fastTicket.seat.flightId,fastTicket.seat.name,fastTicket.seat.type,
+        fastTicket.seat.occupied,fastTicket.seat.price,fastTicket.seat.discount,fastTicket.seat.seatId), 
+        fastTicket.airlineName, fastTicket.newPrice);
     return this.http.put(address,{fastTicket: tempFastTicket, occupied: true});
+  }
+
+  deleteFastReservation(id: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FastTickets/' + id;
+    return this.http.delete(address);
   }
 }

@@ -30,6 +30,7 @@ export class FlightEditComponent implements OnInit {
   airline: Airline = new Airline();
   minArrivalDate = new Date();
   minDepartureDate = new Date();
+  destinations: TOPrimaryObject[] = [];
   edit: boolean;
 
   constructor(private datePipe: DatePipe, private router: Router, private activeRoute: ActivatedRoute, private airlineService: AirlineService, private userService: UserService) { }
@@ -37,25 +38,29 @@ export class FlightEditComponent implements OnInit {
   ngOnInit(): void {
     this.InitForm();
 
-    let admin: Admin = <Admin>this.userService.getLoggedInUser();
-    this.airlineService.getAirlineDB(admin.company).subscribe(
+    this.airlineService.getDestinations().subscribe(
       result => {
-        this.airline = Object.assign(new TOAirline(), result).convert();
+        this.destinations = result;
 
         this.activeRoute.params.subscribe((params: Params) => {
           if(params['fid']){
-            for(let flight of this.airline.flights){
-              if(flight.id == +params['fid']){
-                this.flight = flight;
+            this.airlineService.getFlightDB(+params['fid']).subscribe(
+              result => {
+                this.flight = Object.assign(new TOFlight(),result).convert();
                 this.edit = true;
                 this.InitForm();
+              },
+              error => {
+                console.log(error);
               }
-            }
+            )
           }
         });
       },
-      error => {console.log(error);}
-    );
+      error => {
+        console.log(error);
+      }
+    )
   }
 
   InitForm(){
@@ -78,10 +83,10 @@ export class FlightEditComponent implements OnInit {
         'connectionsForm': this.connectionsForm
       });
 
-      this.group.controls['origin'].disable({onlySelf: true});
-      this.group.controls['destination'].disable({onlySelf: true});
       this.group.controls['distance'].disable({onlySelf: true});
       this.group.controls['connectionsForm'].disable({onlySelf: true});
+      this.group.controls['origin'].disable();
+      this.group.controls['destination'].disable();
     }
     else{
       this.group = new FormGroup({
@@ -113,13 +118,13 @@ export class FlightEditComponent implements OnInit {
         this.flight.connections.push(new TOPrimaryObject(0,connection.value['city'],0));this.flight.connections.push(new TOPrimaryObject(connection.value['id'],connection.value['city'],this.flight.id));
       }
   
-      for(let price of this.airline.prices){
-        this.flight.prices.push(price.value * this.flight.distance);
-      }
+      // for(let price of this.airline.prices){
+      //   this.flight.prices.push(price.value * this.flight.distance);
+      // }
   
       this.flight.conCount = this.flight.connections.length;
 
-      this.flight.airlineName = this.airline.name;
+      this.flight.airlineName = localStorage.getItem('company');
       this.airlineService.AddFlgiht(this.flight).subscribe(
         response => {
           this.router.navigate(['../'],{relativeTo: this.activeRoute});

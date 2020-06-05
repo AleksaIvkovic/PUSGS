@@ -67,9 +67,9 @@ namespace Careoplane.Controllers
             {
                 FastTicket fastTicket = new FastTicket()
                 {
-                    FlightId = tempSeat.Flight.FlightId,
                     SeatId = tempSeat.SeatId,
-                    Airline = tempSeat.Flight.Airline
+                    Airline = tempSeat.Flight.Airline,
+                    NewPrice = Math.Round(tempSeat.Price * (1 - (0.01 * tempSeat.Discount)))
                 };
                 _context.Add(fastTicket);
             }
@@ -77,6 +77,17 @@ namespace Careoplane.Controllers
             {
                 FastTicket fastTicket = await _context.FastTickets.FindAsync(tempSeat.SeatId);
                 _context.Remove(fastTicket);
+            }
+            else
+            {
+                FastTicket oldFastTicket = await _context.FastTickets.FindAsync(tempSeat.SeatId);
+                FastTicket fastTicket = new FastTicket()
+                {
+                    Airline = oldFastTicket.Airline,
+                    SeatId = oldFastTicket.SeatId,
+                    NewPrice = Math.Round(tempSeat.Price * (1 - (0.01 * tempSeat.Discount)))
+                };
+                _context.Entry(oldFastTicket).CurrentValues.SetValues(fastTicket);
             }
 
             _context.Entry(oldSeat).CurrentValues.SetValues(tempSeat);

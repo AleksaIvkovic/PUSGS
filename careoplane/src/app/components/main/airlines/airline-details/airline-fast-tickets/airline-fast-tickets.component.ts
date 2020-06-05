@@ -6,6 +6,7 @@ import { Seat } from 'src/app/models/seat.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
+import { FastTicket } from 'src/app/models/fast-ticket.model';
 
 @Component({
   selector: 'app-airline-fast-tickets',
@@ -20,7 +21,7 @@ export class AirlineFastTicketsComponent implements OnInit {
   origin: string;
   destination: string;
   departure: Date;
-  sortBy: string = 'price';
+  sortBy: string = 'newPrice';
   sortWay:boolean = false;
   classType: string;
 
@@ -39,14 +40,26 @@ export class AirlineFastTicketsComponent implements OnInit {
     this.airlineService.airlineFastTicketList.subscribe(
       value => {
         this.airline = value;
+
+        for(let city of this.airline.destinations){
+          if(!this.cities.includes(city.value)){
+            this.cities.push(city.value);
+          }
+        }
       }
     )
 
-    for(let city of this.airline.destinations){
-      if(!this.cities.includes(city.value)){
-        this.cities.push(city.value);
+    this.airlineService.fastTicketListChange.subscribe(
+      result => {
+        let fastTickets: FastTicket[] = [];
+        for(let fastTicket of this.airline.fastTickets){
+          if(fastTicket.seat.seatId != result){
+            fastTickets.push(fastTicket);
+          }
+        }
+        this.airline.fastTickets = fastTickets;
       }
-    }
+    )
 
     this.initForm()
 
@@ -67,7 +80,7 @@ export class AirlineFastTicketsComponent implements OnInit {
       'destination': new FormControl(null),
       'departure': new FormControl(null),
       'classType': new FormControl('any'),
-      'sortBy': new FormControl('price'),
+      'sortBy': new FormControl('newPrice'),
       'sortWay': new FormControl(null),
     });
 
