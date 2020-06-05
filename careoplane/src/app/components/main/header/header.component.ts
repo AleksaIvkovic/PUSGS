@@ -37,14 +37,14 @@ export class HeaderComponent implements OnInit {
           localStorage.setItem('user', JSON.stringify(this.user));
           localStorage.setItem('company', response['company']);
           this.isLoggedIn = true;
-          this.checkUser();
+          this.checkLoggedInUser();
         },
         error => {
           console.log(error);
         }
       );
     } else {
-      this.router.navigate(['/main']);
+      //this.router.navigate(['/main']);
     }
   }
 
@@ -107,6 +107,23 @@ export class HeaderComponent implements OnInit {
     } else if (this.role === 'sysAdmin') {
       this.isSysAdmin = true;
       this.router.navigate(['main/discounts']);
+    }
+  }
+
+  checkLoggedInUser() {
+    if (this.role === 'regular') {
+    } else if (this.role === 'racAdmin') {
+      this.isRentACarAdmin = true;
+    } else if (this.role === 'racAdminNew') {
+      this.isRentACarAdmin = true;
+      this.isNewAdmin = true;
+    } else if (this.role === 'aeroAdmin') {
+      this.isAirlineAdmin = true;
+    } else if (this.role === 'aeroAdminNew') {
+      this.isAirlineAdmin = true;
+      this.isNewAdmin = true;
+    } else if (this.role === 'sysAdmin') {
+      this.isSysAdmin = true;
     }
   }
 

@@ -40,6 +40,7 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
   subscription: Subscription;
   vehicleListSubscription: Subscription;
   rentACarSubscription: Subscription;
+  rentACars: RentACar[] = [];
 
   constructor(
     private rentACarService: RentACarService,
@@ -49,25 +50,45 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
 
   ngOnInit(): void {
     this.rentACar = new RentACar('','','');
-    this.rentACarSubscription = this.rentACarService.rentACarChanged
-    .subscribe(
-      (rentACar: RentACar) => {
-        this.rentACar = rentACar;
-      }
-    );
-    this.vehicleListSubscription = this.rentACarService.vehicleListChanged
-    .subscribe(
-      (vehicles: Vehicle[]) => {
-        this.rentACar.vehicles = vehicles;
-      }
-    );
+    // this.rentACarSubscription = this.rentACarService.rentACarChanged
+    // .subscribe(
+    //   (rentACar: RentACar) => {
+    //     this.rentACar = rentACar;
+    //   }
+    // );
+    // this.vehicleListSubscription = this.rentACarService.vehicleListChanged
+    // .subscribe(
+    //   (vehicles: Vehicle[]) => {
+    //     this.rentACar.vehicles = vehicles;
+    //   }
+    // );
     this.subscription = this.route.params
     .subscribe(
       (params: Params) => {
         let company = localStorage.getItem('company');
         if (company === '' || isNull(company) || company === 'null') {
+          if (this.router.url.includes('details/')) {
+            let currentURL: string[] = this.router.url.split('/');
+            let newURL = '/' + currentURL[1] + '/' + currentURL[2] + '/' + currentURL[3] + '/' + currentURL[4]; 
+            this.router.navigateByUrl(newURL);
+          }
           this.index = params['id'];
-          this.rentACar = this.rentACarService.getRentACarByIndex(this.index);
+          this.rentACarService.getRentACars().subscribe(
+            (response: TORentACar[]) => {
+              response.forEach(element => {
+                let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), element);
+                this.rentACars.push(toRentACar.ToRegular());
+              });
+              
+              this.rentACarService.rentACars = this.rentACars;
+              this.rentACar = this.rentACars[this.index];
+              this.rentACarService.rentACarChanged.next(this.rentACar);
+              this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+            },
+            error => {
+              console.log(error);
+            }
+          );
         } else {
           this.isAdmin = true;
           this.rentACarService.getRentACar(company).subscribe(
@@ -109,8 +130,8 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
-    this.vehicleListSubscription.unsubscribe();
+    // this.subscription.unsubscribe();
+    // this.vehicleListSubscription.unsubscribe();
   }
 
 }

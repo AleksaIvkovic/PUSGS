@@ -59,7 +59,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
     private router: Router) { }
 
   ngOnInit(): void {
-    if (this.rentACar === undefined || this.rentACar.name === '') { //Admin
+    if (this.router.url.includes('profile')) { //Admin this.rentACar === undefined || this.rentACar.name === ''
       this.rentACarService.newVehicleListChanged.
       subscribe(
         (vehicles: Vehicle[]) => {
@@ -124,26 +124,34 @@ export class VehicleListComponent implements OnInit, OnDestroy {
           }
         );
     } else { //Klijent
-      this.pickUpLocations = this.rentACar.locations.slice();
-      if (this.pickUpLocations.length !== 1) {
-        this.pickUpLocations.unshift('Any');
-      }
-      this.returnToLocations = this.rentACar.locations.slice();
-      this.returnToLocation = this.returnToLocations[0];
-      this.vehicleTypes = this.rentACarService.getVehicleTypes();
+      this.rentACar = new RentACar('', '', '');
+      this.pickUpLocations = [''];
       this.initForm();
-      // this.rentACar.locations.unshift('Any');
-      this.vehicleListSubscription = this.vehicleService.vehicleListChanged
-      .subscribe(
-        (vehicles: Vehicle[]) => {
-          this.manageVehicleLists(vehicles);
-          //Provera da li treba da se prikazuju na snizenju ili obicna
-          this.searchedVehicles = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
-          this.dataSource = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
-          this.dataSource.paginator = this.paginator;
-          // this.length = this.rentACar.vehicles.length;
-          this.length = this.isShowingOnSale ? this.saleVehicles.length : this.normalVehicles.length;
-          this.iterator();
+      this.rentACarService.rentACarChanged.subscribe(
+        response => {
+          this.rentACar = response
+          this.pickUpLocations = this.rentACar.locations.slice();
+          if (this.pickUpLocations.length !== 1) {
+            this.pickUpLocations.unshift('Any');
+          }
+          this.returnToLocations = this.rentACar.locations.slice();
+          this.returnToLocation = this.returnToLocations[0];
+          this.vehicleTypes = this.rentACarService.getVehicleTypes();
+          this.initForm();
+          // this.rentACar.locations.unshift('Any');
+          this.vehicleListSubscription = this.vehicleService.vehicleListChanged
+          .subscribe(
+            (vehicles: Vehicle[]) => {
+              this.manageVehicleLists(vehicles);
+              //Provera da li treba da se prikazuju na snizenju ili obicna
+              this.searchedVehicles = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
+              this.dataSource = this.isShowingOnSale ? this.saleVehicles : this.normalVehicles;
+              this.dataSource.paginator = this.paginator;
+              // this.length = this.rentACar.vehicles.length;
+              this.length = this.isShowingOnSale ? this.saleVehicles.length : this.normalVehicles.length;
+              this.iterator();
+            }
+          );
         }
       );
 

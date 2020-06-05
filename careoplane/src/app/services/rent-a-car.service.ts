@@ -124,27 +124,27 @@ export class RentACarService {
         this.newVehicleListChanged.next(this.newVehicles.slice());
     }
 
-    editVehicle(rentACar: RentACar, vehicleIndex: number, newBrand: string, newSeats: number, newPrice: number, newLocation: string) {
-        let index = this.getRentACarIndex(rentACar);
-        this.rentACars[index].vehicles[vehicleIndex].brand = newBrand;
-        this.rentACars[index].vehicles[vehicleIndex].numOfSeats = newSeats;
-        this.rentACars[index].vehicles[vehicleIndex].pricePerDay = newPrice;
-        this.rentACars[index].vehicles[vehicleIndex].location = newLocation;
-        this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
-        this.rentACarChanged.next(this.rentACars[index]);
-    }
+    // editVehicle(rentACar: RentACar, vehicleIndex: number, newBrand: string, newSeats: number, newPrice: number, newLocation: string) {
+    //     let index = this.getRentACarIndex(rentACar);
+    //     this.rentACars[index].vehicles[vehicleIndex].brand = newBrand;
+    //     this.rentACars[index].vehicles[vehicleIndex].numOfSeats = newSeats;
+    //     this.rentACars[index].vehicles[vehicleIndex].pricePerDay = newPrice;
+    //     this.rentACars[index].vehicles[vehicleIndex].location = newLocation;
+    //     this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
+    //     this.rentACarChanged.next(this.rentACars[index]);
+    // }
 
-    reserveVehicle(rentACar: RentACar, vehicleIndex: number, reservation: VehicleReservation) {
-        let index = this.getRentACarIndex(rentACar);
-        for (let i = 0; i < reservation.numOfDays; i++) {
-            let day = new Date();
-            day.setDate(reservation.fromDate.getDate() + i);
-            this.rentACars[index].vehicles[vehicleIndex].unavailableDates.push(day);
-        }
-        this.rentACarChanged.next(this.rentACars[index]);
-        this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
-        this.reservationMade.next();
-    }
+    // reserveVehicle(rentACar: RentACar, vehicleIndex: number, reservation: VehicleReservation) {
+    //     let index = this.getRentACarIndex(rentACar);
+    //     for (let i = 0; i < reservation.numOfDays; i++) {
+    //         let day = new Date();
+    //         day.setDate(reservation.fromDate.getDate() + i);
+    //         this.rentACars[index].vehicles[vehicleIndex].unavailableDates.push(day);
+    //     }
+    //     this.rentACarChanged.next(this.rentACars[index]);
+    //     this.vehicleListChanged.next(this.rentACars[index].vehicles.slice());
+    //     this.reservationMade.next();
+    // }
 
     swapVehicleList(rentACar: RentACar, vehicleIndex: number) {
         

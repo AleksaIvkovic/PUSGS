@@ -26,7 +26,7 @@ export class UserAuthentificationComponent implements OnInit {
   isChangePassword = false;
   isAdmin = false;
   isAddAdmin = false;
-  adminType: string[] = ['Airline Admin', 'Rent A Car Admin'];
+  adminType: string[] = ['Airline Admin', 'Rent A Car Admin', 'System Admin'];
 
   role: string;
 
@@ -118,7 +118,18 @@ export class UserAuthentificationComponent implements OnInit {
       return;
     }
 
-    let role = this.addForm.value['type'] === 'Airline Admin' ? 'aeroAdminNew' : 'racAdminNew';
+    let role = '';
+    switch (this.addForm.value['type']) {
+      case 'Airline Admin':
+        role = 'aeroAdminNew'; 
+        break;
+      case 'Airline Admin':
+        role = 'racAdminNew'; 
+        break;
+      case 'System Admin':
+        role = 'sysAdmin'; 
+        break;
+    }
     let pass = Math.random().toString(36).substring(7);
 
     let user = new User(

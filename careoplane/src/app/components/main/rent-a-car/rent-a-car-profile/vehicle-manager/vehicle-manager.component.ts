@@ -19,8 +19,8 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
   rentACar: RentACar;
   addForm: FormGroup;
   maxYear: Date;
-  vehicleTypes: string[];
-  locations: string[];
+  vehicleTypes: string[] = [];
+  locations: string[] = [];
   vehicleIndex: number;
   isEdit: boolean = true;
   isNew = false;
@@ -53,6 +53,8 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
     //   this.isNew = true;
     // } else {
     this.isEdit = this.router.url.includes('edit');
+    this.vehicle = new Vehicle('', '', 0, 0, 0);
+    this.initForm();
     let company = localStorage.getItem('company');
     this.rentACarService.getRentACar(company).subscribe(
       (response : any) => {

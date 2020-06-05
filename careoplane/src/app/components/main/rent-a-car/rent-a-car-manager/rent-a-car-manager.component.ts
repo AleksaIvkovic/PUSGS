@@ -41,7 +41,9 @@ export class RentACarManagerComponent implements OnInit {
   ngOnInit(): void {
     if (this.router.url.includes('edit')) {
       this.isEdit = true;
-      let company = this.userService.getLoggedInUser().company;
+      this.rentACar = new RentACar('', ',,,', '');
+      this.initForm();
+      let company = localStorage.getItem('company');
       this.rentACarService.getRentACar(company).subscribe(
         (response : any) => {
             let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
