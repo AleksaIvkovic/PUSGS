@@ -83,7 +83,7 @@ namespace Careoplane.Models
                 new TOPrimaryObject() 
                 { 
                     Id = 0,
-                    Value = date.ToString(), 
+                    Value = date.Date.ToShortDateString(), 
                     Reference = this 
                 }));
             toVehicle.VehicleId = VehicleId;

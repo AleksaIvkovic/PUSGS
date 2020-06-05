@@ -84,7 +84,8 @@ namespace Careoplane.Controllers
                 role,
                 tOFriendsA,
                 tOFriendsB,
-                tOFlightReservations
+                tOFlightReservations,
+                user.IsFirstLogIn
             };
         }
 
@@ -150,6 +151,37 @@ namespace Careoplane.Controllers
             }
         }
 
+        [HttpPut("UpdatePassword")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<Object> UpdatePassword([FromBody]object passwords)
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+            string oldPassword = passwords.ToString().Split(':')[1].Split("\"")[1];
+            string newPassword = passwords.ToString().Split(':')[2].Split("\"")[1];
+
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+                
+                if (result.Succeeded)
+                {
+                    if (user.IsFirstLogIn)
+                    {
+                        user.IsFirstLogIn = false;
+                        await _userManager.UpdateAsync(user);
+                    }
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         [HttpPost]
         [Route("Register")]
         //POST : /api/AppUsers/Register
@@ -159,11 +191,12 @@ namespace Careoplane.Controllers
             {
                 UserName = model.UserName,
                 Email = model.Email,
-                Name = model.Name,                               
-                Surname = model.Surname, 
+                Name = model.Name,
+                Surname = model.Surname,
                 PhoneNumber = model.PhoneNumber,
                 City = model.City,
-                Company = model.Company
+                Company = model.Company,
+                IsFirstLogIn = true
             };
 
             try
@@ -185,6 +218,14 @@ namespace Careoplane.Controllers
                     string html = "Hello " + applicationUser.Name + ",\n\n\tPlease verify your account by visiting the link : <a href=\"" + link + "\">link</a><br/><br/>";
 
                     html += HttpUtility.HtmlEncode(@"Or click on the copy the following link on the browser: " + link);
+
+                    if (model.Role == "aeroAdminNew" || 
+                        model.Role == "racAdminNew" || 
+                        model.Role == "sysAdmin")
+                    {
+                        text += string.Format("\n\n\tYour temporary password is {0}. Please make sure you change it on your first log in.", model.Password);
+                        html += string.Format("\n\n\tYour temporary password is {0}. Please make sure you change it on your first log in.", model.Password);
+                    }
 
                     message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(text, null, MediaTypeNames.Text.Plain));
                     message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
@@ -265,7 +306,8 @@ namespace Careoplane.Controllers
                 var token = tokenHandler.WriteToken(securityToken);
                 string role = roles[0].ToString();
                 string username = user.UserName;
-                return Ok(new { token, username, role });
+                bool isFirstLogIn = user.IsFirstLogIn;
+                return Ok(new { token, username, role, isFirstLogIn });
             }
             else
                 return BadRequest(new { message = "Username or password is incorrect." });

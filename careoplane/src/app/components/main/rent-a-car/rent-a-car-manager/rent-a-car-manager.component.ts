@@ -10,6 +10,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from 'src/app/services/user.service';
 import { Admin } from 'src/app/models/admin.model';
 import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
+import { MatDialog } from '@angular/material/dialog';
+import { LogInComponent } from 'src/app/components/log-in/log-in.component';
+import { ChangePasswordComponent } from 'src/app/components/change-password/change-password.component';
 
 @Component({
   selector: 'app-rent-a-car-manager',
@@ -23,6 +26,7 @@ export class RentACarManagerComponent implements OnInit {
   displayedColumns = ['locations', 'delete']
   isEdit = false;
   rentACar: RentACar;
+  isFirstLogIn = false;
 
   visible = true;
   selectable = true;
@@ -35,7 +39,8 @@ export class RentACarManagerComponent implements OnInit {
     private rentACarService: RentACarService,
     private route: ActivatedRoute,
     private router: Router,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private logInDialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -57,6 +62,14 @@ export class RentACarManagerComponent implements OnInit {
     } else {
       this.isEdit = false;
       this.initForm();
+      this.isFirstLogIn = localStorage.getItem('is-first-log-in') == 'true';
+      if (this.isFirstLogIn) {
+        let dialogRef = this.logInDialog.open(
+          ChangePasswordComponent, {
+            data: {password: '', confirmPassword: ''}
+          }
+        );
+      }
     }
   }
 

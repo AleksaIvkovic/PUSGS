@@ -29,7 +29,11 @@ namespace Careoplane.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TORentACar>>> GetRentACars()
         {
-            List<RentACar> RentACarList = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).Include(r => r.Vehicles).ThenInclude(v => v.UnavailableDates).ToListAsync();
+            List<RentACar> RentACarList = await _context.RentACars
+                .Include(rentACar => rentACar.Locations)
+                .Include(rentACar => rentACar.Prices)
+                .Include(rentACar => rentACar.Vehicles)
+                .ThenInclude(vehicle => vehicle.UnavailableDates).ToListAsync();
             List<TORentACar> TORentACarList = new List<TORentACar>();
             RentACarList.ForEach(rentACar => TORentACarList.Add(rentACar.ToTO()));
 

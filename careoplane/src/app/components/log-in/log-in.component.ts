@@ -73,6 +73,10 @@ export class LogInComponent implements OnInit {
         localStorage.setItem('token', res.token);
         localStorage.setItem('username', res.username);
         localStorage.setItem('role', res.role);
+        localStorage.setItem('is-first-log-in', res.isFirstLogIn);
+        if (res.isFirstLogIn) {
+          localStorage.setItem('tempPassword', this.logInForm.value['password']);
+        }
         this.dialogRef.close('success');
       },
       err => {

@@ -27,6 +27,7 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
   rentACar: RentACar;
   discount = this.rentACarService.discount;
+  isReserved: boolean = false;
 
   // displayedColumns: string[] = ['brand', 'year', 'type', 'seats', 'price', 'location', 'rating'];
 
@@ -40,6 +41,7 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.isReserved = false;
     this.vehicle = new Vehicle('', '', 0, 0, 0);
     this.isLoggedIn = localStorage.getItem('role') === null ? false : true;
     this.subscription = this.route.params
@@ -47,6 +49,7 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
       (params: Params) => {
         // this.idRentACar = +params['id'];
         this.adminVehicleId = +params['idvh']; //U pitanju je profil servisa
+        this.isReserved = false;
         if (this.adminVehicleId === undefined || Number.isNaN(this.adminVehicleId)) {
           this.idRentACar = +(this.router.url.split('/')[3])
           this.idVehicle = +params['idv'];
@@ -62,6 +65,15 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
                   let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
                   this.rentACar = toRentACar.ToRegular();
                   this.vehicle = this.rentACar.vehicles[this.adminVehicleId];
+                  this.vehicle.unavailableDates.forEach(date => {
+                    var checkDate = new Date(date);
+                    var today = new Date();
+                    today.setHours(0,0,0,0);
+
+                    if(checkDate >= today) {
+                      this.isReserved = true;
+                    }
+                  });
               },
               error => {
                   console.log(error);

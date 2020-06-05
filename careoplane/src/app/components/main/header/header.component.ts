@@ -19,6 +19,7 @@ export class HeaderComponent implements OnInit {
   isAirlineAdmin = false;
   isNewAdmin = false;
   isSysAdmin = false;
+  isFirstLogIn = false;
 
   constructor(
     private userService: UserService,
@@ -65,6 +66,7 @@ export class HeaderComponent implements OnInit {
         if (result === "success") {
           this.username = localStorage.getItem('username');
           this.role = localStorage.getItem('role');
+          this.isFirstLogIn = localStorage.getItem('is-first-log-in') == 'True';
           // this.user = this.userService.getLoggedInUser();
           if (this.username === undefined) {
             return;
@@ -148,12 +150,15 @@ export class HeaderComponent implements OnInit {
     localStorage.removeItem('username');
     localStorage.removeItem('company');
     localStorage.removeItem('role');
+    localStorage.removeItem('is-first-log-in');
+    localStorage.removeItem('tempPassword');
 
     this.isLoggedIn = false;
     this.isAirlineAdmin = false;
     this.isRentACarAdmin = false;
     this.isNewAdmin = false;
     this.isSysAdmin = false;
+    this.isFirstLogIn = false;
 
     this.router.navigate(['/main']);
   }

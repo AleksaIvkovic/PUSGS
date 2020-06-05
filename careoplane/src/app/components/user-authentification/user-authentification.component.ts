@@ -86,10 +86,10 @@ export class UserAuthentificationComponent implements OnInit {
         'password': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : new FormControl(null, [Validators.required]),
         'confirmPassword': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : this.confirmPasswordFormControl,
         'oldPassword': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : new FormControl(null),
-        'name': this.isProfile ? new FormControl({'value': this.loggedInUser.name, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
-        'surname': this.isProfile ? new FormControl({'value': this.loggedInUser.surname, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
-        'city': this.isProfile ? new FormControl({'value': this.loggedInUser.city, disabled: !this.isEdit}) :  new FormControl(null, [Validators.required]),
-        'phone': this.isProfile ? new FormControl({'value': this.loggedInUser.phoneNumber, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
+        'name': this.isProfile ? new FormControl({'value': this.loggedInUser.name, disabled: !this.isEdit}, [Validators.required]) : new FormControl(null, [Validators.required]),
+        'surname': this.isProfile ? new FormControl({'value': this.loggedInUser.surname, disabled: !this.isEdit}, [Validators.required]) : new FormControl(null, [Validators.required]),
+        'city': this.isProfile ? new FormControl({'value': this.loggedInUser.city, disabled: !this.isEdit}, [Validators.required]) :  new FormControl(null, [Validators.required]),
+        'phone': this.isProfile ? new FormControl({'value': this.loggedInUser.phoneNumber, disabled: !this.isEdit}, [Validators.required]) : new FormControl(null, [Validators.required]),
       }, 
       {validators: ConfirmPasswordValidator.MatchPassword});
   
@@ -123,7 +123,7 @@ export class UserAuthentificationComponent implements OnInit {
       case 'Airline Admin':
         role = 'aeroAdminNew'; 
         break;
-      case 'Airline Admin':
+      case 'Rent A Car Admin':
         role = 'racAdminNew'; 
         break;
       case 'System Admin':
@@ -174,33 +174,8 @@ export class UserAuthentificationComponent implements OnInit {
       });
   }
 
-  onSubmit() {
-    if (!this.registerForm.valid) {
-      return;
-    }
-
-    if (this.isEdit) {
-      if (this.isChangePassword && this.registerForm.value['oldPassword'] !== '') {
-        if (!this.userService.checkPassword(this.registerForm.value['oldPassword'])) {
-          this.registerForm.patchValue({
-            oldPassword: '',
-          });
-          this._snackBar.open('Old password is invalid', 'OK', {
-            duration: 5000,
-          });
-          return;
-        } else {
-          if (this.registerForm.value['password'] === '') {
-            this._snackBar.open('New password is invalid', 'OK', {
-              duration: 5000,
-            });
-            return;
-          }
-          this.userService.updatePassword(this.registerForm.value['password']);
-        }
-      }
-
-      let updatedUser = new User('', '','','',
+  private updateUser() {
+    let updatedUser = new User('', '', '', '',
         this.registerForm.value['name'],
         this.registerForm.value['surname'],
         this.registerForm.value['city'],
@@ -231,9 +206,48 @@ export class UserAuthentificationComponent implements OnInit {
           this.registerForm.markAsPristine();
           this._snackBar.open('Information updated successfully', 'OK', {duration: 5000,});
         },
-        error => {}
+        error => {
+          console.log(error);
+        }
       );
-        
+  }
+
+  onSubmit() {
+    if (!this.registerForm.valid) {
+      return;
+    }
+
+    if (this.isEdit) {
+      if (this.isChangePassword) {
+        if (this.registerForm.value['oldPassword'] !== '' && this.registerForm.value['oldPassword'] !== null) { //Nesto je uneseno Old Password
+          //Poziv bekendu za izmenu sifre
+          this.userService.updatePassword(this.registerForm.value['oldPassword'], this.registerForm.value['password']).subscribe(
+            (res: any) => {
+              console.log(res);
+              if (res.succeeded) {
+                this.updateUser();
+              } else {
+                if (res.errors[0].code === 'PasswordMismatch') {
+                  this._snackBar.open('Old password is incorect', 'OK', { duration: 5000, });
+                } else if (res.errors[0].code === 'PasswordTooShort') {
+                  this._snackBar.open('Password must be at least 4 characters long.', 'OK', { duration: 5000, });
+                }
+              }
+            },
+            error => {
+              console.log(error);
+            }
+          );
+        }
+        else { //Nista nije uneseno u Old Password
+          if (this.registerForm.value['password'] !== '') { //Nesto je uneseno u New Password
+            this._snackBar.open('Old password is required', 'OK', { duration: 5000, });
+            return;
+          }
+        } 
+      } else {
+        this.updateUser();
+      }
     } else {
       let user = new User(
         'regular',

@@ -105,6 +105,7 @@ import { FriendComponent } from './components/main/friends/friends-list/friend/f
 import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider, AuthService, SocialLoginModule } from 'angularx-social-login';
 import { UserSearchPipe } from './pipes/user-search.pipe';
 import { EmailConfirmationComponent } from './components/main/email-confirmation/email-confirmation.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 export function socialConfigs() {  
   const config = new AuthServiceConfig(  
@@ -172,6 +173,7 @@ export function socialConfigs() {
     FriendsComponent,
     UserSearchPipe,
     EmailConfirmationComponent,
+    ChangePasswordComponent,
   ],
   entryComponents: [
     LogInComponent

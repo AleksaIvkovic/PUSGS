@@ -16,6 +16,7 @@ namespace Careoplane.TOModels
         public string PhoneNumber { get; set; }
         public string Company { get; set; }
         public string Role { get; set; }
+        public bool IsFirstLogIn { get; set; }
         public List<TOFriend> friendsA { get; set; } 
         public List<TOFriend> friendsB { get; set; } 
 

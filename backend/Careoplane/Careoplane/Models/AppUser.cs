@@ -14,6 +14,7 @@ namespace Careoplane.Models
         public string Surname { get; set; }
         public string City { get; set; }
         public string Company { get; set; }
+        public bool IsFirstLogIn { get; set; }
         public List<Friend> FriendsA { get; set; }
         public List<Friend> FriendsB { get; set; }
 
@@ -29,7 +30,8 @@ namespace Careoplane.Models
                 City = City,
                 PhoneNumber = PhoneNumber,
                 Company = Company,
-                Role = ""
+                Role = "",
+                IsFirstLogIn = IsFirstLogIn
             };
         }
 
@@ -42,6 +44,7 @@ namespace Careoplane.Models
             City = toAppUser.City;
             PhoneNumber = toAppUser.PhoneNumber;
             Company = toAppUser.Company;
+            IsFirstLogIn = toAppUser.IsFirstLogIn;
         }
     }
 }

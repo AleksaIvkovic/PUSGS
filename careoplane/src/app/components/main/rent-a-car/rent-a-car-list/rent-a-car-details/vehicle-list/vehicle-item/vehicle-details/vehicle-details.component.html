@@ -31,7 +31,7 @@
         <tr class="last">
             <td>
                 <button 
-                    *ngIf="isAdmin"
+                    *ngIf="isAdmin && !isReserved"
                     mat-raised-button 
                     color="warn"
                     (click)="onRemoveVehicle()">
@@ -40,7 +40,7 @@
             </td>
             <td>
                 <button 
-                    *ngIf="isAdmin"
+                    *ngIf="isAdmin && !isReserved"
                     mat-raised-button 
                     color="accent"
                     (click)="onSwapVehicle()">
@@ -56,7 +56,7 @@
                     Reserve
                 </button>
                 <button 
-                    *ngIf="isAdmin"
+                    *ngIf="isAdmin && !isReserved"
                     mat-raised-button 
                     color="primary"
                     type="button"
@@ -66,4 +66,9 @@
             </td>
         </tr>
     </table>
+    <div>
+        <p *ngIf="isAdmin && isReserved">
+            This vehicle has active reservations!
+        </p>
+    </div>
 </div>

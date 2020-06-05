@@ -64,11 +64,11 @@ export class UserService {
         this.loggedInUserChanged.next(this.users[index]);
     }
 
-    updatePassword(newPassword: string) {
-        let index = this.users.indexOf(this.loggedInUser);
-        this.users[index].password = newPassword;
-        this.loggedInUserChanged.next(this.users[index]);
-    }
+    // updatePassword(newPassword: string) {
+    //     let index = this.users.indexOf(this.loggedInUser);
+    //     this.users[index].password = newPassword;
+    //     this.loggedInUserChanged.next(this.users[index]);
+    // }
 
     addReservation(reservation: any){
         this.loggedInUser.reservations.push(reservation);
@@ -305,5 +305,10 @@ export class UserService {
         .append('token',token);
   
       return this.http.get(address, {params: params});
+    }
+
+    updatePassword(oldPassword: string, newPassword: string) {
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/UpdatePassword';
+        return this.http.put(address, {oldPassword: oldPassword, newPassword: newPassword});
     }
 }
