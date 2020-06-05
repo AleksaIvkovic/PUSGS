@@ -74,6 +74,7 @@ namespace Careoplane.Controllers
                 .Include(a => a.Destinations)
                 .Include(a => a.Prices)
                 .Include(a => a.Flights).ThenInclude(f => f.Connections)
+                .Include(a => a.Flights).ThenInclude(f => f.Airline)
                 .Include(a => a.FastTickets)
                 .FirstOrDefaultAsync(a => a.Name == id);
 

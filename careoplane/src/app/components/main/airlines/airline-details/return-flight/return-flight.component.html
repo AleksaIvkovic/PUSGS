@@ -1,5 +1,5 @@
 <div *ngFor="
-    let f of flights|
+    let f of returnFlights|
     filter:flight.destination:'origin':false |
     filter:flight.origin:'destination':false |
     priceFilter:num:classType|

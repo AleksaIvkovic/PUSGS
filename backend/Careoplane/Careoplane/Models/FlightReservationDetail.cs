@@ -1,0 +1,16 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace Careoplane.Models
+{
+    public class FlightReservationDetail
+    {
+        [Required]
+        public FlightReservation FlightReservation { get; set; }
+        [Key]
+        public int FlightReservationDetailId { get; set; }
+
+        public int FlightId { get; set; }
+        public List<PassengerSeat> PassengerSeats { get; set; }
+    }
+}

@@ -1,4 +1,5 @@
-﻿using Careoplane.Models;
+﻿using Careoplane.Database;
+using Careoplane.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,17 @@ namespace Careoplane.TOModels
     public class TOFlightReservation
     {
         public int ReservationId { get; set; }
-        public int FlightId { get; set; }
-        public int SeatId { get; set; }
-        public string AppUserName { get; set; }
 
+        public List<TOFlightReservationDetail> FlightReservationDetails { get; set; }
         public TOFlightReservation() { }
-        public TOFlightReservation(FlightReservation flightReservation) {
+        public TOFlightReservation(FlightReservation flightReservation, DatabaseContext _context) {
             ReservationId = flightReservation.ReservationId;
-            FlightId = flightReservation.FlightId;
-            SeatId = flightReservation.SeatId;
-            AppUserName = flightReservation.AppUserName;
+            FlightReservationDetails = new List<TOFlightReservationDetail>();
+
+            foreach(FlightReservationDetail flightReservationDetail in flightReservation.FlightReservationDetails)
+            {
+                FlightReservationDetails.Add(new TOFlightReservationDetail(flightReservationDetail,_context));
+            }
         }
     }
 }

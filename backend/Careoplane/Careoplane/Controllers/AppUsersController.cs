@@ -67,10 +67,26 @@ namespace Careoplane.Controllers
             friendsB.ForEach(f => tOFriendsB.Add(new TOFriend(f)));
 
             List<FlightReservation> flightReservations = new List<FlightReservation>();
-            flightReservations = await _contextDB.FlightReservations.Where(r => r.AppUserName == user.UserName).ToListAsync();
+            flightReservations = await _contextDB.FlightReservations.Include(flightReservation => flightReservation.FlightReservationDetails)
+                .ThenInclude(flightReservationDetail => flightReservationDetail.PassengerSeats).ToListAsync();
+
+            List<FlightReservation> myFlightReservation = new List<FlightReservation>();
+            foreach (FlightReservation flightReservation in flightReservations)
+            {
+                foreach (FlightReservationDetail flightReservationDetail in flightReservation.FlightReservationDetails)
+                {
+                    foreach (PassengerSeat passenger in flightReservationDetail.PassengerSeats)
+                    {
+                        if (passenger.Username == user.UserName)
+                        {
+                            myFlightReservation.Add(flightReservation);
+                        }
+                    }
+                }
+            }
 
             List<TOFlightReservation> tOFlightReservations = new List<TOFlightReservation>();
-            flightReservations.ForEach(f => tOFlightReservations.Add(new TOFlightReservation(f)));
+            flightReservations.ForEach(f => tOFlightReservations.Add(new TOFlightReservation(f, _contextDB)));
 
             return new
             {
@@ -84,7 +100,7 @@ namespace Careoplane.Controllers
                 role,
                 tOFriendsA,
                 tOFriendsB,
-                tOFlightReservations
+                //tOFlightReservations
             };
         }
 

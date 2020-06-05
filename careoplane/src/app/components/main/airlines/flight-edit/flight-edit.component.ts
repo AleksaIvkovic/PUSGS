@@ -30,7 +30,7 @@ export class FlightEditComponent implements OnInit {
   airline: Airline = new Airline();
   minArrivalDate = new Date();
   minDepartureDate = new Date();
-  destinations: TOPrimaryObject[] = [];
+  destinations: string[] = [];
   edit: boolean;
 
   constructor(private datePipe: DatePipe, private router: Router, private activeRoute: ActivatedRoute, private airlineService: AirlineService, private userService: UserService) { }
@@ -40,7 +40,9 @@ export class FlightEditComponent implements OnInit {
 
     this.airlineService.getDestinations().subscribe(
       result => {
-        this.destinations = result;
+        for(let destination of result){
+          this.destinations.push(destination.value);
+        }
 
         this.activeRoute.params.subscribe((params: Params) => {
           if(params['fid']){
@@ -85,8 +87,8 @@ export class FlightEditComponent implements OnInit {
 
       this.group.controls['distance'].disable({onlySelf: true});
       this.group.controls['connectionsForm'].disable({onlySelf: true});
-      this.group.controls['origin'].disable();
-      this.group.controls['destination'].disable();
+      this.group.controls['origin'].disable({onlySelf: true});
+      this.group.controls['destination'].disable({onlySelf: true});
     }
     else{
       this.group = new FormGroup({

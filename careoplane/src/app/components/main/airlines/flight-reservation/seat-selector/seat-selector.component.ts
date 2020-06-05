@@ -13,6 +13,7 @@ import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 })
 export class SeatSelectorComponent implements OnInit {
   @Input() type:string = 'any';
+  @Input() num: number;
 
   admin: boolean;
   flight: Flight;
@@ -49,27 +50,53 @@ export class SeatSelectorComponent implements OnInit {
       this.admin = false;
     }
 
-    this.airlineService.flightSeatsEdit.subscribe(
-      result => {
-        this.flight = result;
-
-        this.seatConfigFun();
-        this.processSeatChart(this.seatConfig);
-
-        if(this.router.url.includes('/seat')){
-          for(let i = 0; i < this.seatmap.length;i++){
-            for(let j = 0; j < this.seatmap[i].seats.length;j++){
-              if(this.seatmap[i].seats[j].key === +this.router.url.split('/')[5]){
-                this.selectSeat(this.seatmap[i].seats[j]);
+    if(this.num == 1){
+      this.airlineService.flightSeatsEdit.subscribe(
+        result => {
+          this.flight = result;
+  
+          this.seatConfigFun();
+          this.processSeatChart(this.seatConfig);
+  
+          if(this.router.url.includes('/seat')){
+            for(let i = 0; i < this.seatmap.length;i++){
+              for(let j = 0; j < this.seatmap[i].seats.length;j++){
+                if(this.seatmap[i].seats[j].key === +this.router.url.split('/')[5]){
+                  this.selectSeat(this.seatmap[i].seats[j]);
+                }
               }
             }
           }
+        },
+        error => {
+          console.log(error);
         }
-      },
-      error => {
-        console.log(error);
-      }
-    )
+      )
+    }
+    else{
+      this.airlineService.flight2SeatsEdit.subscribe(
+        result => {
+          this.flight = result;
+  
+          this.seatConfigFun();
+          this.processSeatChart(this.seatConfig);
+  
+          if(this.router.url.includes('/seat')){
+            for(let i = 0; i < this.seatmap.length;i++){
+              for(let j = 0; j < this.seatmap[i].seats.length;j++){
+                if(this.seatmap[i].seats[j].key === +this.router.url.split('/')[5]){
+                  this.selectSeat(this.seatmap[i].seats[j]);
+                }
+              }
+            }
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      )
+    }
+    
 
     this.airlineService.emptyTickets.subscribe((tickets:any) => {
       while(tickets.selectedSeats.length != 0){
@@ -310,7 +337,10 @@ export class SeatSelectorComponent implements OnInit {
           this.cart.totalamount -= seatObject.price;
         }
       }
-      this.airlineService.ticketsChanged.next(this.cart);
+      if(this.num == 1)
+        this.airlineService.ticketsChanged.next(this.cart);
+      else
+        this.airlineService.ticketsChanged2.next(this.cart);
     }
     else{
       if(seatObject.status == "available" || seatObject.status == "booked" || seatObject.status == "sale")

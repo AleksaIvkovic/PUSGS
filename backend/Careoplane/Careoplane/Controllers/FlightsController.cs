@@ -60,7 +60,7 @@ namespace Careoplane.Controllers
 
         [HttpGet]
         [Route("Searched")]
-        public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]DateTime departure, [FromQuery]int numPassengers, [FromQuery]string classType, [FromQuery]string name, [FromQuery]bool notSingleAirline) {
+        public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]string departure, [FromQuery]int numPassengers, [FromQuery]string classType, [FromQuery]string name, [FromQuery]bool notSingleAirline) {
             List<Flight> flights = await _context.Flights
                 .Include(f => f.Connections)
                 .Include(f => f.SeatingArrangements)
@@ -69,13 +69,15 @@ namespace Careoplane.Controllers
                 .Include(f => f.Airline).ThenInclude(a => a.Prices)
                 .ToListAsync();
 
+
+            DateTime newDeparture = DateTime.Parse(departure);
             List<TOFlight> returnList = new List<TOFlight>();
-            foreach(Flight flight in flights)
+            foreach (Flight flight in flights)
             {
-                if(flight.Origin == origin && flight.Destination == destination && flight.Departure.Date == departure.Date && (notSingleAirline || flight.Airline.Name == name))
+                if (flight.Origin == origin && flight.Destination == destination && flight.Departure.Date == newDeparture.Date && (notSingleAirline || flight.Airline.Name == name))
                 {
                     int count = 0;
-                    foreach(Seat seat in flight.Seats)
+                    foreach (Seat seat in flight.Seats)
                     {
                         if (seat.Type == classType || classType == "any")
                             if (!seat.Occupied)
@@ -85,6 +87,7 @@ namespace Careoplane.Controllers
                         returnList.Add(new TOFlight(flight));
                 }
             }
+            
             return returnList;
         }
 

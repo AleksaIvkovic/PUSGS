@@ -1,10 +1,10 @@
+import { FlightReservationDetails } from './flight-reservation-details.model';
+
 export class FlightReservation {
     public type = 'flight';
 
     constructor(
-        public flightId: number, 
-        public seatId: number,
-        public appUserName: string,
-        public reservationId: number
+        public flightReservationDetails: FlightReservationDetails[] = [],
+        public reservationId: number = 0
     ) {}
 }

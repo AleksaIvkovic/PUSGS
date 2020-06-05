@@ -83,7 +83,11 @@ export class FlightComponent implements OnInit {
   }
 
   Reserve(){
-    this.router.navigate([this.backStr,this.flight.id,this.classType,this.passengers,'reservation'],{relativeTo:this.activeRoute});
+    this.router.navigate([this.backStr,'reservation'],{relativeTo:this.activeRoute, queryParams: {
+      'flight1': this.flight.id,
+      'passengers' : this.passengers,
+      'classType' : this.classType 
+    }});
   }
 
   FastReservation(){

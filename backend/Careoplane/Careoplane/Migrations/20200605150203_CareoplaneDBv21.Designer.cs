@@ -4,14 +4,16 @@ using Careoplane.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Careoplane.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200605150203_CareoplaneDBv21")]
+    partial class CareoplaneDBv21
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -156,7 +158,7 @@ namespace Careoplane.Migrations
                     b.Property<int>("FlightId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FlightReservationReservationId")
+                    b.Property<int?>("FlightReservationReservationId")
                         .HasColumnType("int");
 
                     b.HasKey("FlightReservationDetailId");
@@ -194,7 +196,7 @@ namespace Careoplane.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("FlightReservationDetailId")
+                    b.Property<int?>("FlightReservationDetailId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -562,9 +564,7 @@ namespace Careoplane.Migrations
                 {
                     b.HasOne("Careoplane.Models.FlightReservation", "FlightReservation")
                         .WithMany("FlightReservationDetails")
-                        .HasForeignKey("FlightReservationReservationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FlightReservationReservationId");
                 });
 
             modelBuilder.Entity("Careoplane.Models.Location", b =>
@@ -580,9 +580,7 @@ namespace Careoplane.Migrations
                 {
                     b.HasOne("Careoplane.Models.FlightReservationDetail", "FlightReservationDetail")
                         .WithMany("PassengerSeats")
-                        .HasForeignKey("FlightReservationDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FlightReservationDetailId");
                 });
 
             modelBuilder.Entity("Careoplane.Models.Price", b =>

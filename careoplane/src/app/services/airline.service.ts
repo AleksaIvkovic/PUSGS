@@ -25,6 +25,7 @@ export class AirlineService {
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
   ticketsChanged = new Subject<any>();
+  ticketsChanged2 = new Subject<any>();
   emptyTickets = new Subject<any>();
   classType = new Subject<string>();
   ticketDone = new Subject<Seat>();
@@ -32,6 +33,7 @@ export class AirlineService {
   airlineFlightList = new Subject<Airline>();
   airlineFastTicketList = new Subject<Airline>();
   flightSeatsEdit = new Subject<Flight>();
+  flight2SeatsEdit = new Subject<Flight>();
   flightChosenSeat = new Subject<Flight>();
   reservations: FlightReservation[] = [];
   locationLoaded = new Subject<string>();
@@ -49,6 +51,10 @@ export class AirlineService {
 
   public flightLoaded(flight : Flight){
     this.flightSeatsEdit.next(flight);
+  }
+
+  public flightLoaded2(flight : Flight){
+    this.flight2SeatsEdit.next(flight);
   }
 
   public flightChosen(flight: Flight){
@@ -77,6 +83,7 @@ export class AirlineService {
 
   public resetTickets(tickets: any){
     this.emptyTickets.next(tickets);
+    this.emptyTickets.next(tickets);
   }
   
   constructor(private http: HttpClient, private datePipe: DatePipe) {
@@ -100,11 +107,6 @@ export class AirlineService {
   getDestinations(){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/Destinations/' + localStorage.getItem('company');
     return this.http.get<TOPrimaryObject[]>(address);
-  }
-
-  //treba obrisati
-  getAllFlights(){
-    this.flightsChanged.next(this.flights.slice())
   }
 
   getAllFlightsDB(){
@@ -239,5 +241,10 @@ export class AirlineService {
   deleteFastReservation(id: number){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/FastTickets/' + id;
     return this.http.delete(address);
+  }
+
+  makeReservation(reservation: FlightReservation){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations';
+    return this.http.post(address,reservation);
   }
 }

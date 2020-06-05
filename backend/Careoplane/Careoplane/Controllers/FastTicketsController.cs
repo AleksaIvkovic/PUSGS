@@ -64,7 +64,7 @@ namespace Careoplane.Controllers
                 return BadRequest();
             }
 
-            Seat seat = await _context.Seats.FindAsync(fastTicket.Seat.SeatId);
+            Seat seat = await _context.Seats.Include(seat => seat.Flight).FirstAsync(seat => seat.SeatId == fastTicket.Seat.SeatId);
             seat.Occupied = occupied;
 
             _context.Entry(seat).State = EntityState.Modified;
@@ -80,11 +80,29 @@ namespace Careoplane.Controllers
                 {
                     FlightReservation flightReservation = new FlightReservation()
                     {
-                        ReservationId = 0,
-                        FlightId = fastTicket.Seat.FlightId,
-                        SeatId = fastTicket.Seat.SeatId,
-                        AppUserName = user.UserName
+                        ReservationId = 0
                     };
+
+                    FlightReservationDetail flightReservationDetail = new FlightReservationDetail()
+                    {
+                        FlightReservation = flightReservation,
+                        FlightReservationDetailId = 0,
+                        FlightId = seat.Flight.FlightId
+                    };
+
+                    PassengerSeat passengerSeat = new PassengerSeat()
+                    {
+                        PassengerSeatId = 0,
+                        FlightReservationDetail = flightReservationDetail,
+                        SeatId = seat.SeatId,
+                        Username = user.UserName
+                    };
+
+                    flightReservationDetail.PassengerSeats = new List<PassengerSeat>();
+                    flightReservationDetail.PassengerSeats.Add(passengerSeat);
+
+                    flightReservation.FlightReservationDetails = new List<FlightReservationDetail>();
+                    flightReservation.FlightReservationDetails.Add(flightReservationDetail);
 
                     _context.FlightReservations.Add(flightReservation);
 

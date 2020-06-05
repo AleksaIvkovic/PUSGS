@@ -163,7 +163,7 @@
     <mat-divider></mat-divider>
   </div>
 </mat-list>
-<mat-list *ngIf="twoWay">
+<mat-list *ngIf="returnFlight">
   <div *ngFor="let flight of flights|  
   orderBy:sortBy:sortWay:false |
   priceFilter:num:classType |
@@ -172,6 +172,7 @@
     <app-return-flight 
     [back]="'one'"
     [flight]="flight"
+    [returnFlights]="returnFlights"
     [ret] = "ret"
     [num] = "num"
     [classType] = "classType"
