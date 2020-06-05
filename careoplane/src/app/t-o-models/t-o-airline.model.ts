@@ -4,6 +4,8 @@ import { TOPrimaryObject } from './t-o-primary-object.model';
 import { Airline } from '../models/airline.model';
 import { FastTicket } from '../models/fast-ticket.model';
 import { TOPriceSegmentSeat } from './t-o-price-segment-seat.model';
+import { Seat } from '../models/seat.model';
+import { TOSeat } from './t-o-seat.model';
 
 export class TOAirline {
     public convert(): Airline {
@@ -25,19 +27,13 @@ export class TOAirline {
         }
 
         for(let fastTicket of this.fastTickets){
-            let flight;
-            let seat;
-            for(let flightTemp of airline.flights){
-                if(fastTicket.flightId == flightTemp.id){
-                    flight = flightTemp;
-                    for(let seatTemp of flightTemp.seats){
-                        if(seatTemp.seatId == fastTicket.seatId){
-                            seat = seatTemp;
-                        }
-                    }
+            for(let flight of airline.flights){
+                if(flight.id == fastTicket.seat.flightId){
+                    airline.fastTickets.push(new FastTicket(Object.assign(new TOSeat(),fastTicket.seat).convert()
+                    , flight, fastTicket.airlineName,fastTicket.newPrice));
                 }
             }
-            airline.fastTickets.push(new FastTicket(seat, flight, fastTicket.airlineName));
+            
         }
 
         return airline;

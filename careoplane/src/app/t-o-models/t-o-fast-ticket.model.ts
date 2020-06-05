@@ -4,7 +4,7 @@ import { FastTicket } from '../models/fast-ticket.model';
 
 export class TOFastTicket{
  
-    constructor(public seatId: number = 0,public flightId: number = 0, public airlineName: string = null)
+    constructor(public seat: TOSeat = null,public airlineName: string = null, public newPrice: number = 0)
     {
     }
 }

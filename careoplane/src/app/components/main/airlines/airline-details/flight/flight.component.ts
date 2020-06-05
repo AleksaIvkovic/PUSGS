@@ -12,7 +12,7 @@ import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
   styleUrls: ['./flight.component.css']
 })
 export class FlightComponent implements OnInit {
-  @Input() flight: Flight;
+  @Input() flight: Flight = new Flight();
   @Input() fastTicket: FastTicket = null;
   @Input() back: string;
   @Input() admin:boolean;
@@ -95,11 +95,18 @@ export class FlightComponent implements OnInit {
 
   EditFastReservation(){
     let id = this.flight.seats.indexOf(this.fastTicket.seat);
-    this.router.navigate(['../',this.fastTicket.flight.id,'edit-seats',id,'seat'],{relativeTo:this.activeRoute});
+    this.router.navigate(['../',this.fastTicket.seat.flightId,'edit-seats',this.fastTicket.seat.seatId,'seat'],{relativeTo:this.activeRoute});
   }
 
   DeleteFastReservation(){
-    
+    this.airlineService.deleteFastReservation(this.fastTicket.seat.seatId).subscribe(
+      res => {
+        this.airlineService.fastTicektListChanged(this.fastTicket.seat.seatId);
+      },
+      error => {
+        console.log(error);
+      }
+    )
   }
 
   DeleteFlight(){

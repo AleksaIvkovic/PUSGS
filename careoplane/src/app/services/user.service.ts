@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { VehicleReservation } from '../models/vehicle-reservation.model';
 import { FlightReservation } from '../models/flight-reservation.model';
 import { Vehicle } from '../models/vehicle.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { TOFriend } from '../t-o-models/t-o-friend.model';
 
 @Injectable({
@@ -295,5 +295,15 @@ export class UserService {
     getAllUsers(){
         let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/AllUsers';
         return this.http.get<User[]>(address);
+    }
+
+    verifyEmail(token: string,username : string){
+        let address = "http://localhost:" + localStorage.getItem('port') + '/api/AppUsers/Confirmation';
+        
+        var params = new HttpParams()
+        .append('username',username)
+        .append('token',token);
+  
+      return this.http.get(address, {params: params});
     }
 }

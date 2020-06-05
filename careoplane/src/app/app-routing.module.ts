@@ -26,6 +26,7 @@ import { SeatStarterComponent } from './components/main/airlines/flight-edit/sea
 import { ReservationsComponent } from './components/main/reservations/reservations.component';
 import { DiscountsComponent } from './components/main/discounts/discounts.component';
 import { FriendsComponent } from './components/main/friends/friends.component';
+import { EmailConfirmationComponent } from './components/main/email-confirmation/email-confirmation.component';
 
 
 const routes: Routes = [
@@ -74,7 +75,8 @@ const routes: Routes = [
     {path: 'reservations', component: ReservationsComponent},
     {path: 'discounts', component: DiscountsComponent},
     {path: 'add-admin', component: UserAuthentificationComponent},
-    {path: 'friends', component: FriendsComponent}
+    {path: 'friends', component: FriendsComponent},
+    {path: 'confirmation', component: EmailConfirmationComponent}
   ]},
   {path: 'user-authentification', component: UserAuthentificationComponent}
 ];

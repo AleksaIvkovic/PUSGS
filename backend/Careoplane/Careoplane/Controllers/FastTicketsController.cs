@@ -59,12 +59,12 @@ namespace Careoplane.Controllers
             TOFastTicket fastTicket = Obj["fastTicket"].ToObject<TOFastTicket>();
             bool occupied = Obj["occupied"].ToObject<bool>();
 
-            if (id != fastTicket.SeatId)
+            if (id != fastTicket.Seat.SeatId)
             {
                 return BadRequest();
             }
 
-            Seat seat = await _context.Seats.FindAsync(fastTicket.SeatId);
+            Seat seat = await _context.Seats.FindAsync(fastTicket.Seat.SeatId);
             seat.Occupied = occupied;
 
             _context.Entry(seat).State = EntityState.Modified;
@@ -81,8 +81,8 @@ namespace Careoplane.Controllers
                     FlightReservation flightReservation = new FlightReservation()
                     {
                         ReservationId = 0,
-                        FlightId = fastTicket.FlightId,
-                        SeatId = fastTicket.SeatId,
+                        FlightId = fastTicket.Seat.FlightId,
+                        SeatId = fastTicket.Seat.SeatId,
                         AppUserName = user.UserName
                     };
 

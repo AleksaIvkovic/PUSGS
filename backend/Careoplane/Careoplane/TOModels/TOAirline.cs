@@ -1,4 +1,5 @@
-﻿using Careoplane.Models;
+﻿using Careoplane.Database;
+using Careoplane.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace Careoplane.TOModels
         public List<TOFastTicket> FastTickets { get; set; }
 
         public TOAirline() { }
-        public TOAirline(Airline airline)
+        public TOAirline(Airline airline,DatabaseContext _context)
         {
             Name = airline.Name;
             Address = airline.Address;
@@ -45,7 +46,7 @@ namespace Careoplane.TOModels
             if(airline.FastTickets != null)
                 foreach(FastTicket fastTicket in airline.FastTickets)
                 {
-                    FastTickets.Add(new TOFastTicket(fastTicket));
+                    FastTickets.Add(new TOFastTicket(fastTicket,_context));
                 }
 
             Destinations = new List<TOPrimaryObject>();

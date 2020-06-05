@@ -46,7 +46,7 @@ export class SeatDetailsComponent implements OnInit {
   }
 
   Cancel(){
-    this.airlineService.ticketDoneChange();
+    this.airlineService.ticketDoneChange(null);
     this.router.navigate(['../../'], {relativeTo: this.activeRoute});
   }
 
@@ -54,7 +54,8 @@ export class SeatDetailsComponent implements OnInit {
     this.seat.discount = this.seatForm.controls['discount'].value;
     this.airlineService.changeSeat(this.seat).subscribe(
       response => {
-        this.airlineService.ticketDoneChange();
+        this.seatForm.reset();
+        this.airlineService.ticketDoneChange(this.seat);
         this.router.navigate(['../../'], {relativeTo: this.activeRoute});
       },
       error => {
