@@ -18,6 +18,7 @@ export class AirlinesListComponent implements OnInit {
 //#region  Lists
   airlines: Airline[] = [];
   flights: Flight[] = [];
+  returnFlights: Flight[] = [];
   cities: string[] = [];
 //#endregion
 
@@ -51,6 +52,7 @@ export class AirlinesListComponent implements OnInit {
   searchForm: FormGroup;
   search: boolean = false;
   twoWay: boolean = false;
+  returnFlight: boolean = false;
 
   airlineName: string;
   sortBy: string = 'price';
@@ -153,11 +155,9 @@ export class AirlinesListComponent implements OnInit {
 
     if(this.travelType === "round trip"){
       this.twoWay = true;
-      this.search = false;
     }
     else{
       this.twoWay = false;
-      this.search = true;
     }
 
     this.exs = false;
@@ -180,7 +180,35 @@ export class AirlinesListComponent implements OnInit {
         for(let flight of result){
           newFlights.push(Object.assign(new TOFlight(),flight).convert());
         }
-        this.flights = newFlights;
+
+        if(!this.twoWay){
+          this.search = true;
+          this.flights = newFlights;
+        }
+        else{
+          let returnFlights;
+          this.airlineService.getSearchedFlightsDB(
+            this.searchForm.value['destination'],
+            this.searchForm.value['origin'],
+            this.searchForm.value['ret'],
+            this.searchForm.value['num'],
+            this.searchForm.value['classType'],
+            name).subscribe(
+              result => {
+                let newRetFlights = [];
+                for(let flight of result){
+                  newRetFlights.push(Object.assign(new TOFlight(),flight).convert());
+                }
+
+                this.returnFlights = newRetFlights;
+                this.flights = newFlights;
+                this.returnFlight = true;
+              },
+              error => {
+                console.log(error);
+              }
+          )
+        }
       },
       error => {
         console.log();
@@ -191,4 +219,5 @@ export class AirlinesListComponent implements OnInit {
   onToggleChange() {
     this.sortWay = this.toggleControl.value;
   } 
+  
 }

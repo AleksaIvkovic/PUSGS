@@ -70,10 +70,6 @@ export class UserService {
     //     this.loggedInUserChanged.next(this.users[index]);
     // }
 
-    addReservation(reservation: any){
-        this.loggedInUser.reservations.push(reservation);
-    }
-
     editUser(updatedUser: User) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/AppUsers/UpdateUser';
         return this.http

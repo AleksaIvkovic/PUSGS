@@ -11,6 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class ReturnFlightComponent implements OnInit, OnDestroy {
   @Input() flight: Flight;
+  @Input() returnFlights: Flight[];
   @Input() back: string;
   @Input() ret: Date;
   @Input() num: number;
@@ -18,19 +19,10 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
   @Input() admin: boolean;
   backStr: string;
   
-  flights: Flight[];
-  flightsSubscription: Subscription;
 
   constructor(private airlineService: AirlineService, private router: Router, private activeRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.flightsSubscription = this.airlineService.flightsChanged.subscribe(
-      (flights:Flight[])=> {
-        this.flights = flights;
-      }
-    );
-    this.airlineService.getAllFlights();
-
     if(this.back == 'one'){
         this.backStr = '../';
     }
@@ -40,12 +32,14 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.flightsSubscription.unsubscribe();
   }
 
   public Reserve(id1: number, id2: number){
-    let flights = [id1.toString(),id2.toString()];
-
-    this.router.navigate([this.backStr,flights,this.classType,this.num,'reservation'],{relativeTo:this.activeRoute})
+    this.router.navigate([this.backStr,'reservation'],{relativeTo:this.activeRoute, queryParams: {
+      'flight1': id1,
+      'flight2': id2,
+      'passengers' : this.num,
+      'classType' : this.classType 
+    }});
   }
 }

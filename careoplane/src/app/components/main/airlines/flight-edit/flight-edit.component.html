@@ -4,8 +4,8 @@
       <mat-form-field appearance="fill">
         <mat-label>Origin</mat-label>
         <mat-select [formControlName]="'origin'">
-          <mat-option *ngFor="let destination of destinations" [value]="destination.value">
-            {{destination.value}}
+          <mat-option *ngFor="let destination of destinations" [value]="destination">
+            {{destination}}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -14,8 +14,8 @@
       <mat-form-field appearance="fill">
         <mat-label>Destination</mat-label>
         <mat-select [formControlName]="'destination'">
-          <mat-option *ngFor="let destination of destinations" [value]="destination.value">
-            {{destination.value}}
+          <mat-option *ngFor="let destination of destinations" [value]="destination">
+            {{destination}}
           </mat-option>
         </mat-select>
       </mat-form-field>

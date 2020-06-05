@@ -31,7 +31,8 @@ namespace Careoplane.TOModels
 
         public TOFlight() { }
         public TOFlight(Flight flight) {
-            AirlineName = flight.Airline.Name;
+            if(flight.Airline != null)
+                AirlineName = flight.Airline.Name;
             Arrival = flight.Arrival.ToString();
             Departure = flight.Departure.ToString();
             Distance = flight.Distance;
@@ -40,14 +41,15 @@ namespace Careoplane.TOModels
             Destination = flight.Destination;
 
             Prices = new List<double>();
-
-            if (flight.Airline.Prices != null)
-            {
-                List<Price> prices = flight.Airline.Prices.ToList();
-                Prices.Add(Distance * prices[0].Value);
-                Prices.Add(Distance * prices[1].Value);
-                Prices.Add(Distance * prices[2].Value);
-            }
+            
+            if (flight.Airline != null)
+                if (flight.Airline.Prices != null)
+                {
+                    List<Price> prices = flight.Airline.Prices.ToList();
+                    Prices.Add(Distance * prices[0].Value);
+                    Prices.Add(Distance * prices[1].Value);
+                    Prices.Add(Distance * prices[2].Value);
+                }
 
             Connections = new List<TOPrimaryObject>();
             if(flight.Connections != null)

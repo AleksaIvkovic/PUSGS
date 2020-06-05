@@ -10,8 +10,6 @@ namespace Careoplane.Models
     {
         [Key]
         public int ReservationId { get; set; }
-        public int FlightId { get; set; }
-        public int SeatId { get; set; }
-        public string AppUserName { get; set; }
+        public List<FlightReservationDetail> FlightReservationDetails { get; set; }
     }
 }
