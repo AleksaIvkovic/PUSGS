@@ -27,6 +27,7 @@ import { ReservationsComponent } from './components/main/reservations/reservatio
 import { DiscountsComponent } from './components/main/discounts/discounts.component';
 import { FriendsComponent } from './components/main/friends/friends.component';
 import { EmailConfirmationComponent } from './components/main/email-confirmation/email-confirmation.component';
+import { GraphComponent } from './components/main/graph/graph.component';
 
 
 const routes: Routes = [
@@ -54,6 +55,7 @@ const routes: Routes = [
       {path: 'add-vehicle', component: VehicleManagerComponent},
     ]},
     {path: 'rent-a-car-profile/edit', component: RentACarManagerComponent},
+    {path: 'rent-a-car-profile/statistic', component: GraphComponent},
     {path: 'airline-profile', component: AirlinesComponent, children:[
       {path: '', redirectTo: 'details', pathMatch: 'full'},
       {path: 'details', component: AirlineDetailsComponent},

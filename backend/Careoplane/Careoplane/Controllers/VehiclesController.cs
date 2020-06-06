@@ -33,6 +33,17 @@ namespace Careoplane.Controllers
             return TOVehicleList;
         }
 
+        [HttpGet]
+        [Route("ForCompany")]
+        public async Task<ActionResult<IEnumerable<int>>> GetVehiclesForCompany([FromQuery]string company)
+        {
+            List<Vehicle> VehicleList = await _context.Vehicles.Where(vehicle => vehicle.RentACar.Name == company).ToListAsync();
+            List<int> ids = new List<int>();
+            VehicleList.ForEach(vehicle => ids.Add(vehicle.VehicleId));
+
+            return ids;
+        }
+
         // GET: api/Vehicles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TOVehicle>> GetVehicle(int id)

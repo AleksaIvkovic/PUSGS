@@ -1,0 +1,11 @@
+<div class="row">
+    <a 
+        [routerLink]="['../']"
+        routerLinkActive="active"
+        mat-mini-fab >
+        <mat-icon>arrow_back</mat-icon>
+    </a>
+    <div *ngFor="let item of reservations">
+        {{ item.price }}, 
+    </div>
+</div>

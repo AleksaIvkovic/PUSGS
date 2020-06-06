@@ -125,6 +125,10 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     this.rentACarService.onSaleClicked.next(this.isOnSaleClicked);
   }
 
+  onStatistic() {
+    this.router.navigate(['statistic'], {relativeTo: this.route});
+  }
+
   ngAfterViewInit() {
     this.mapInitializer();
   }

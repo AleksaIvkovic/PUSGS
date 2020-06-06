@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Vehicle } from '../models/vehicle.model';
 import { Subject } from 'rxjs';
 import { VehicleReservation } from '../models/vehicle-reservation.model';
@@ -14,6 +14,21 @@ export class VehicleService {
     }
 
     vehicleListChanged = new Subject<Vehicle[]>();
+
+    getVehiclesForCompany(company: string) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles/ForCompany';
+        var params = new HttpParams().append('company', company);
+        return this.http.get(address, {params: params});
+    }
+
+    getReservationsForVehicles(vehicleIds: number[]) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/VehicleReservations/ForVehicles';
+        let ids: string = '';
+        vehicleIds.forEach(id => ids+=id.toString() + ',');
+        var params = new HttpParams().append('vehicleIds', ids);
+        
+        return this.http.get(address, {params: params});
+    }
 
     postVehicle(newVehicle: Vehicle) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles';

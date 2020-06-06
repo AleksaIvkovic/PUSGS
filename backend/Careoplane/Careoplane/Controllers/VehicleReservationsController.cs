@@ -33,6 +33,26 @@ namespace Careoplane.Controllers
             return TOVehicleReservationList;
         }
 
+        [HttpGet]
+        [Route("ForVehicles")]
+        public async Task<ActionResult<IEnumerable<TOVehicleReservation>>> GetVehicleReservationsForVehicles([FromQuery]string vehicleIds)
+        {
+            List<int> ids = new List<int>();
+            string[] stringIds = vehicleIds.Split(',');
+            List<VehicleReservation> VehicleReservationList = new List<VehicleReservation>();
+
+            for (int i = 0; i < stringIds.Count() - 1; i++)
+            {
+                var tempList = await _context.VehicleReservation.Where(vehicleReservation => vehicleReservation.VehicleId == int.Parse(stringIds[i])).ToListAsync();
+                VehicleReservationList.AddRange(tempList);
+            }
+
+            List<TOVehicleReservation> TOVehicleReservationList = new List<TOVehicleReservation>();
+            VehicleReservationList.ForEach(reservation => TOVehicleReservationList.Add(reservation.ToTO()));
+
+            return TOVehicleReservationList;
+        }
+
         // GET: api/VehicleReservations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TOVehicleReservation>> GetVehicleReservation(int id)

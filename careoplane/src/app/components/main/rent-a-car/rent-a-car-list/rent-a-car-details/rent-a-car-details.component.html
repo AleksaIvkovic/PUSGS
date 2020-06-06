@@ -68,10 +68,14 @@
             (click)="onSale()">
             {{isOnSaleClicked ? 'Regular' : 'On Sale'}}
         </button>
-        <!-- <mat-radio-group [(ngModel)]="vehicleType">
-            <mat-radio-button value="regular">Regular Vehicles</mat-radio-button>
-            <mat-radio-button value="sale">Vehicles On Sale</mat-radio-button>
-          </mat-radio-group> -->
+        <button
+            *ngIf="isAdmin"
+            style="margin-top: 10px; width: 100px;"
+            mat-raised-button 
+            color="primary"
+            (click)="onStatistic()">
+            Statistic
+        </button>
     </div>
 </div>
 <hr *ngIf="!isAdmin">

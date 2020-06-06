@@ -106,6 +106,7 @@ import { AuthServiceConfig, FacebookLoginProvider, GoogleLoginProvider, AuthServ
 import { UserSearchPipe } from './pipes/user-search.pipe';
 import { EmailConfirmationComponent } from './components/main/email-confirmation/email-confirmation.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { GraphComponent } from './components/main/graph/graph.component';
 
 export function socialConfigs() {  
   const config = new AuthServiceConfig(  
@@ -174,6 +175,7 @@ export function socialConfigs() {
     UserSearchPipe,
     EmailConfirmationComponent,
     ChangePasswordComponent,
+    GraphComponent,
   ],
   entryComponents: [
     LogInComponent
