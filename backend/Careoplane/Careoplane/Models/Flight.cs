@@ -36,6 +36,8 @@ namespace Careoplane.Models
 
         public ICollection<SegmentFlight> SegmentLengths { get; set; }
 
+        
+        public ICollection<FlightRating> Ratings { get; set; }
         public Flight() { }
 
         public Flight(TOFlight flight, DatabaseContext _context) {
@@ -148,6 +150,17 @@ namespace Careoplane.Models
         public double Value { get; set; }
 
         public int Ordinal { get; set; }
+
+        [Required]
+        public Flight Flight { get; set; }
+    }
+
+    public class FlightRating
+    {
+        [Key]
+        public int FlightRatingId { get; set; }
+
+        public int Value { get; set; }
 
         [Required]
         public Flight Flight { get; set; }

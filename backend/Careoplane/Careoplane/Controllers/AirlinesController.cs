@@ -43,6 +43,18 @@ namespace Careoplane.Controllers
             return result;
         }
 
+        [HttpGet]
+        [Route("Details")]
+        public async Task<ActionResult<IEnumerable<TOAirline>>> GetAirlinesDetails()
+        {
+            List<Airline> airlines = await _context.Airlines
+                .Include(a => a.Destinations)
+                .ToListAsync();
+            List<TOAirline> result = new List<TOAirline>();
+            airlines.ForEach(airline => result.Add(new TOAirline(airline, _context)));
+            return result;
+        }
+
         // GET: api/Airlines/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TOAirline>> GetAirline(string id)
@@ -67,6 +79,24 @@ namespace Careoplane.Controllers
             return new TOAirline(airline,_context);
         }
 
+        [HttpGet("Edit/{id}")]
+        public async Task<ActionResult<TOAirline>> GetAirlineEdit(string id)
+        {
+            var airline = await _context.Airlines
+                .Include(a => a.Destinations)
+                .Include(a => a.SeatingArrangements)
+                .Include(a => a.SegmentLengths)
+                .Include(a => a.Prices)
+                .FirstOrDefaultAsync(a => a.Name == id);
+
+            if (airline == null)
+            {
+                return NotFound();
+            }
+
+            return new TOAirline(airline, _context);
+        }
+
         [HttpGet("Display/{id}")]
         public async Task<ActionResult<TOAirline>> GetAirlineDisplay(string id)
         {
@@ -76,12 +106,21 @@ namespace Careoplane.Controllers
                 .Include(a => a.Flights).ThenInclude(f => f.Connections)
                 .Include(a => a.Flights).ThenInclude(f => f.Airline)
                 .Include(a => a.FastTickets)
+                .Include(airline => airline.Ratings)
                 .FirstOrDefaultAsync(a => a.Name == id);
 
             if (airline == null)
             {
                 return NotFound();
             }
+
+            int sum = 0;
+            foreach(var rating in airline.Ratings)
+            {
+                sum += rating.Value;
+            }
+
+            airline.Rating = sum / airline.Ratings.Count();
 
             return new TOAirline(airline, _context);
         }

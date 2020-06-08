@@ -18,12 +18,13 @@ namespace Careoplane.TOModels
             FlightReservationId = flightReservationDetail.FlightReservation.ReservationId;
 
             Flight = new TOFlight(_context.Flights.Find(flightReservationDetail.FlightId));
+            Flight.AirlineName = flightReservationDetail.AirlineName;
 
             PassengerSeats = new List<TOPassengerSeat>();
 
             foreach(PassengerSeat passengerSeat in flightReservationDetail.PassengerSeats)
             {
-                PassengerSeats.Add(new TOPassengerSeat(passengerSeat));
+                PassengerSeats.Add(new TOPassengerSeat(passengerSeat,_context,Flight.FlightId));
             }
         }
     }

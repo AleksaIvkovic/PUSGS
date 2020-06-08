@@ -10,6 +10,7 @@ import { TOFlight } from 'src/app/t-o-models/t-o-flight.model';
 import { User } from 'src/app/models/user.model';
 import { FlightReservationDetails } from 'src/app/models/flight-reservation-details.model';
 import { PassengersSeat } from 'src/app/models/passengers-seat.model';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -35,8 +36,9 @@ export class FlightReservationComponent implements OnInit {
   classType: string;
   friends: string[] = [];
   secondFlight: boolean = false;
+  finalPrice: number = 0;
 
-  constructor(private userService: UserService, private router: Router, private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
+  constructor(private datePipe: DatePipe, private userService: UserService, private router: Router, private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
 
   ngOnInit(): void {
     this.userService.getUser().subscribe(
@@ -55,38 +57,72 @@ export class FlightReservationComponent implements OnInit {
         }
 
         this.friends.push(user.userName);
+      },
+      error => {
+        console.log(error);
       }
     )
 
     this.activeRoute.queryParams.subscribe(
       (params: Params) => {
-          if(params['flight2']){
-            this.secondFlight = true;
-          }
-          if(params['flight1']){
-            this.airlineService.getFlightDB(+params['flight1']).subscribe(
-              response => {
-                this.flight1 = Object.assign(new TOFlight(), response).convert();
-                this.airlineService.flightLoaded(this.flight1);
-              },
-              error => {
-                console.log(error);
-              }
-            )
-          }
-          if(params['flight2']){
-            this.airlineService.getFlightDB(+params['flight2']).subscribe(
-              response => {
-                this.flight2 = Object.assign(new TOFlight(), response).convert();
-                this.airlineService.flightLoaded2(this.flight2);
-              },
-              error => {
-                console.log(error);
-              }
-            )
-          }
-          this.classType = params['classType'];
-          this.passengers = params['passengers'];
+        if(params['flight2']){
+          this.secondFlight = true;
+        }
+        if(params['flight1']){
+          this.airlineService.getFlightDB(+params['flight1']).subscribe(
+            response => {
+              this.flight1 = Object.assign(new TOFlight(), response).convert();
+              this.airlineService.flightLoaded(this.flight1);
+            },
+            error => {
+              console.log(error);
+            }
+          )
+        }
+        if(params['flight2']){
+          this.airlineService.getFlightDB(+params['flight2']).subscribe(
+            response => {
+              this.flight2 = Object.assign(new TOFlight(), response).convert();
+              this.airlineService.flightLoaded2(this.flight2);
+            },
+            error => {
+              console.log(error);
+            }
+          )
+        }
+        this.classType = params['classType'];
+        this.passengers = params['passengers'];
+
+        this.passengersControl = new FormArray([]);
+        this.passengersControl2 = new FormArray([]);
+
+        for(let i = 0; i < this.passengers; i++){
+          this.passengersControl.push(new FormGroup({
+            'id': new FormControl(''),
+            'username': new FormControl(''),
+            'full name': new FormGroup({
+              'name': new FormControl(''),
+              'surname': new FormControl(''),
+              'passport': new FormControl('')
+            })
+          }, this.checkForm))
+          this.passengersControl2.push(new FormGroup({
+            'id': new FormControl(''),
+            'username': new FormControl(''),
+            'full name': new FormGroup({
+              'name': new FormControl(''),
+              'surname': new FormControl(''),
+              'passport': new FormControl('')
+            })
+          }, this.checkForm))
+        }
+
+        this.secondFormGroup = new FormGroup({
+          'passengersControl': this.passengersControl
+        });
+        this.fourthFormGroup = new FormGroup({
+          'passengersControl': this.passengersControl2
+        });
       }
     );
   
@@ -111,49 +147,27 @@ export class FlightReservationComponent implements OnInit {
     this.thirdFormGroup = this._formBuilder.group({
       firstCtrl: ['']
     });
-
-    this.passengersControl = new FormArray([]);
-    this.passengersControl2 = new FormArray([]);
-
-    for(let i = 0; i < this.passengers; i++){
-      this.passengersControl.push(new FormGroup({
-        'id': new FormControl(''),
-        'username': new FormControl(''),
-        'full name': new FormGroup({
-          'name': new FormControl(''),
-          'surname': new FormControl(''),
-          'passport': new FormControl('')
-        })
-      }, this.checkForm))
-      this.passengersControl2.push(new FormGroup({
-        'id': new FormControl(''),
-        'username': new FormControl(''),
-        'full name': new FormGroup({
-          'name': new FormControl(''),
-          'surname': new FormControl(''),
-          'passport': new FormControl('')
-        })
-      }, this.checkForm))
-    }
-
-    this.secondFormGroup = new FormGroup({
-      'passengersControl': this.passengersControl
-    });
-    this.fourthFormGroup = new FormGroup({
-      'passengersControl': this.passengersControl2
-    });
   }
 
   Done(){
     let reservation: FlightReservation = new FlightReservation();
     let flightReservationDetails: FlightReservationDetails = new FlightReservationDetails();
-    flightReservationDetails.flight = new TOFlight(this.flight1.airlineName,this.flight1.origin,this.flight1.destination,this.flight1.departure.toString(),this.flight1.arrival.toString(),this.flight1.distance,this.flight1.connections,this.flight1.id,[],[],[],[]);
+    flightReservationDetails.flight = new TOFlight(this.flight1.airlineName,this.flight1.origin,
+      this.flight1.destination,this.datePipe.transform(this.flight1.departure, 'dd.MM.yyyy HH:mm'),
+      this.datePipe.transform(this.flight1.arrival, 'dd.MM.yyyy HH:mm'),this.flight1.distance,
+      this.flight1.connections,this.flight1.id,[],[],[],[]);
     let counter = 0;
     for(let passenger of (<FormArray>this.secondFormGroup.controls['passengersControl']).controls){
+      let seat;
+      for(let tempSeat of this.flight1.seats){
+        if(tempSeat.seatId == this.tickets.seatstoStore[counter])
+          seat = tempSeat;
+      }
+      
       flightReservationDetails.passengerSeats.push(
 
 
-        new PassengersSeat(this.tickets.seatstoStore[counter],
+        new PassengersSeat(seat,
         (<FormGroup>passenger).controls['username'].value,
         (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['name'].value,
         (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['surname'].value,
@@ -163,6 +177,33 @@ export class FlightReservationComponent implements OnInit {
     }
 
     reservation.flightReservationDetails.push(flightReservationDetails);
+
+    if(this.flight2 != null){
+      let flightReservationDetails2: FlightReservationDetails = new FlightReservationDetails();
+      flightReservationDetails2.flight = new TOFlight(this.flight2.airlineName,this.flight2.origin,
+        this.flight2.destination,this.datePipe.transform(this.flight2.departure, 'dd.MM.yyyy HH:mm'),
+        this.datePipe.transform(this.flight2.arrival, 'dd.MM.yyyy HH:mm'),
+        this.flight2.distance,this.flight2.connections,this.flight2.id,[],[],[],[]);
+      let counter = 0;
+      for(let passenger of (<FormArray>this.fourthFormGroup.controls['passengersControl']).controls){
+        let seat;
+        for(let tempSeat of this.flight2.seats){
+          if(tempSeat.seatId == this.tickets2.seatstoStore[counter])
+            seat = tempSeat;
+        }
+
+        flightReservationDetails2.passengerSeats.push(
+          new PassengersSeat(seat,
+          (<FormGroup>passenger).controls['username'].value,
+          (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['name'].value,
+          (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['surname'].value,
+          (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['passport'].value)
+        );
+        counter++;
+      }
+
+      reservation.flightReservationDetails.push(flightReservationDetails2);
+    }
 
     this.airlineService.makeReservation(reservation).subscribe(
       result =>
@@ -197,7 +238,7 @@ export class FlightReservationComponent implements OnInit {
   }
 
   Reset(){
-    this.airlineService.resetTickets(this.tickets);
+    this.airlineService.resetTickets(this.tickets, this.tickets2);
   }
 
   getList(){
@@ -254,5 +295,16 @@ export class FlightReservationComponent implements OnInit {
 
   CheckFourthStep(){
     return !this.fourthFormGroup.valid;
+  }
+
+  CalculatePrice(){
+    if(this.flight2 == null){
+      this.finalPrice = this.tickets.totalamount;
+    }
+    else{
+      if(this.tickets2 != null){
+        this.finalPrice = this.tickets.totalamount + this.tickets2.totalamount;
+      }
+    }
   }
 }

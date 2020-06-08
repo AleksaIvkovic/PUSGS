@@ -4,14 +4,16 @@ using Careoplane.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Careoplane.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200607155657_CareoplaneDBv23")]
+    partial class CareoplaneDBv23
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,27 +41,6 @@ namespace Careoplane.Migrations
                     b.HasKey("Name");
 
                     b.ToTable("Airlines");
-                });
-
-            modelBuilder.Entity("Careoplane.Models.ArilineRating", b =>
-                {
-                    b.Property<int>("AirlineRatingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AirlineName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
-
-                    b.HasKey("AirlineRatingId");
-
-                    b.HasIndex("AirlineName");
-
-                    b.ToTable("ArilineRating");
                 });
 
             modelBuilder.Entity("Careoplane.Models.Connection", b =>
@@ -153,26 +134,6 @@ namespace Careoplane.Migrations
                     b.HasIndex("AirlineName");
 
                     b.ToTable("Flights");
-                });
-
-            modelBuilder.Entity("Careoplane.Models.FlightRating", b =>
-                {
-                    b.Property<int>("FlightRatingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("FlightId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
-
-                    b.HasKey("FlightRatingId");
-
-                    b.HasIndex("FlightId");
-
-                    b.ToTable("FlightRating");
                 });
 
             modelBuilder.Entity("Careoplane.Models.FlightReservation", b =>
@@ -575,15 +536,6 @@ namespace Careoplane.Migrations
                     b.ToTable("VehicleReservation");
                 });
 
-            modelBuilder.Entity("Careoplane.Models.ArilineRating", b =>
-                {
-                    b.HasOne("Careoplane.Models.Airline", "Airline")
-                        .WithMany("Ratings")
-                        .HasForeignKey("AirlineName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Careoplane.Models.Connection", b =>
                 {
                     b.HasOne("Careoplane.Models.Flight", "Flight")
@@ -616,15 +568,6 @@ namespace Careoplane.Migrations
                     b.HasOne("Careoplane.Models.Airline", "Airline")
                         .WithMany("Flights")
                         .HasForeignKey("AirlineName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Careoplane.Models.FlightRating", b =>
-                {
-                    b.HasOne("Careoplane.Models.Flight", "Flight")
-                        .WithMany("Ratings")
-                        .HasForeignKey("FlightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

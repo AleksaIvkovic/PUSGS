@@ -60,7 +60,7 @@ namespace Careoplane.Controllers
 
         [HttpGet]
         [Route("Searched")]
-        public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]string departure, [FromQuery]int numPassengers, [FromQuery]string classType, [FromQuery]string name, [FromQuery]bool notSingleAirline) {
+        public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]string departure, [FromQuery]int numPassengers, [FromQuery]string classType, [FromQuery]string name, [FromQuery]bool notSingleAirline, [FromQuery]bool multi) {
             List<Flight> flights = await _context.Flights
                 .Include(f => f.Connections)
                 .Include(f => f.SeatingArrangements)
@@ -74,7 +74,7 @@ namespace Careoplane.Controllers
             List<TOFlight> returnList = new List<TOFlight>();
             foreach (Flight flight in flights)
             {
-                if (flight.Origin == origin && flight.Destination == destination && flight.Departure.Date == newDeparture.Date && (notSingleAirline || flight.Airline.Name == name))
+                if (flight.Origin.ToLower() == origin.ToLower() && flight.Destination.ToLower() == destination.ToLower() && flight.Departure.Date == newDeparture.Date && (notSingleAirline || flight.Airline.Name == name))
                 {
                     int count = 0;
                     foreach (Seat seat in flight.Seats)
@@ -84,7 +84,17 @@ namespace Careoplane.Controllers
                                 count++;
                     }
                     if (count >= numPassengers)
-                        returnList.Add(new TOFlight(flight));
+                        if (multi)
+                        {
+                            if(flight.Connections.Count != 0)
+                            {
+                                returnList.Add(new TOFlight(flight));
+                            }
+                        }
+                        else
+                        {
+                            returnList.Add(new TOFlight(flight));
+                        }
                 }
             }
             

@@ -65,7 +65,7 @@ export class AirlinesListComponent implements OnInit {
     this.initForm();
     
     if(!this.singleAirline){
-      this.airlineService.getAirlinesDB().subscribe(
+      this.airlineService.getAirlinesDetailsDB().subscribe(
         result => {
           for(let airline of result){
             this.airlines.push(Object.assign(new TOAirline(),airline).convert());
@@ -168,13 +168,21 @@ export class AirlinesListComponent implements OnInit {
       name = this.airline.name;
     }
 
+    let multi: string;
+    if(this.travelType === "multi-city"){
+      multi = 'true';
+    }
+    else{
+      multi = 'false';
+    }
+
     this.airlineService.getSearchedFlightsDB(
       this.searchForm.value['origin'],
       this.searchForm.value['destination'],
       this.searchForm.value['departure'],
       this.searchForm.value['num'],
       this.searchForm.value['classType'],
-      name).subscribe(
+      name, multi).subscribe(
       result => {
         let newFlights = [];
         for(let flight of result){
@@ -183,6 +191,7 @@ export class AirlinesListComponent implements OnInit {
 
         if(!this.twoWay){
           this.search = true;
+          this.returnFlight = false;
           this.flights = newFlights;
         }
         else{
@@ -193,7 +202,7 @@ export class AirlinesListComponent implements OnInit {
             this.searchForm.value['ret'],
             this.searchForm.value['num'],
             this.searchForm.value['classType'],
-            name).subscribe(
+            name, 'false').subscribe(
               result => {
                 let newRetFlights = [];
                 for(let flight of result){
@@ -203,6 +212,7 @@ export class AirlinesListComponent implements OnInit {
                 this.returnFlights = newRetFlights;
                 this.flights = newFlights;
                 this.returnFlight = true;
+                this.search = false;
               },
               error => {
                 console.log(error);

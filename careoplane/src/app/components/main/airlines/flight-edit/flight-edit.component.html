@@ -55,19 +55,19 @@
           <mat-form-field appearance="fill">
             <mat-label>Connection</mat-label>
             <mat-select [formControlName]="'city'">
-              <mat-option *ngFor="let destination of airline.destinations" [value]="destination.value">
-                {{destination.value}}
+              <mat-option *ngFor="let destination of destinations" [value]="destination">
+                {{destination}}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
         <div class="col-md-1" >
-          <button type="button" class="drag-handle" mat-icon-button cdkDragHandle>
+          <button type="button" class="drag-handle" mat-icon-button cdkDragHandle [disabled]="edit">
             <mat-icon>unfold_more</mat-icon>
           </button>
         </div>
         <div class="col-md-1">
-          <button mat-mini-fab (click)="onDeleteConnection(i)" color="warn">X</button>
+          <button mat-mini-fab (click)="onDeleteConnection(i)" color="warn" [disabled]="edit">X</button>
         </div>
       </div>
       <br/>

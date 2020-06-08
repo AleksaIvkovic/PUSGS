@@ -55,6 +55,7 @@ namespace Careoplane.Controllers
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
             string role = User.Claims.First(c => c.Type == "Roles").Value;
             var user = await _userManager.FindByIdAsync(userId);
+
             List<Friend> friendsA = new List<Friend>();
             List<Friend> friendsB = new List<Friend>();
             friendsA = await _context.Friends.Include(f => f.FriendA).Include(f => f.FriendB).Where(f => f.FriendA == user).ToListAsync();
@@ -379,7 +380,9 @@ namespace Careoplane.Controllers
                 var securityToken = tokenHandler.CreateToken(tokenDescriptor);
                 var token = tokenHandler.WriteToken(securityToken);
 
-                return Ok(new { token });
+                var username = applicationUser.UserName;
+
+                return Ok(new { token,  username});
             }
 
             return Ok();

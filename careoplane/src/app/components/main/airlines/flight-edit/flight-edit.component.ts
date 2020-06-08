@@ -117,12 +117,8 @@ export class FlightEditComponent implements OnInit {
       this.flight.connections = new Array<TOPrimaryObject>();
       
       for(let connection of this.connectionsForm.controls){
-        this.flight.connections.push(new TOPrimaryObject(0,connection.value['city'],0));this.flight.connections.push(new TOPrimaryObject(connection.value['id'],connection.value['city'],this.flight.id));
+        this.flight.connections.push(new TOPrimaryObject(0,connection.value['city'],0));
       }
-  
-      // for(let price of this.airline.prices){
-      //   this.flight.prices.push(price.value * this.flight.distance);
-      // }
   
       this.flight.conCount = this.flight.connections.length;
 

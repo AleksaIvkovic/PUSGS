@@ -1,3 +1,20 @@
-<div class="row">
+<!-- <div class="row">
     <app-reservation-list [reservationList]="loggedInUser.reservations"></app-reservation-list>
+</div> -->
+<div *ngIf="flightReservationsLoaded">
+    Invitations
+    <br/>
+    <div class="row">
+        <app-reservation-list [reservationList]="flightInvitations" [type]="'invitation'"></app-reservation-list>
+    </div>
+    Reservations
+    <br/>
+    <div class="row">
+        <app-reservation-list [reservationList]="flightReservations" [type]="'reservation'"></app-reservation-list>
+    </div>
+    History
+    <br/>
+    <div class="row">
+        <app-reservation-list [reservationList]="flightHistory" [type]="'history'"></app-reservation-list>
+    </div>
 </div>
