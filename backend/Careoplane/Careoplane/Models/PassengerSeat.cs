@@ -14,5 +14,8 @@ namespace Careoplane.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Passport { get; set; }
+        public bool Accepted { get; set; }
+        public bool AirlineScored { get; set; }
+        public bool FlightScored { get; set; }
     }
 }

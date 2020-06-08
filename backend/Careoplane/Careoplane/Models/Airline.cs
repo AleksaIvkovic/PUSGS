@@ -34,6 +34,8 @@ namespace Careoplane.Models
 
         public ICollection<FastTicket> FastTickets { get; set; }
 
+        public ICollection<ArilineRating> Ratings { get; set; }
+
         public Airline() { }
         public Airline(TOAirline airline) {
             Name = airline.Name;
@@ -89,6 +91,17 @@ namespace Careoplane.Models
         public double Value { get; set; }
 
         public int Ordinal { get; set; }
+
+        [Required]
+        public Airline Airline { get; set; }
+    }
+
+    public class ArilineRating
+    {
+        [Key]
+        public int AirlineRatingId { get; set; }
+
+        public int Value { get; set; }
 
         [Required]
         public Airline Airline { get; set; }

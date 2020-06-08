@@ -38,7 +38,7 @@ export class AirlineEditComponent implements OnInit {
     this.formInit();
 
     if(this.router.url.includes('edit')){
-      this.airlineService.getAirlineDB(localStorage.getItem('company')).subscribe(
+      this.airlineService.getAirlineEdit(localStorage.getItem('company')).subscribe(
         result => {
           this.airline = Object.assign(new TOAirline(), result).convert();
           this.formInit();

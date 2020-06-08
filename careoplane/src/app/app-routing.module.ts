@@ -27,6 +27,8 @@ import { ReservationsComponent } from './components/main/reservations/reservatio
 import { DiscountsComponent } from './components/main/discounts/discounts.component';
 import { FriendsComponent } from './components/main/friends/friends.component';
 import { EmailConfirmationComponent } from './components/main/email-confirmation/email-confirmation.component';
+import { FlightReservation } from './models/flight-reservation.model';
+import { FlightReservationDetailsComponent } from './components/main/reservations/flight-reservation-details/flight-reservation-details.component';
 
 
 const routes: Routes = [
@@ -73,6 +75,8 @@ const routes: Routes = [
     ]},
     {path: 'user-profile', component: UserAuthentificationComponent},
     {path: 'reservations', component: ReservationsComponent},
+    {path: ':id/:type/flight-reservation-details', component: FlightReservationDetailsComponent},
+    {path: 'flight-reservation-details', component: FlightReservationDetailsComponent},
     {path: 'discounts', component: DiscountsComponent},
     {path: 'add-admin', component: UserAuthentificationComponent},
     {path: 'friends', component: FriendsComponent},

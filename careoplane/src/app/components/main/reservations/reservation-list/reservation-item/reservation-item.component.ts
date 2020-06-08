@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { VehicleReservation } from 'src/app/models/vehicle-reservation.model';
 import { AirlineService } from 'src/app/services/airline.service';
+import { TOFlightReservation } from 'src/app/t-o-models/t-o-flight-reservation.model';
+import { FlightReservation } from 'src/app/models/flight-reservation.model';
 
 @Component({
   selector: 'app-reservation-item',
@@ -23,9 +25,9 @@ export class ReservationItemComponent implements OnInit {
       this.fromLocation = (<VehicleReservation>this.reservation).fromLocation;
       this.toLocation = (<VehicleReservation>this.reservation).toLocation;
     } else if (this.reservation.type === 'flight') {
-      let flight = this.airlineService.getFlight(this.reservation.flightId);
-      this.fromDate = flight.departure;
-      this.toDate = flight.arrival;
+      let flight = (<FlightReservation>this.reservation).flightReservationDetails[0].flight;
+      this.fromDate = new Date(flight.departure);
+      this.toDate = new Date(flight.arrival);
       this.fromLocation = flight.origin;
       this.toLocation = flight.destination;
     }

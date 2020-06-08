@@ -11,6 +11,7 @@ namespace Careoplane.Models
         public int FlightReservationDetailId { get; set; }
 
         public int FlightId { get; set; }
+        public string AirlineName { get; set; }
         public List<PassengerSeat> PassengerSeats { get; set; }
     }
 }

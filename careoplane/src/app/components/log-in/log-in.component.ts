@@ -49,6 +49,7 @@ export class LogInComponent implements OnInit {
       this.userService.externalLogin(socialusers).subscribe((res:any)=>{
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', 'regular');
+        localStorage.setItem('username',res.username);
         this.dialogRef.close('success');
       }); 
     });  
@@ -60,6 +61,7 @@ export class LogInComponent implements OnInit {
       this.userService.externalLogin(socialusers).subscribe((res:any)=>{
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', 'regular');
+        localStorage.setItem('username',res.username);
         this.dialogRef.close('success');
       }); 
     });  

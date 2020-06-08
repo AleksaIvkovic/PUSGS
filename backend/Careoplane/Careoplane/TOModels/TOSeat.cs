@@ -27,7 +27,8 @@ namespace Careoplane.TOModels
         {
             Name = seat.Name;
             Discount = seat.Discount;
-            FlightId = seat.Flight.FlightId;
+            if(seat.Flight != null)
+                FlightId = seat.Flight.FlightId;
             Occupied = seat.Occupied;
             SeatId = seat.SeatId;
             Type = seat.Type;

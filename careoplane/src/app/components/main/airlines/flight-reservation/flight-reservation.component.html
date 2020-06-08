@@ -73,7 +73,7 @@
       </form>
 
       <button mat-button matStepperPrevious>Back</button>
-      <button mat-button matStepperNext color="primary" [disabled]="CheckSecondStep()">Next</button>
+      <button mat-button matStepperNext color="primary" (click)="CalculatePrice()" [disabled]="CheckSecondStep()">Next</button>
   </mat-step>
 
   <div *ngIf="secondFlight">
@@ -144,13 +144,14 @@
         </form>
   
         <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext color="primary" [disabled]="CheckSecondStep()">Next</button>
+        <button mat-button matStepperNext (click)="CalculatePrice()" color="primary" [disabled]="CheckSecondStep()">Next</button>
     </mat-step>
   </div>
 
   <mat-step>
     <ng-template matStepLabel>Done</ng-template>
     <p>You are now done.</p>
+    <p>{{finalPrice}}</p>
     <div>
       <button mat-button matStepperPrevious>Back</button>
       <button mat-button (click)="stepper.reset(); Reset()">Reset</button>

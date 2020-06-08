@@ -20,13 +20,12 @@ import { TOPriceSegmentSeat } from '../t-o-models/t-o-price-segment-seat.model';
   providedIn: 'root'
 })
 export class AirlineService {
-  private airlines: Airline[] = [];
-  private flights: Flight[] = [];
   airlinesChanged = new Subject<Airline[]>()
   flightsChanged = new Subject<Flight[]>()
   ticketsChanged = new Subject<any>();
   ticketsChanged2 = new Subject<any>();
   emptyTickets = new Subject<any>();
+  emptyTickets2 = new Subject<any>();
   classType = new Subject<string>();
   ticketDone = new Subject<Seat>();
   flightListChange = new Subject<number>();
@@ -57,10 +56,6 @@ export class AirlineService {
     this.flight2SeatsEdit.next(flight);
   }
 
-  public flightChosen(flight: Flight){
-    this.flightChosenSeat.next(flight);
-  }
-
   public ticketDoneChange(seat: Seat){
     this.ticketDone.next(seat);
   }
@@ -69,7 +64,7 @@ export class AirlineService {
     this.flightListChange.next(id);
   }
 
-  fastTicektListChanged(id: number){
+  public fastTicektListChanged(id: number){
     this.fastTicketListChange.next(id);
   }
 
@@ -81,21 +76,16 @@ export class AirlineService {
     this.ticketsChanged.next(tickets);
   }
 
-  public resetTickets(tickets: any){
+  public resetTickets(tickets: any, tickets2: any){
     this.emptyTickets.next(tickets);
-    this.emptyTickets.next(tickets);
+    this.emptyTickets2.next(tickets2);
   }
   
   constructor(private http: HttpClient, private datePipe: DatePipe) {
   }
-  
-  //treba obrisati
-  getAirlines(){
-    this.airlinesChanged.next(this.airlines.slice());
-  }
 
-  getAirlinesDB(){
-    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines';
+  getAirlinesDetailsDB(){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/Details';
     return this.http.get<TOAirline[]>(address);
   }
 
@@ -109,12 +99,7 @@ export class AirlineService {
     return this.http.get<TOPrimaryObject[]>(address);
   }
 
-  getAllFlightsDB(){
-    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights';
-    return this.http.get<TOFlight[]>(address);
-  }
-
-  getSearchedFlightsDB(origin: string, destination: string,  departure: Date, num: number, classType: string, name:string){
+  getSearchedFlightsDB(origin: string, destination: string,  departure: Date, num: number, classType: string, name:string, multi:string){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/Searched';
     let notSingle = 'false';
     if(name == null)
@@ -127,22 +112,14 @@ export class AirlineService {
       .append('numPassengers',num.toString())
       .append('classType',classType)
       .append('name', name)
-      .append('notSingleAirline', notSingle);
+      .append('notSingleAirline', notSingle)
+      .append('multi', multi);
 
     return this.http.get<TOFlight[]>(address, {params: params});
   }
 
-  //treba obrisati
-  getAirline(name: string) : Airline{
-    for(let airline of this.airlines){
-      if(airline.name === name){
-        return airline;
-      }
-    }
-  }
-
-  getAirlineDB(name : string){
-    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/' + name;
+  getAirlineEdit(name : string){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/Edit/' + name;
     return this.http.get<TOAirline>(address);
   }
 
@@ -181,17 +158,7 @@ export class AirlineService {
     }
 
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/' + tempAirline.name;
-    for(let airlineI of this.airlines){
-      if(airlineI.name == airline.name){
-        airlineI = airline;
-      }
-    }
     return this.http.put(address,tempAirline);
-  }
-
-  //treba obrisati
-  getFlight(id: number): Flight {
-    return this.flights[id];
   }
 
   getFlightDB(id: number){
@@ -199,14 +166,12 @@ export class AirlineService {
     return this.http.get<TOFlight>(address); 
   }
 
-  //izmeni da radi sa DB
   EditFlight(flight: Flight) {
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/' + flight.id.toString();
     let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,flight.id,[]);
     return this.http.put(address,tempFlight);
   }
 
-  //izmeni da radi sa DB
   AddFlgiht(flight: Flight) {
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights';
     let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,flight.id,[]);
@@ -246,5 +211,31 @@ export class AirlineService {
   makeReservation(reservation: FlightReservation){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations';
     return this.http.post(address,reservation);
+  }
+
+  getReservations() {
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations';
+    return this.http.get<FlightReservation[]>(address);
+  }
+
+  getReservation(id: number) {
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations/' + id;
+    return this.http.get<FlightReservation>(address);
+  }
+
+  acceptInvitation(reservation: FlightReservation, tempUsername: string){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations/' + reservation.reservationId;
+    let username = {
+      'username': tempUsername
+    };
+    return this.http.put<FlightReservation>(address, username);
+  }
+
+  declineInvitation(reservation: FlightReservation, tempUsername: string){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations/Cancel/' + reservation.reservationId;
+    let username = {
+      'username': tempUsername
+    };
+    return this.http.put<FlightReservation>(address, username);
   }
 }

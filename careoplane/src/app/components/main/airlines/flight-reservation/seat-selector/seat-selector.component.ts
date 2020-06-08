@@ -97,19 +97,33 @@ export class SeatSelectorComponent implements OnInit {
       )
     }
     
-
-    this.airlineService.emptyTickets.subscribe((tickets:any) => {
-      while(tickets.selectedSeats.length != 0){
-        for(let i = 0; i < this.seatmap.length;i++){
-          for(let j = 0; j < this.seatmap[i].seats.length;j++){
-            if(this.seatmap[i].seats[j].seatLabel === tickets.selectedSeats[0]){
-              this.selectSeat(this.seatmap[i].seats[j]);
+    if(this.num == 1){
+      this.airlineService.emptyTickets.subscribe((tickets:any) => {
+        while(tickets.selectedSeats.length != 0){
+          for(let i = 0; i < this.seatmap.length;i++){
+            for(let j = 0; j < this.seatmap[i].seats.length;j++){
+              if(this.seatmap[i].seats[j].seatLabel === tickets.selectedSeats[0]){
+                this.selectSeat(this.seatmap[i].seats[j]);
+              }
             }
           }
         }
-      }
-    });
-
+      });
+    }
+    else{
+      this.airlineService.emptyTickets2.subscribe((tickets:any) => {
+        while(tickets.selectedSeats.length != 0){
+          for(let i = 0; i < this.seatmap.length;i++){
+            for(let j = 0; j < this.seatmap[i].seats.length;j++){
+              if(this.seatmap[i].seats[j].seatLabel === tickets.selectedSeats[0]){
+                this.selectSeat(this.seatmap[i].seats[j]);
+              }
+            }
+          }
+        }
+      });
+    }
+    
     this.airlineService.ticketDone.subscribe(value => {
       if(value != null){
         for(let seat of this.flight.seats){
@@ -324,7 +338,7 @@ export class SeatSelectorComponent implements OnInit {
         seatObject.status = "booked";
         this.cart.selectedSeats.push(seatObject.seatLabel);
         this.cart.seatstoStore.push(seatObject.key);
-        this.cart.totalamount += seatObject.price;
+        this.cart.totalamount += +seatObject.price;
       }
       else if( seatObject.status = "booked" )
       {

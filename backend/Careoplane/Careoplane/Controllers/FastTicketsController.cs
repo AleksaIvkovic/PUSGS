@@ -64,7 +64,7 @@ namespace Careoplane.Controllers
                 return BadRequest();
             }
 
-            Seat seat = await _context.Seats.Include(seat => seat.Flight).FirstAsync(seat => seat.SeatId == fastTicket.Seat.SeatId);
+            Seat seat = await _context.Seats.Include(seat => seat.Flight).ThenInclude(flight => flight.Airline).FirstAsync(seat => seat.SeatId == fastTicket.Seat.SeatId);
             seat.Occupied = occupied;
 
             _context.Entry(seat).State = EntityState.Modified;
@@ -86,6 +86,7 @@ namespace Careoplane.Controllers
                     FlightReservationDetail flightReservationDetail = new FlightReservationDetail()
                     {
                         FlightReservation = flightReservation,
+                        AirlineName = seat.Flight.Airline.Name,
                         FlightReservationDetailId = 0,
                         FlightId = seat.Flight.FlightId
                     };
@@ -95,7 +96,10 @@ namespace Careoplane.Controllers
                         PassengerSeatId = 0,
                         FlightReservationDetail = flightReservationDetail,
                         SeatId = seat.SeatId,
-                        Username = user.UserName
+                        Username = user.UserName,
+                        Accepted = true,
+                        AirlineScored = false,
+                        FlightScored = false
                     };
 
                     flightReservationDetail.PassengerSeats = new List<PassengerSeat>();
@@ -145,6 +149,12 @@ namespace Careoplane.Controllers
             {
                 return NotFound();
             }
+
+            Seat seat = await _context.Seats.Include(seat => seat.Flight).ThenInclude(flight => flight.Airline).FirstAsync(seat => seat.SeatId == fastTicket.SeatId);
+            seat.Occupied = false;
+
+            _context.Entry(seat).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             _context.FastTickets.Remove(fastTicket);
             await _context.SaveChangesAsync();

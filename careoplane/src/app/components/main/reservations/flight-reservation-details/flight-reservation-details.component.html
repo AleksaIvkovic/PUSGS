@@ -1,0 +1,54 @@
+<div class="row">
+    <div class="col-md">Reservation</div>
+</div>
+<div *ngFor="let details of reservation.flightReservationDetails">
+    <div class="row">
+        <div class="col-md">
+            {{details.flight.airlineName}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            {{details.flight.origin}}
+        </div>
+        <div class="col-md">
+            {{details.flight.destination}}
+        </div>
+        <div class="col-md">
+            {{details.flight.departure | date}}
+        </div>
+        <div class="col-md">
+            {{details.flight.arrival | date}}
+        </div>
+        <div class="col-md" *ngIf="type==='history'">
+            <button mat-raised-button color="primary" (click)="ScoreFlight()">Score Flight</button>
+        </div>
+        <div class="col-md" *ngIf="type==='history'">
+            <button mat-raised-button color="primary" (click)="ScoreAirline()">Score Airline</button>
+        </div>
+    </div>
+    <div class="row" *ngFor="let passenger of details.passengerSeats">
+        <div class="col-md" *ngIf="passenger.username != null && passenger.username != ''">
+            {{passenger.username}}
+        </div>
+        <div class="row" *ngIf="passenger.username == null || passenger.username == ''">
+            {{passenger.name}}  {{passenger.surname}}
+        </div>
+        <div class="col-md">
+            {{passenger.seat.name}} {{passenger.seat.price}}
+        </div>
+    </div>
+</div>
+<div class="row" *ngIf="type==='invitation'">
+    <div class="col-md">
+        <button mat-raised-button color="primary" (click)="Accept()">Accept</button>
+    </div>
+    <div class="col-md">
+        <button mat-raised-button color="warn" (click)="Cancel()">Decline</button>
+    </div>
+</div>
+<div class="row" *ngIf="type==='reservation'">
+    <div class="col-md">
+        <button mat-raised-button color="warn" (click)="Cancel()">Cancel</button>
+    </div>
+</div>
