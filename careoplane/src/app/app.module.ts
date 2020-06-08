@@ -46,6 +46,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import { MatTableFilterModule } from 'mat-table-filter';
+import { jqxChartModule } from 'jqwidgets-ng/jqxchart';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -233,7 +234,8 @@ export function socialConfigs() {
     MatTableFilterModule,
     TooltipModule.forRoot(),
     HttpClientModule,
-    SocialLoginModule
+    SocialLoginModule,
+    jqxChartModule
   ],
   providers: [
     DatePipe,

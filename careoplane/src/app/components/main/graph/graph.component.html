@@ -5,7 +5,30 @@
         mat-mini-fab >
         <mat-icon>arrow_back</mat-icon>
     </a>
-    <div *ngFor="let item of reservations">
+    <!-- <div *ngFor="let item of reservations">
         {{ item.price }}, 
+    </div> -->
+    <mat-form-field appearance="fill">
+        <mat-label>Select date</mat-label>
+        <input 
+            (dateInput)="OnDateChange($event.value)"
+            matInput 
+            [matDatepicker]="picker" 
+            placeholder="Select date"
+            id="picker">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <jqxChart 
+            [width]="getWidth()" [height]="500"
+            [title]="'Daily reservations'"
+            [description]="'Select a date to view number of reservations'"
+            [showLegend]="false" [enableAnimations]="true" [padding]="padding"
+            [titlePadding]="titlePadding" [source]="sampleData" [xAxis]="xAxis"
+            [seriesGroups]="seriesGroups" [colorScheme]="'scheme01'">
+        </jqxChart>
     </div>
 </div>

@@ -26,6 +26,7 @@
     "angularx-social-login": "^2.3.1",
     "bootstrap": "^4.5.0",
     "jquery": "^3.5.1",
+    "jqwidgets-ng": "^9.1.6",
     "mat-table-filter": "^9.0.1",
     "ngx-bootstrap": "^5.6.1",
     "ngx-cookie-service": "^3.0.4",
