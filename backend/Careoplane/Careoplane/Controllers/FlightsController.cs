@@ -10,6 +10,9 @@ using Careoplane.Models;
 using Careoplane.TOModels;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Newtonsoft.Json.Linq;
+using System.Net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Careoplane.Controllers
 {
@@ -23,26 +26,18 @@ namespace Careoplane.Controllers
             _context = context;
         }
 
-        // GET: api/Flights
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TOFlight>>> GetFlights()
-        {
-            List<Flight> flights = await _context.Flights
-                .Include(f => f.Connections)
-                .Include(f => f.SeatingArrangements)
-                .Include(f => f.SegmentLengths)
-                .Include(f => f.Seats).ThenInclude(s => s.Flight)
-                .Include(f => f.Airline).ThenInclude(a => a.Prices)
-                .ToListAsync();
-            List<TOFlight> returnList = new List<TOFlight>();
-            flights.ForEach(flight => returnList.Add(new TOFlight(flight)));
-            return returnList;
-        }
-
         // GET: api/Flights/5
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOFlight>> GetFlight(int id)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "aeroAdmin" && role != "regular")
+            {
+                return BadRequest("You are not authorised to do this action");
+
+            }
             var flight = await _context.Flights
                 .Include(f => f.Connections)
                 .Include(f => f.SeatingArrangements)
@@ -60,7 +55,7 @@ namespace Careoplane.Controllers
         }
 
         [HttpGet]
-        [Route("Searched")]
+        [Route("Searched")]    
         public async Task<ActionResult<IEnumerable<TOFlight>>> GetSearchedFlights([FromQuery]string origin, [FromQuery]string destination, [FromQuery]string departure, [FromQuery]int numPassengers, [FromQuery]string classType, [FromQuery]string name, [FromQuery]bool notSingleAirline, [FromQuery]bool multi) {
             List<Flight> flights = await _context.Flights
                 .Include(f => f.Connections)
@@ -106,8 +101,17 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> PutFlight(int id, TOFlight flight)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "aeroAdmin")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
+
             if (id != flight.FlightId)
             {
                 return BadRequest();
@@ -141,8 +145,16 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOFlight>> PostFlight(TOFlight flight)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "aeroAdmin")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             Flight tempFlight = new Flight(flight, _context);
             _context.Flights.Add(tempFlight);
             await _context.SaveChangesAsync();
@@ -193,9 +205,17 @@ namespace Careoplane.Controllers
 
         // DELETE: api/Flights/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOFlight>> DeleteFlight(int id)
         {
-            var flight = await _context.Flights.Include(f => f.Airline).Include(f=>f.Connections).Include(f => f.Seats).ThenInclude(s => s.Flight).FirstOrDefaultAsync(f => f.FlightId == id);
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "aeroAdmin")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
+            var flight = await _context.Flights.FindAsync(id);
             if (flight == null)
             {
                 return NotFound();
@@ -210,8 +230,16 @@ namespace Careoplane.Controllers
         }
 
         [HttpPut("Rate")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> RateFlight(JObject tempObject)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "regular")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             int id = tempObject["id"].ToObject<int>();
             string username = tempObject["username"].ToString();
             int rating = tempObject["rating"].ToObject<int>();

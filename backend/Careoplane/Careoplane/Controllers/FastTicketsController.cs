@@ -28,27 +28,6 @@ namespace Careoplane.Controllers
             _context = context;
         }
 
-        // GET: api/FastTickets
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<FastTicket>>> GetFastTickets()
-        {
-            return await _context.FastTickets.ToListAsync();
-        }
-
-        // GET: api/FastTickets/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<FastTicket>> GetFastTicket(int id)
-        {
-            var fastTicket = await _context.FastTickets.FindAsync(id);
-
-            if (fastTicket == null)
-            {
-                return NotFound();
-            }
-
-            return fastTicket;
-        }
-
         // PUT: api/FastTickets/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -128,20 +107,9 @@ namespace Careoplane.Controllers
             return NoContent();
         }
 
-        // POST: api/FastTickets
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<FastTicket>> PostFastTicket(FastTicket fastTicket)
-        {
-            _context.FastTickets.Add(fastTicket);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetFastTicket", new { id = fastTicket.SeatId }, fastTicket);
-        }
-
         // DELETE: api/FastTickets/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<FastTicket>> DeleteFastTicket(int id)
         {
             var fastTicket = await _context.FastTickets.FindAsync(id);

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
 using Careoplane.TOModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Careoplane.Controllers
 {
@@ -22,18 +24,9 @@ namespace Careoplane.Controllers
             _context = context;
         }
 
-        // GET: api/Seats
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TOSeat>>> GetSeats()
-        {
-            List<Seat> tempSeats = await _context.Seats.ToListAsync();
-            List<TOSeat> returnSeats = new List<TOSeat>();
-            tempSeats.ForEach(seat => returnSeats.Add(new TOSeat(seat)));
-            return returnSeats;
-        }
-
         // GET: api/Seats/5
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOSeat>> GetSeat(int id)
         {
             var seat = await _context.Seats.Include(x=>x.Flight).FirstOrDefaultAsync(s => s.SeatId == id);
@@ -50,6 +43,7 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> PutSeat(int id, TOSeat seat)
         {
             if (id != seat.SeatId)
@@ -109,35 +103,6 @@ namespace Careoplane.Controllers
             }
 
             return NoContent();
-        }
-
-        // POST: api/Seats
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<TOSeat>> PostSeat(TOSeat seat)
-        {
-            Seat tempSeat = new Seat(seat,_context);
-            _context.Seats.Add(tempSeat);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetSeat", new { id = tempSeat.SeatId }, tempSeat);
-        }
-
-        // DELETE: api/Seats/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<TOSeat>> DeleteSeat(int id)
-        {
-            var seat = await _context.Seats.FindAsync(id);
-            if (seat == null)
-            {
-                return NotFound();
-            }
-
-            _context.Seats.Remove(seat);
-            await _context.SaveChangesAsync();
-
-            return new TOSeat(seat);
         }
 
         private bool SeatExists(int id)
