@@ -5,6 +5,7 @@ export class FlightReservation {
 
     constructor(
         public flightReservationDetails: FlightReservationDetails[] = [],
-        public reservationId: number = 0
+        public reservationId: number = 0,
+        public timeOfCreation: string = null
     ) {}
 }

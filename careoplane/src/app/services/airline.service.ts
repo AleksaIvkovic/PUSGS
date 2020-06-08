@@ -218,9 +218,12 @@ export class AirlineService {
     return this.http.get<FlightReservation[]>(address);
   }
 
-  getReservation(id: number) {
-    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations/' + id;
-    return this.http.get<FlightReservation>(address);
+  getReservation(id: number, username: string) {
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations/Single';
+    var params = new HttpParams()
+      .append('id',id.toString())
+      .append('username',username)
+    return this.http.get<FlightReservation>(address, {params: params});
   }
 
   acceptInvitation(reservation: FlightReservation, tempUsername: string){
@@ -237,5 +240,29 @@ export class AirlineService {
       'username': tempUsername
     };
     return this.http.put<FlightReservation>(address, username);
+  }
+
+  rateFlight(rating: number,id: number, username: string, passengerSeatId: number, reservationId: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/Rate';
+    let params = {
+      'id': id,
+      'rating': rating,
+      'username': username,
+      'passengerSeatId': passengerSeatId,
+      'reservationId' : reservationId
+    };
+    return this.http.put(address, params);
+  }
+
+  rateAirline(rating: number,id: string, username: string, passengerSeatId: number, reservationId: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/Rate';
+    let params = {
+      'id': id,
+      'rating': rating,
+      'username': username,
+      'passengerSeatId': passengerSeatId,
+      'reservationId' : reservationId
+    };
+    return this.http.put(address, params);
   }
 }

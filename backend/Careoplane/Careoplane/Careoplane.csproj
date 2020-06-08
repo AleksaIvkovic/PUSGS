@@ -17,6 +17,8 @@
     <Compile Remove="Migrations\20200602163631_CareoplaneDBv15.Designer.cs" />
     <Compile Remove="Migrations\20200605150003_CareoplaneDBv21.cs" />
     <Compile Remove="Migrations\20200605150003_CareoplaneDBv21.Designer.cs" />
+    <Compile Remove="Migrations\20200608120636_CareoplaneDBv25.cs" />
+    <Compile Remove="Migrations\20200608120636_CareoplaneDBv25.Designer.cs" />
     <Compile Remove="Migrations\Authentication\20200531160838_CareoplaneDBv13.0.cs" />
     <Compile Remove="Migrations\Authentication\20200531160838_CareoplaneDBv13.0.Designer.cs" />
     <Compile Remove="Migrations\Authentication\20200531162058_CareoplaneDBv13.0.cs" />

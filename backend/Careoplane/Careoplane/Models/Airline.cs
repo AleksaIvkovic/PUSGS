@@ -28,7 +28,7 @@ namespace Careoplane.Models
 
         public string Image { get; set; }
 
-        public decimal Rating { get; set; }
+        public double Rating { get; set; }
 
         public ICollection<Destination> Destinations { get; set; }
 

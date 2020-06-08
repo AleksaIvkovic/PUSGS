@@ -9,6 +9,7 @@ using Careoplane.Database;
 using Careoplane.Models;
 using Careoplane.TOModels;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Newtonsoft.Json.Linq;
 
 namespace Careoplane.Controllers
 {
@@ -206,6 +207,50 @@ namespace Careoplane.Controllers
             await _context.SaveChangesAsync();
 
             return toFlight;
+        }
+
+        [HttpPut("Rate")]
+        public async Task<IActionResult> RateFlight(JObject tempObject)
+        {
+            int id = tempObject["id"].ToObject<int>();
+            string username = tempObject["username"].ToString();
+            int rating = tempObject["rating"].ToObject<int>();
+            int passengerSeatId = tempObject["passengerSeatId"].ToObject<int>();
+            int reservationId = tempObject["reservationId"].ToObject<int>();
+
+            var flight = await _context.Flights.Include(flight => flight.Ratings).FirstAsync(flight => flight.FlightId == id);
+            flight.Ratings.Add(new FlightRating()
+            {
+                Flight = flight,
+                FlightRatingId = 0,
+                Value = rating
+            });
+
+            _context.Entry(flight).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            await _context.SaveChangesAsync();
+
+            var reservation = await _context.FlightReservations.Include(reservation => reservation.FlightReservationDetails)
+                .ThenInclude(details => details.PassengerSeats)
+                .FirstOrDefaultAsync(reservation => reservation.ReservationId == reservationId);
+
+            foreach (var detail in reservation.FlightReservationDetails)
+            {
+                foreach (var passengerSeat in detail.PassengerSeats)
+                {
+                    if (passengerSeat.PassengerSeatId == passengerSeatId)
+                    {
+                        passengerSeat.FlightScored = true;
+                        break;
+                    }
+                }
+            }
+
+            _context.Entry(reservation).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool FlightExists(int id)

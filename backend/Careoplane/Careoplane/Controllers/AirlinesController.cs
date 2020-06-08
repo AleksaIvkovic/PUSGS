@@ -9,6 +9,7 @@ using Careoplane.Database;
 using Careoplane.Models;
 using Careoplane.TOModels;
 using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
 
 namespace Careoplane.Controllers
 {
@@ -105,6 +106,7 @@ namespace Careoplane.Controllers
                 .Include(a => a.Prices)
                 .Include(a => a.Flights).ThenInclude(f => f.Connections)
                 .Include(a => a.Flights).ThenInclude(f => f.Airline)
+                .Include(a => a.Flights).ThenInclude(f => f.Ratings)
                 .Include(a => a.FastTickets)
                 .Include(airline => airline.Ratings)
                 .FirstOrDefaultAsync(a => a.Name == id);
@@ -120,8 +122,10 @@ namespace Careoplane.Controllers
                 sum += rating.Value;
             }
 
-            airline.Rating = sum / airline.Ratings.Count();
-
+            if (airline.Ratings.Count() != 0)
+                airline.Rating = sum / airline.Ratings.Count();
+            else
+                airline.Rating = 0;
             return new TOAirline(airline, _context);
         }
 
@@ -414,6 +418,48 @@ namespace Careoplane.Controllers
             await _context.SaveChangesAsync();
 
             return new TOAirline(airline, _context);
+        }
+
+        [HttpPut("Rate")]
+        public async Task<IActionResult> RateAirline(JObject tempObject)
+        {
+            string name = tempObject["id"].ToString();
+            string username = tempObject["username"].ToString();
+            int rating = tempObject["rating"].ToObject<int>();
+            int passengerSeatId = tempObject["passengerSeatId"].ToObject<int>();
+            int reservationId = tempObject["reservationId"].ToObject<int>();
+
+            var airline = await _context.Airlines.Include(airline => airline.Ratings).FirstAsync(airline => airline.Name == name);
+            airline.Ratings.Add(new ArilineRating()
+            {
+                Airline = airline,
+                AirlineRatingId = 0,
+                Value = rating
+            });
+
+            _context.Entry(airline).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            var reservation = await _context.FlightReservations.Include(reservation => reservation.FlightReservationDetails)
+                .ThenInclude(details => details.PassengerSeats)
+                .FirstOrDefaultAsync(reservation => reservation.ReservationId == reservationId);
+
+            foreach(var detail in reservation.FlightReservationDetails)
+            {
+                foreach(var passengerSeat in detail.PassengerSeats)
+                {
+                    if(passengerSeat.PassengerSeatId == passengerSeatId)
+                    {
+                        passengerSeat.AirlineScored = true;
+                        break;
+                    }
+                }
+            }
+
+            _context.Entry(reservation).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool AirlineExists(string id)

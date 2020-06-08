@@ -12,10 +12,12 @@ namespace Careoplane.TOModels
         public int ReservationId { get; set; }
         public List<TOFlightReservationDetail> FlightReservationDetails { get; set; }
         public string Type { get; set; }
+        public string TimeOfCreation { get; set; }
         public TOFlightReservation() { }
         public TOFlightReservation(FlightReservation flightReservation, DatabaseContext _context) {
             ReservationId = flightReservation.ReservationId;
             FlightReservationDetails = new List<TOFlightReservationDetail>();
+            TimeOfCreation = flightReservation.TimeOfCreation.ToString();
             Type = "flight";
 
             foreach(FlightReservationDetail flightReservationDetail in flightReservation.FlightReservationDetails)
