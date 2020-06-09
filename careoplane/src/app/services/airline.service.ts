@@ -270,4 +270,8 @@ export class AirlineService {
     };
     return this.http.put(address, params);
   }
+
+  saveImage(formData){
+    return this.http.post('https://localhost:' + localStorage.getItem('port') + '/api/Upload', formData);
+  }
 }
