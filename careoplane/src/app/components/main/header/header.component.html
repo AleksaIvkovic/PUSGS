@@ -6,7 +6,7 @@
           <li routerLinkActive="active" class="nav-item" *ngIf="!isAirlineAdmin && !isRentACarAdmin && !isSysAdmin"><a class="nav-link with-icon" routerLink="main/rent-a-car"><mat-icon>directions_car</mat-icon> Rent A Car</a></li>
           <li routerLinkActive="active" class="nav-item" *ngIf="isRentACarAdmin && !isNewAdmin"><a class="nav-link" routerLink="main/rent-a-car-profile">Rent A Car Profile</a></li>
           <li routerLinkActive="active" class="nav-item" *ngIf="isAirlineAdmin && !isNewAdmin"><a class="nav-link" routerLink="main/airline-profile/details">Airline Profile</a></li>
-          <li routerLinkActive="active" class="nav-item" *ngIf="isRentACarAdmin && !isNewAdmin"><a class="nav-link" routerLink="main/profile/statistics">Statistics</a></li>
+          <li routerLinkActive="active" class="nav-item" *ngIf="(isRentACarAdmin || isAirlineAdmin)&& !isNewAdmin"><a class="nav-link" routerLink="main/profile/statistics">Statistics</a></li>
           <!-- <li routerLinkActive="active" class="nav-item"><a class="nav-link" routerLink="main/reservations">Reservations</a></li> -->
           <li routerLinkActive="active" *ngIf="isLoggedIn && !isAirlineAdmin && !isRentACarAdmin && !isSysAdmin" class="nav-item"><a class="nav-link" routerLink="main/reservations">Reservations</a></li>
           <li routerLinkActive="active" *ngIf="isLoggedIn && isSysAdmin" class="nav-item"><a class="nav-link" routerLink="main/add-admin">Add Admin</a></li>

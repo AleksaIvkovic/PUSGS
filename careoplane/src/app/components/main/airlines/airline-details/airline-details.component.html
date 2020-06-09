@@ -55,6 +55,7 @@
                                 <div #mapContainer id="map"></div>
                             </div>
                         </div>
+                        <br/>
                         <div class="row" style="height: 25;">
                             <div class="col-md-12">
                                 <div class="mat-h2">
@@ -68,7 +69,26 @@
         </div>
     </div>
 </div>
-
+<br/>
+<div class="row">
+    <div class="col-md-12">
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Destinations
+              </mat-panel-title>
+              <mat-panel-description>
+                <mat-icon>map</mat-icon>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div>
+                <div class="mat-h2" *ngFor="let destination of airline.destinations; let i = last">
+                    {{destination.value}}{{i ? ' ': ','}}&nbsp;&nbsp;
+                </div>
+            </div>
+          </mat-expansion-panel>
+    </div>
+</div>
 <br/>
 <br/>
 

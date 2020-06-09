@@ -99,6 +99,84 @@ namespace Careoplane.Controllers
             return varResult.Values.ToList();
         }
 
+        [HttpGet("Company/{company}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<IEnumerable<TOFlightReservation>>> GetCompanyFlightReservations(string company)
+        {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "aeroAdmin")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
+            var reservations = await _context.FlightReservations.Include(reservation => reservation.FlightReservationDetails).ThenInclude(details => details.PassengerSeats).ToListAsync();
+            var newReservations = reservations;
+
+            Dictionary<int, TOFlightReservation> varResult = new Dictionary<int, TOFlightReservation>();
+
+            bool invitationExpired = false;
+            bool cancelationExpired = false;
+
+            for (int i = 0; i < reservations.Count(); i++)
+            {
+                if (reservations[i].TimeOfCreation.AddDays(3) < DateTime.Now)
+                {
+                    invitationExpired = true;
+                }
+                Flight flight = await _context.Flights.FindAsync(reservations[i].FlightReservationDetails[0].FlightId);
+                if (flight.Departure < DateTime.Now.AddHours(3))
+                {
+                    cancelationExpired = true;
+                }
+
+                for (int j = 0; j < reservations[i].FlightReservationDetails.Count(); j++)
+                {
+                    for (int k = 0; k < reservations[i].FlightReservationDetails[j].PassengerSeats.Count(); k++)
+                    {
+                        if (reservations[i].FlightReservationDetails[j].PassengerSeats[k].Accepted == false)
+                        {
+                            if (invitationExpired || cancelationExpired)
+                                newReservations[i].FlightReservationDetails[j].PassengerSeats.RemoveAt(k);
+                        }
+                    }
+                }
+
+                if (reservations[i].FlightReservationDetails[0].PassengerSeats.Count() == 0)
+                {
+                    newReservations.RemoveAt(i);
+                    _context.FlightReservations.Remove(reservations[i]);
+                }
+            }
+
+            foreach (var reservation in newReservations)
+            {
+                _context.Entry(reservation).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+            foreach(FlightReservation flightReservation in newReservations)
+            {
+                foreach(FlightReservationDetail flightReservationDetail in flightReservation.FlightReservationDetails)
+                {
+                    if(flightReservationDetail.AirlineName == company)
+                    {
+                        varResult.TryAdd(flightReservation.ReservationId, new TOFlightReservation(flightReservation, _context));
+                    }
+                }
+            }
+
+            return varResult.Values.ToList();
+        }
+
         // GET: api/FlightReservations/5
         [HttpGet("Single")]
         public async Task<ActionResult<TOFlightReservation>> GetFlightReservation([FromQuery]int id, [FromQuery]string username)
@@ -113,7 +191,7 @@ namespace Careoplane.Controllers
             bool invitationExpired = false;
             bool cancelationExpired = false;
 
-            if (flightReservation.TimeOfCreation.AddDays(3) > DateTime.Now)
+            if (flightReservation.TimeOfCreation.AddDays(3) < DateTime.Now)
             {
                 invitationExpired = true;
             }
@@ -320,6 +398,11 @@ namespace Careoplane.Controllers
                         var user = await _userManager.FindByNameAsync(passengerSeat.Username);
                         MailingService.SendEMailInvite(inviter, user, tempFlightReservation, new Flight(tOFlightReservationDetail.Flight,_context));
                     }
+
+                    Seat seat = await _context.Seats.FindAsync(passengerSeat.SeatId);
+                    seat.Occupied = true;
+                    _context.Entry(seat).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
                 }
 
                 await _context.SaveChangesAsync();

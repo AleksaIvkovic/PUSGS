@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TOVehicleReservation } from 'src/app/t-o-models/t-o-vehicle-reservation.model';
 import { jqxChartComponent } from 'jqwidgets-ng/jqxchart/public_api';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AirlineService } from 'src/app/services/airline.service';
 
 @Component({
   selector: 'app-graph',
@@ -35,7 +36,8 @@ export class GraphComponent implements OnInit, OnDestroy {
     private rentACarService: RentACarService,
     private vehicleService: VehicleService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private airlineService: AirlineService
   ) { }
 
   sampleData: any[] = [];
@@ -225,9 +227,6 @@ export class GraphComponent implements OnInit, OnDestroy {
               response.forEach(vehicleReservation => 
                   this.reservations.push({
                     'price': vehicleReservation.price,
-                    'fromDate': vehicleReservation.fromDate,
-                    'toDate': vehicleReservation.toDate,
-                    'numOfDays': vehicleReservation.numOfDays,
                     'creationDate': vehicleReservation.creationDate
                   }))
             },
@@ -241,7 +240,28 @@ export class GraphComponent implements OnInit, OnDestroy {
         }
       );
     } else { //Avio kompanija
+      let company = localStorage.getItem('company');
+      this.reservationSubscription = this.airlineService.getCompanyReservations(company).subscribe(
+        result => {
+          for(let flightReservation of result){
+            for(let flightDetails of flightReservation.flightReservationDetails){
+              if(flightDetails.flight.airlineName == company){
+                for(let passengerSeat of flightDetails.passengerSeats){
+                  let price = passengerSeat.seat.price * (1 - (0.01 * passengerSeat.seat.discount)); 
+                  this.reservations.push({
+                    'price': price,
+                    'creationDate': flightReservation.timeOfCreation
+                  })
+                }
+              }
+            }
+          }
+        },
+        error => {
+          console.log(error);
+        }
 
+      )
     }
   }
 
@@ -283,7 +303,8 @@ export class GraphComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.vehicleSubscription.unsubscribe();
+    if(this.isRentACar)
+      this.vehicleSubscription.unsubscribe();
     this.reservationSubscription.unsubscribe();
   }
 

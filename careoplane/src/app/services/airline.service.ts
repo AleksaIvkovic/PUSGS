@@ -218,6 +218,11 @@ export class AirlineService {
     return this.http.get<FlightReservation[]>(address);
   }
 
+  getCompanyReservations(company: string){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations/Company/' + company;
+    return this.http.get<FlightReservation[]>(address);
+  }
+
   getReservation(id: number, username: string) {
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations/Single';
     var params = new HttpParams()
