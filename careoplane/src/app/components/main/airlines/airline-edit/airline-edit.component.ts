@@ -29,6 +29,7 @@ export class AirlineEditComponent implements OnInit {
   removable = true;
   addOnBlur = true;
   dirty = false;
+  uploadedFile = null;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
@@ -170,7 +171,16 @@ export class AirlineEditComponent implements OnInit {
         responseData => {
           this.userService.updateCompanyName(this.airline.name).subscribe(
             res => {
-              this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
+              localStorage.setItem('company',this.airline.name);
+
+              const formData = new FormData();
+              formData.append('file', this.uploadedFile, this.uploadedFile.name);
+          
+              this.airlineService.saveImage(formData).subscribe(
+                result => {
+                  this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
+                }
+              );
             },
             error => {
               console.log(error);
@@ -261,5 +271,13 @@ export class AirlineEditComponent implements OnInit {
 
   Cancel(){
     this.router.navigate(['../'],{relativeTo : this.activeRoute});
+  }
+
+  public uploadFile = (files) => {
+    if (files.length === 0) {
+      return;
+    }
+
+    this.uploadedFile = <File>files[0];
   }
 }
