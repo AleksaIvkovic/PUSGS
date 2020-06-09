@@ -81,6 +81,7 @@ const routes: Routes = [
     {path: 'flight-reservation-details', component: FlightReservationDetailsComponent},
     {path: 'discounts', component: DiscountsComponent},
     {path: 'add-admin', component: UserAuthentificationComponent},
+    {path: 'profile/statistics', component: GraphComponent},
     {path: 'friends', component: FriendsComponent},
     {path: 'confirmation', component: EmailConfirmationComponent}
   ]},

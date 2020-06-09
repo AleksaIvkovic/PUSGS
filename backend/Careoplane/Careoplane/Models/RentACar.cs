@@ -27,6 +27,8 @@ namespace Careoplane.Models
 
         public ICollection<PriceList> Prices { get; set; }
 
+        public ICollection<RentACarRating> Ratings { get; set; }
+
         public RentACar() { }
 
         public void FromTO(TORentACar toRentACar)
@@ -77,7 +79,9 @@ namespace Careoplane.Models
             toRentACar.Name = Name;
             toRentACar.Address = Address;
             toRentACar.Description = Description;
-            toRentACar.Rating = Rating;
+            double ratingSum = 0;
+            Ratings.ToList().ForEach(rating => ratingSum += rating.RentACarRatingValue);
+            toRentACar.Rating = ratingSum / Ratings.Count;
             toRentACar.Vehicles = new List<TOVehicle>();
             toRentACar.Locations = new List<TOPrimaryObject>();
             toRentACar.Prices = new List<TOPrimaryObject>();
@@ -118,6 +122,17 @@ namespace Careoplane.Models
         public double PriceValue { get; set; }
 
         public string PriceService { get; set; }
+
+        [Required]
+        public RentACar RentACar { get; set; }
+    }
+
+    public class RentACarRating
+    {
+        [Key]
+        public int RentACarRatingId { get; set; }
+
+        public int RentACarRatingValue { get; set; }
 
         [Required]
         public RentACar RentACar { get; set; }

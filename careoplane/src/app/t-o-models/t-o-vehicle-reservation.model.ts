@@ -15,6 +15,7 @@ export class TOVehicleReservation {
         public toLocation: string,
         public numOfDays: number,
         public price: number,
+        public creationDate: string,
         public type = 'vehicle'
     ) {}
 
@@ -27,7 +28,8 @@ export class TOVehicleReservation {
             new Date(this.toDate),
             this.toLocation,
             this.numOfDays,
-            this.price
+            this.price,
+            new Date(this.creationDate)
         );
     }
 }
