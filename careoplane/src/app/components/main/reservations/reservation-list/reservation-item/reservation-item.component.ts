@@ -15,6 +15,7 @@ export class ReservationItemComponent implements OnInit {
   toDate: Date;
   fromLocation: string;
   toLocation: string;
+  arrow: string = "arrow_right_alt";
 
   constructor(private airlineService: AirlineService) { }
 
@@ -29,6 +30,7 @@ export class ReservationItemComponent implements OnInit {
       let flight2 = null;
       if((<FlightReservation>this.reservation).flightReservationDetails.length != 1){
         flight2 = (<FlightReservation>this.reservation).flightReservationDetails[1].flight;
+        this.arrow = "swap_horiz"
       }
       this.fromDate = new Date(flight.departure);
       this.toDate = new Date(flight.arrival);
