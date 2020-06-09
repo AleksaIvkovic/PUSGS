@@ -41,6 +41,23 @@ export class VehicleService {
         return this.http.get(address, {params: params});
     }
 
+    getCompanyForVehicle(vehicleId: number) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles/Company';
+        var params = new HttpParams().append('vehicleId', vehicleId.toString());
+        
+        return this.http.get(address, {params: params});
+    }
+
+    rateVehicle(vehicleId: number, rating: number, reservationId: number) {
+        let address ='http://localhost:' + localStorage.getItem('port') + '/api/Vehicles/Rate';
+        let params = {
+        'vehicleId': vehicleId,
+        'rating': rating,
+        'reservationId': reservationId
+        };
+        return this.http.put(address, params);
+    }
+
     postVehicle(newVehicle: Vehicle) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles';
         return this.http

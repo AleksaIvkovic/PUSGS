@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Cors;
 using Careoplane.TOModels;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Linq;
 
 namespace Careoplane.Controllers
 {
@@ -42,6 +45,43 @@ namespace Careoplane.Controllers
             RentACarList.ForEach(rentACar => TORentACarList.Add(rentACar.ToTO()));
 
             return TORentACarList;
+        }
+
+        [HttpPut("Rate")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> RateAirline(JObject tempObject)
+        {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "regular")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
+            string rentACarName = tempObject["rentACarName"].ToString();
+            int rating = tempObject["rating"].ToObject<int>();
+            int reservationId = tempObject["reservationId"].ToObject<int>();
+
+            var rentACar = await _context.RentACars.Include(rentACar => rentACar.Ratings).FirstAsync(rentACar => rentACar.Name == rentACarName);
+            rentACar.Ratings.Add(new RentACarRating()
+            {
+                RentACar = rentACar,
+                RentACarRatingId = 0,
+                RentACarRatingValue = rating
+            });
+
+            _context.Entry(rentACar).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            var reservation = await _context.VehicleReservation
+                .FirstOrDefaultAsync(reservation => reservation.ReservationId == reservationId);
+
+            reservation.IsRentACarRated = true;
+
+            _context.Entry(reservation).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         // GET: api/RentACars/5

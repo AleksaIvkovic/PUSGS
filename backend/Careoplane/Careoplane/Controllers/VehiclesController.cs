@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
 using Careoplane.TOModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Linq;
 
 namespace Careoplane.Controllers
 {
@@ -42,6 +45,57 @@ namespace Careoplane.Controllers
             VehicleList.ForEach(vehicle => ids.Add(vehicle.VehicleId));
 
             return ids;
+        }
+
+        [HttpGet]
+        [Route("Company")]
+        public async Task<ActionResult<string>> GetCompanyForVehicle([FromQuery]string vehicleId)
+        {
+            var vehicle = await _context.Vehicles.Include(vehicle => vehicle.RentACar).Where(vehicle => vehicle.VehicleId == int.Parse(vehicleId)).FirstOrDefaultAsync();
+
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            return vehicle.RentACar.Name;
+        }
+
+        [HttpPut("Rate")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> RateAirline(JObject tempObject)
+        {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "regular")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
+            int vehicleId = tempObject["vehicleId"].ToObject<int>();
+            int rating = tempObject["rating"].ToObject<int>();
+            int reservationId = tempObject["reservationId"].ToObject<int>();
+
+            var vehicle = await _context.Vehicles.Include(vehicle => vehicle.Ratings).FirstAsync(vehicle => vehicle.VehicleId == vehicleId);
+            vehicle.Ratings.Add(new VehicleRating()
+            {
+                Vehicle = vehicle,
+                VehicleRatingId = 0,
+                VehicleRatingValue = rating
+            });
+
+            _context.Entry(vehicle).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            var reservation = await _context.VehicleReservation
+                .FirstOrDefaultAsync(reservation => reservation.ReservationId == reservationId);
+
+            reservation.IsVehicleRated = true;
+
+            _context.Entry(reservation).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         // GET: api/Vehicles/5

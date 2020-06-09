@@ -161,6 +161,16 @@ export class RentACarService {
         this.newVehicleListChanged.next(this.newVehicles.slice());
     }
 
+    rateRentACar(rentACarName: string, rating: number, reservationId: number) {
+        let address ='http://localhost:' + localStorage.getItem('port') + '/api/RentACars/Rate';
+        let params = {
+        'rentACarName': rentACarName,
+        'rating': rating,
+        'reservationId': reservationId
+        };
+        return this.http.put(address, params);
+    }
+
     getVehiclesOnSale(): Vehicle[] {
         let vehiclesOnSale: Vehicle[] = [];
 
