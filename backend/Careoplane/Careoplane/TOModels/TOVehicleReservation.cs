@@ -29,5 +29,7 @@ namespace Careoplane.TOModels
         public string UserName { get; set; }
 
         public TORentACar RentACar { get; set; }
+
+        public string CreationDate { get; set; }
     }
 }

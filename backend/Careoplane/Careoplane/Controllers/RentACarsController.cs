@@ -32,8 +32,10 @@ namespace Careoplane.Controllers
             List<RentACar> RentACarList = await _context.RentACars
                 .Include(rentACar => rentACar.Locations)
                 .Include(rentACar => rentACar.Prices)
+                .Include(rentACar => rentACar.Ratings)
                 .Include(rentACar => rentACar.Vehicles)
-                .ThenInclude(vehicle => vehicle.UnavailableDates).ToListAsync();
+                .ThenInclude(vehicle => vehicle.UnavailableDates)
+                .ToListAsync();
             List<TORentACar> TORentACarList = new List<TORentACar>();
             RentACarList.ForEach(rentACar => TORentACarList.Add(rentACar.ToTO()));
 
@@ -44,7 +46,13 @@ namespace Careoplane.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TORentACar>> GetRentACar(string id)
         {
-            var rentACar = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).Include(r => r.Vehicles).ThenInclude(v => v.UnavailableDates).FirstOrDefaultAsync(r => r.Name == id);
+            var rentACar = await _context.RentACars
+                .Include(rentACar => rentACar.Locations)
+                .Include(rentACar => rentACar.Prices)
+                .Include(rentACar => rentACar.Ratings)
+                .Include(rentACar => rentACar.Vehicles)
+                .ThenInclude(vehicle => vehicle.UnavailableDates)
+                .FirstOrDefaultAsync(r => r.Name == id);
 
             if (rentACar == null)
             {
