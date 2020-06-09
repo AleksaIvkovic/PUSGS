@@ -21,6 +21,17 @@ export class VehicleService {
         return this.http.get(address, {params: params});
     }
 
+    getVehiclesForUser() {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/VehicleReservations/ForUser';
+        return this.http.get(address);
+    }
+
+    getReservation(reservationId: number) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/VehicleReservations/' + reservationId.toString();
+        
+        return this.http.get(address);
+    }
+
     getReservationsForVehicles(vehicleIds: number[]) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/VehicleReservations/ForVehicles';
         let ids: string = '';

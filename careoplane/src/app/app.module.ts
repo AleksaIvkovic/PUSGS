@@ -110,6 +110,7 @@ import { ChangePasswordComponent } from './components/change-password/change-pas
 import { GraphComponent } from './components/main/graph/graph.component';
 import { FlightReservationDetailsComponent } from './components/main/reservations/flight-reservation-details/flight-reservation-details.component';
 import { RatingComponent } from './components/rating/rating.component';
+import { VehicleReservationDetailsComponent } from './components/main/reservations/vehicle-reservation-details/vehicle-reservation-details.component';
 
 export function socialConfigs() {  
   const config = new AuthServiceConfig(  
@@ -181,6 +182,7 @@ export function socialConfigs() {
     GraphComponent,
     FlightReservationDetailsComponent,
     RatingComponent,
+    VehicleReservationDetailsComponent,
   ],
   entryComponents: [
     LogInComponent

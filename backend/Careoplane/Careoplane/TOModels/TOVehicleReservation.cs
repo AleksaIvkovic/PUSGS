@@ -31,5 +31,9 @@ namespace Careoplane.TOModels
         public TORentACar RentACar { get; set; }
 
         public string CreationDate { get; set; }
+
+        public bool IsVehicleRated { get; set; }
+
+        public bool IsRentACarRated { get; set; }
     }
 }

@@ -4,6 +4,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/models/user.model';
 import { FlightReservation } from 'src/app/models/flight-reservation.model';
 import { AirlineService } from 'src/app/services/airline.service';
+import { VehicleReservation } from 'src/app/models/vehicle-reservation.model';
+import { VehicleService } from 'src/app/services/vehicle.service';
+import { TOVehicleReservation } from 'src/app/t-o-models/t-o-vehicle-reservation.model';
 
 @Component({
   selector: 'app-reservations',
@@ -17,11 +20,16 @@ export class ReservationsComponent implements OnInit {
   flightInvitations: FlightReservation[] = [];
   flightHistory: FlightReservation[] = [];
 
+  vehicleReservationsLoaded: boolean = false;
+  vehicleReservations: VehicleReservation[] = [];
+  vehicleHistory: VehicleReservation[] = [];
+
   constructor(
     private userService: UserService,
     private router: Router,
     private activeRoute: ActivatedRoute,
-    private airlineService: AirlineService
+    private airlineService: AirlineService,
+    private vehicleService: VehicleService
   ) { }
 
   ngOnInit(): void {
@@ -52,6 +60,31 @@ export class ReservationsComponent implements OnInit {
           }
         }
         this.flightReservationsLoaded = true;
+      },
+      error => {
+        console.log(error);
+      }
+    );
+
+    this.vehicleService.getVehiclesForUser().subscribe(
+      (response: TOVehicleReservation[]) => {
+        response.forEach(vehicleReservation => {
+          let reservation: VehicleReservation = 
+            Object.assign(new VehicleReservation(
+              vehicleReservation.vehicleId, new Date(vehicleReservation.fromDate), 
+              vehicleReservation.fromLocation, new Date(vehicleReservation.toDate), 
+              vehicleReservation.toLocation, vehicleReservation.numOfDays, 
+              vehicleReservation.price, new Date(vehicleReservation.creationDate), 
+              vehicleReservation.type, vehicleReservation.isVehicleRated,
+              vehicleReservation.isRentACarRated), vehicleReservation);
+
+          if (new Date(vehicleReservation.toDate).valueOf() < (new Date()).valueOf()) { // Prosla rezervacija
+            this.vehicleHistory.push(reservation);
+          } else {
+            this.vehicleReservations.push(reservation);
+          }
+        });
+        this.vehicleReservationsLoaded = true;
       },
       error => {
         console.log(error);

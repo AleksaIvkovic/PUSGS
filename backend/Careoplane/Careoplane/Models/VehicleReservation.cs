@@ -44,6 +44,10 @@ namespace Careoplane.Models
         [Required]
         public DateTime CreationDate { get; set; }
 
+        public bool IsVehicleRated { get; set; }
+
+        public bool IsRentACarRated { get; set; }
+
         public void FromTO(TOVehicleReservation toVehicleReservation)
         {
             FromDate = DateTime.Parse(toVehicleReservation.FromDate);
@@ -61,6 +65,8 @@ namespace Careoplane.Models
             VehicleId = toVehicleReservation.VehicleId;
             UserName = toVehicleReservation.UserName;
             CreationDate = DateTime.Parse(toVehicleReservation.CreationDate);
+            IsVehicleRated = toVehicleReservation.IsVehicleRated;
+            IsRentACarRated = toVehicleReservation.IsRentACarRated;
         }
 
         public TOVehicleReservation ToTO()
@@ -77,6 +83,8 @@ namespace Careoplane.Models
             //toVehicleReservation.Vehicle = Vehicle.ToTO();
             toVehicleReservation.VehicleId = VehicleId;
             toVehicleReservation.CreationDate = CreationDate.ToString();
+            toVehicleReservation.IsVehicleRated = IsVehicleRated;
+            toVehicleReservation.IsRentACarRated = IsRentACarRated;
 
             return toVehicleReservation;
         }

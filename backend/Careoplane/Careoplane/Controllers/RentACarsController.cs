@@ -35,6 +35,8 @@ namespace Careoplane.Controllers
                 .Include(rentACar => rentACar.Ratings)
                 .Include(rentACar => rentACar.Vehicles)
                 .ThenInclude(vehicle => vehicle.UnavailableDates)
+                .Include(rentACar => rentACar.Vehicles)
+                .ThenInclude(vehicle => vehicle.Ratings)
                 .ToListAsync();
             List<TORentACar> TORentACarList = new List<TORentACar>();
             RentACarList.ForEach(rentACar => TORentACarList.Add(rentACar.ToTO()));
@@ -52,6 +54,8 @@ namespace Careoplane.Controllers
                 .Include(rentACar => rentACar.Ratings)
                 .Include(rentACar => rentACar.Vehicles)
                 .ThenInclude(vehicle => vehicle.UnavailableDates)
+                .Include(rentACar => rentACar.Vehicles)
+                .ThenInclude(vehicle => vehicle.Ratings)
                 .FirstOrDefaultAsync(r => r.Name == id);
 
             if (rentACar == null)

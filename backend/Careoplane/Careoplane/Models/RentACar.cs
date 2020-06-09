@@ -80,8 +80,14 @@ namespace Careoplane.Models
             toRentACar.Address = Address;
             toRentACar.Description = Description;
             double ratingSum = 0;
-            Ratings.ToList().ForEach(rating => ratingSum += rating.RentACarRatingValue);
-            toRentACar.Rating = ratingSum / Ratings.Count;
+            if (Ratings.Count != 0)
+            {
+                Ratings.ToList().ForEach(rating => ratingSum += rating.RentACarRatingValue);
+                toRentACar.Rating = ratingSum / Ratings.Count;
+            } else
+            {
+                toRentACar.Rating = 0;
+            }
             toRentACar.Vehicles = new List<TOVehicle>();
             toRentACar.Locations = new List<TOPrimaryObject>();
             toRentACar.Prices = new List<TOPrimaryObject>();
