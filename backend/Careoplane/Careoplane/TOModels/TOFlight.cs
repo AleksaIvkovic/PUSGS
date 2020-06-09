@@ -21,6 +21,7 @@ namespace Careoplane.TOModels
         public string Arrival { get; set; }
 
         public double Distance { get; set; }
+        public double Rating { get; set; }
 
         public List<TOPrimaryObject> Connections { get; set; }
         public List<TOPriceSegmentSeat> SeatingArangement { get; set; }
@@ -73,6 +74,17 @@ namespace Careoplane.TOModels
                     SeatingArangement.Add(new TOPriceSegmentSeat(seatArrangement.SeatArrangementFlightId, seatArrangement.Value, seatArrangement.Ordinal , seatArrangement.Flight.FlightId.ToString()));
                 }
             SeatingArangement = SeatingArangement.OrderBy(f => f.Ordinal).ToList();
+
+            if (flight.Ratings != null && flight.Ratings.Count != 0)
+            {
+                int sum = 0;
+                foreach(var rating in flight.Ratings)
+                {
+                    sum += rating.Value;
+                }
+
+                Rating = sum / flight.Ratings.Count();
+            }
 
             Seats = new List<TOSeat>();
             if (flight.Seats != null)

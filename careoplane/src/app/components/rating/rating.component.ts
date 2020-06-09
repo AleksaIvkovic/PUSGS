@@ -40,11 +40,11 @@ export class RatingComponent implements OnInit {
 
   rate(num: number){
     switch(num){
-      case 1: { break}
-      case 2: { break}
-      case 3: { break}
-      case 4: { break}
-      case 5: { break}
+      case 1: { this.dialogRef.close(1); break;}
+      case 2: { this.dialogRef.close(2); break;}
+      case 3: { this.dialogRef.close(3); break;}
+      case 4: { this.dialogRef.close(4); break;}
+      case 5: { this.dialogRef.close(5); break;}
     }
   }
 }

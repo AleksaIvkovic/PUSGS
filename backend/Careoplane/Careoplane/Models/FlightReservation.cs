@@ -11,5 +11,6 @@ namespace Careoplane.Models
         [Key]
         public int ReservationId { get; set; }
         public List<FlightReservationDetail> FlightReservationDetails { get; set; }
+        public DateTime TimeOfCreation { get; set; }
     }
 }

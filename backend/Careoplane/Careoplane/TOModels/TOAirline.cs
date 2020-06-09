@@ -11,25 +11,15 @@ namespace Careoplane.TOModels
     public class TOAirline
     {
         public string Name { get; set; }
-
         public string Address { get; set; }
-
         public string Description { get; set; }
-
         public List<TOPriceSegmentSeat> Prices { get; set; }
-
         public List<TOPriceSegmentSeat> SeatingArrangements { get; set; }
-
         public List<TOPriceSegmentSeat> SegmentLengths { get; set; }
-
         public List<TOFlight> Flights { get; set; }
-
         public string Image { get; set; }
-
-        public decimal Rating { get; set; }
-
+        public double Rating { get; set; }
         public List<TOPrimaryObject> Destinations { get; set; }
-
         public List<TOFastTicket> FastTickets { get; set; }
 
         public TOAirline() { }

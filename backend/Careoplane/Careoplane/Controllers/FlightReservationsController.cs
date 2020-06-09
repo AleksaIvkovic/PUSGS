@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Careoplane.Services;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.FileProviders;
 
 namespace Careoplane.Controllers
 {
@@ -37,41 +38,132 @@ namespace Careoplane.Controllers
             var user = await _userManager.FindByIdAsync(userId);
 
             var reservations = await _context.FlightReservations.Include(reservation => reservation.FlightReservationDetails).ThenInclude(details => details.PassengerSeats).ToListAsync();
+            var newReservations = reservations;
 
             Dictionary<int, TOFlightReservation> varResult = new Dictionary<int, TOFlightReservation>();
 
-            foreach(FlightReservation flightReservation in reservations)
+            bool invitationExpired = false;
+            bool cancelationExpired = false;
+
+            for(int i = 0; i < reservations.Count(); i++)
             {
-                foreach(FlightReservationDetail flightReservationDetail in flightReservation.FlightReservationDetails)
+                if (reservations[i].TimeOfCreation.AddDays(3) < DateTime.Now)
                 {
-                    foreach(PassengerSeat passengerSeat in flightReservationDetail.PassengerSeats)
+                    invitationExpired = true;
+                }
+                Flight flight = await _context.Flights.FindAsync(reservations[i].FlightReservationDetails[0].FlightId);
+                if (flight.Departure < DateTime.Now.AddHours(3))
+                {
+                    cancelationExpired = true;
+                }
+
+                for(int j = 0; j < reservations[i].FlightReservationDetails.Count(); j++)
+                {
+                    for(int k = 0; k < reservations[i].FlightReservationDetails[j].PassengerSeats.Count();k++)
                     {
-                        if(passengerSeat.Username == user.UserName)
+                        if(reservations[i].FlightReservationDetails[j].PassengerSeats[k].Accepted == false)
                         {
-                            varResult.TryAdd(flightReservation.ReservationId,new TOFlightReservation(flightReservation, _context));
+                            if(invitationExpired || cancelationExpired)
+                                newReservations[i].FlightReservationDetails[j].PassengerSeats.RemoveAt(k);
+                        }
+                        else if(reservations[i].FlightReservationDetails[j].PassengerSeats[k].Username == user.UserName)
+                        {
+                            var toReservation = new TOFlightReservation(reservations[i], _context);
+                            varResult.TryAdd(reservations[i].ReservationId,toReservation);
                         }
                     }
                 }
+
+                if (reservations[i].FlightReservationDetails[0].PassengerSeats.Count() == 0)
+                {
+                    newReservations.RemoveAt(i);
+                    _context.FlightReservations.Remove(reservations[i]);
+                }
             }
+
+            foreach(var reservation in newReservations)
+            {
+                _context.Entry(reservation).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+            
 
             return varResult.Values.ToList();
         }
 
         // GET: api/FlightReservations/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TOFlightReservation>> GetFlightReservation(int id)
+        [HttpGet("Single")]
+        public async Task<ActionResult<TOFlightReservation>> GetFlightReservation([FromQuery]int id, [FromQuery]string username)
         {
             FlightReservation flightReservation = await _context.FlightReservations
                 .Include(reservation => reservation.FlightReservationDetails)
                 .ThenInclude(details => details.PassengerSeats)
                 .FirstOrDefaultAsync(reservation => reservation.ReservationId == id);
 
+            FlightReservation tempFlightReservation = flightReservation;
+
+            bool invitationExpired = false;
+            bool cancelationExpired = false;
+
+            if (flightReservation.TimeOfCreation.AddDays(3) > DateTime.Now)
+            {
+                invitationExpired = true;
+            }
+            Flight flight = await _context.Flights.FindAsync(flightReservation.FlightReservationDetails[0].FlightId);
+            if (flight.Departure < DateTime.Now.AddHours(3))
+            {
+                cancelationExpired = true;
+            }
+
+            for(int i = 0; i < flightReservation.FlightReservationDetails.Count(); i++)
+                for(int j = 0; j < flightReservation.FlightReservationDetails[i].PassengerSeats.Count(); j++)
+                {
+                    if(flightReservation.FlightReservationDetails[i].PassengerSeats[j].Accepted == false)
+                    {
+                        if(invitationExpired || cancelationExpired)
+                        {
+                            tempFlightReservation.FlightReservationDetails[i].PassengerSeats.RemoveAt(j);
+                        }
+                    }
+                }
+
+            if (tempFlightReservation.FlightReservationDetails[0].PassengerSeats.Count() == 0)
+            {
+                _context.FlightReservations.Remove(flightReservation);
+            }
+            else
+            {
+                _context.Entry(flightReservation).State = EntityState.Modified;
+            }
+
+            await _context.SaveChangesAsync();
+
+            var found = false;
+            for(int i = 0; i < flightReservation.FlightReservationDetails[0].PassengerSeats.Count(); i++)
+            {
+                if(flightReservation.FlightReservationDetails[0].PassengerSeats[i].Username == username)
+                {
+                    found = true;
+                }
+            }
+
+            if (!found)
+                flightReservation = null;
+
             if (flightReservation == null)
             {
                 return NotFound();
             }
 
-            return new TOFlightReservation(flightReservation,_context);
+            return new TOFlightReservation(tempFlightReservation,_context);
         }
 
         // PUT: api/FlightReservations/5
@@ -171,7 +263,8 @@ namespace Careoplane.Controllers
 
             FlightReservation tempFlightReservation = new FlightReservation()
             {
-                ReservationId = 0
+                ReservationId = 0,
+                TimeOfCreation = DateTime.Now
             };
 
             string userId = User.Claims.First(c => c.Type == "UserID").Value;

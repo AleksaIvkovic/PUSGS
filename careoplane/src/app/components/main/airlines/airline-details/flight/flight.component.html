@@ -56,11 +56,18 @@
         </div>
     </div>
     <div class="col-md-3 flight">
-        <div class="mat-h3" *ngIf="classType !== 'any' && fastTicket == null">
-            {{price | currency: 'EUR'}}
+        <div class="row" *ngIf="admin">
+            <div class="mat-h3">
+                {{flight.rating}} / 5
+            </div>
         </div>
-        <div class="mat-h3" *ngIf="classType === 'any' && fastTicket == null">
-            {{flight.prices[2] | currency: 'EUR'}} - {{flight.prices[0] | currency: 'EUR'}}
+        <div class="row">
+            <div class="mat-h3" *ngIf="classType !== 'any' && fastTicket == null">
+                {{price | currency: 'EUR'}}
+            </div>
+            <div class="mat-h3" *ngIf="classType === 'any' && fastTicket == null">
+                {{flight.prices[2] | currency: 'EUR'}} - {{flight.prices[0] | currency: 'EUR'}}
+            </div>
         </div>
         <div class="row" *ngIf="fastTicket != null">
             <div class="col-md">

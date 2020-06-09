@@ -19,7 +19,8 @@ export class Flight {
         public seats: Seat[] = [],
         public prices: number[] = [],
         public seatingArangement : PriceSegmentSeat[] = [],
-        public segments : PriceSegmentSeat[] = []
+        public segments : PriceSegmentSeat[] = [],
+        public rating: number = 0
         ){
             this.conCount = connections.length;
             let time = new Date(arrival).valueOf() - new Date(departure).valueOf();

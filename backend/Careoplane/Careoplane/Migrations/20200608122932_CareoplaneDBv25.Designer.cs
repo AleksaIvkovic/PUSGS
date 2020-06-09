@@ -4,14 +4,16 @@ using Careoplane.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Careoplane.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200608122932_CareoplaneDBv25")]
+    partial class CareoplaneDBv25
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -344,27 +346,6 @@ namespace Careoplane.Migrations
                     b.ToTable("RentACars");
                 });
 
-            modelBuilder.Entity("Careoplane.Models.RentACarRating", b =>
-                {
-                    b.Property<int>("RentACarRatingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("RentACarName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("RentACarRatingValue")
-                        .HasColumnType("int");
-
-                    b.HasKey("RentACarRatingId");
-
-                    b.HasIndex("RentACarName");
-
-                    b.ToTable("RentACarRating");
-                });
-
             modelBuilder.Entity("Careoplane.Models.Seat", b =>
                 {
                     b.Property<int>("SeatId")
@@ -563,9 +544,6 @@ namespace Careoplane.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("FromDate")
                         .HasColumnType("datetime2");
 
@@ -696,15 +674,6 @@ namespace Careoplane.Migrations
                 {
                     b.HasOne("Careoplane.Models.RentACar", "RentACar")
                         .WithMany("Prices")
-                        .HasForeignKey("RentACarName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Careoplane.Models.RentACarRating", b =>
-                {
-                    b.HasOne("Careoplane.Models.RentACar", "RentACar")
-                        .WithMany("Ratings")
                         .HasForeignKey("RentACarName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

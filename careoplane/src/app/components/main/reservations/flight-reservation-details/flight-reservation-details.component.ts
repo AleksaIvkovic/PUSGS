@@ -14,25 +14,37 @@ export class FlightReservationDetailsComponent implements OnInit {
   reservation: FlightReservation;
   type : string = null;
   username: string;
-  
+  expired: boolean = false;
+  flightScored: boolean[] = [];
+  airlineScored: boolean[] = [];
   constructor(private ratingDialog: MatDialog, private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
     this.reservation = new FlightReservation();
-
+    
     this.activeRoute.params.subscribe(
       params => {
         if(params['id']){
-          this.airlineService.getReservation(+params['id']).subscribe(
+          this.username = localStorage.getItem('username');
+          this.airlineService.getReservation(+params['id'], this.username).subscribe(
             result => {
               this.reservation = result;
+
+              for(let details of this.reservation.flightReservationDetails){
+                for(let passengerSeat of details.passengerSeats){
+                  if(passengerSeat.username == this.username){
+                    this.flightScored.push(passengerSeat.flightScored);
+                    this.airlineScored.push(passengerSeat.airlineScored);
+                  }
+                }
+              }
             },
             error => {
               console.log(error);
+              this.expired = true;
             }
           )
           this.type = params['type'];
-          this.username = localStorage.getItem('username');
         }
       }
     )
@@ -40,22 +52,23 @@ export class FlightReservationDetailsComponent implements OnInit {
     this.activeRoute.queryParams.subscribe(
       params => {
         if(params['id']){
-          this.airlineService.getReservation(+params['id']).subscribe(
+          this.username = params['username'];
+          this.airlineService.getReservation(+params['id'],this.username).subscribe(
             result => {
               this.reservation = result;
             },
             error => {
               console.log(error);
+              this.expired = true;
             }
           )
           this.type = 'invitation';
-          this.username = params['username'];
         }
       }
     )
   }
 
-  ScoreFlight(){
+  ScoreFlight(id: number, passengerSeatId: number, index: number){
     let dialogRef = this.ratingDialog.open(
       RatingComponent, {
       }
@@ -64,17 +77,39 @@ export class FlightReservationDetailsComponent implements OnInit {
     dialogRef.afterClosed()
     .subscribe(
       (result) => {
-        if (result === "success") {
-          
+        if(result != undefined){
+          this.airlineService.rateFlight(result, id, this.username, passengerSeatId, this.reservation.reservationId).subscribe(
+            params => {
+              this.flightScored[index] = true;
+            },
+            error => {
+              console.log(error)
+            }
+          )
         }
-    })
+      })
   }
 
-  ScoreAirline(){
+  ScoreAirline(id: string, passengerSeatId: number, index: number){
     let dialogRef = this.ratingDialog.open(
       RatingComponent, {
       }
     );
+    
+    dialogRef.afterClosed()
+    .subscribe(
+      (result) => {
+        if(result != undefined){
+          this.airlineService.rateAirline(result, id, this.username, passengerSeatId, this.reservation.reservationId).subscribe(
+            params => {
+              this.airlineScored[index] = true;
+            },
+            error => {
+              console.log(error)
+            }
+          )
+        }
+      })
   }
 
   Accept(){
@@ -97,5 +132,14 @@ export class FlightReservationDetailsComponent implements OnInit {
         console.log(error);
       }
     )
+  }
+
+  CheckTime(){
+    if(this.reservation.flightReservationDetails != null && this.reservation.flightReservationDetails == []){
+      if(new Date(this.reservation.flightReservationDetails[0].flight.departure).valueOf() > (new Date().valueOf() - (3*60*60*1000)))
+        return false;
+      return true;
+    }
+    return false;
   }
 }
