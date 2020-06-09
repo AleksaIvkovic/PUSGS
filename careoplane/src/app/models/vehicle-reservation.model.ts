@@ -13,7 +13,9 @@ export class VehicleReservation {
         public numOfDays: number,
         public price: number,
         public creationDate: Date = new Date(),
-        public type = 'vehicle'
+        public type = 'vehicle',
+        public isVehicleRated: boolean = false,
+        public isRentACarRated: boolean = false,
     ) {}
 
     public ToTO(rentACar: RentACar): TOVehicleReservation {
@@ -29,7 +31,10 @@ export class VehicleReservation {
             this.toLocation,
             this.numOfDays,
             this.price,
-            this.creationDate.toString()
+            this.creationDate.toString(),
+            this.type,
+            this.isVehicleRated,
+            this.isRentACarRated
         )
     }
 }

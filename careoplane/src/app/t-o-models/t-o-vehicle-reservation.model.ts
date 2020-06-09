@@ -16,7 +16,9 @@ export class TOVehicleReservation {
         public numOfDays: number,
         public price: number,
         public creationDate: string,
-        public type = 'vehicle'
+        public type = 'vehicle',
+        public isVehicleRated: boolean = false,
+        public isRentACarRated: boolean = false,
     ) {}
 
     public ToRegular(): VehicleReservation {
@@ -29,7 +31,10 @@ export class TOVehicleReservation {
             this.toLocation,
             this.numOfDays,
             this.price,
-            new Date(this.creationDate)
+            new Date(this.creationDate),
+            this.type,
+            this.isVehicleRated,
+            this.isRentACarRated
         );
     }
 }

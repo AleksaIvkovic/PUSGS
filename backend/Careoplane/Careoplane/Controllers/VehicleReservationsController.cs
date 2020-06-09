@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Careoplane.Database;
 using Careoplane.Models;
 using Careoplane.TOModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 
 namespace Careoplane.Controllers
 {
@@ -16,10 +19,12 @@ namespace Careoplane.Controllers
     public class VehicleReservationsController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private UserManager<AppUser> _userManager;
 
-        public VehicleReservationsController(DatabaseContext context)
+        public VehicleReservationsController(DatabaseContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: api/VehicleReservations
@@ -52,6 +57,32 @@ namespace Careoplane.Controllers
 
             return TOVehicleReservationList;
         }
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("ForUser")]
+        public async Task<ActionResult<IEnumerable<TOVehicleReservation>>> GetVehicleReservationsForUser()
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user != null)
+            {
+                List<VehicleReservation> VehicleReservationList = new List<VehicleReservation>();
+
+                VehicleReservationList = await _context.VehicleReservation.Where(vehicleReservation => vehicleReservation.UserName == user.UserName).ToListAsync();
+
+                List<TOVehicleReservation> TOVehicleReservationList = new List<TOVehicleReservation>();
+                VehicleReservationList.ForEach(reservation => TOVehicleReservationList.Add(reservation.ToTO()));
+
+                return TOVehicleReservationList;
+            } else
+            {
+                return BadRequest();
+            }
+        }
+
 
         // GET: api/VehicleReservations/5
         [HttpGet("{id}")]

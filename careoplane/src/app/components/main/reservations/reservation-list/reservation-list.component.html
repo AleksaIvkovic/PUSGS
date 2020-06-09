@@ -12,6 +12,11 @@
                     <app-reservation-item [reservation]="reservation"></app-reservation-item>
                 </a>
             </div>
+            <div *ngIf="reservation.type === 'vehicle'">
+                <a [routerLink]="['../' , reservation.reservationId, type,'vehicle-reservation-details']">
+                    <app-reservation-item [reservation]="reservation"></app-reservation-item>
+                </a>
+            </div>
         </div>
     </div>
   </div>

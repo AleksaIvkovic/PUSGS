@@ -1,20 +1,36 @@
 <!-- <div class="row">
     <app-reservation-list [reservationList]="loggedInUser.reservations"></app-reservation-list>
 </div> -->
-<div *ngIf="flightReservationsLoaded">
-    Invitations
-    <br/>
-    <div class="row">
-        <app-reservation-list [reservationList]="flightInvitations" [type]="'invitation'"></app-reservation-list>
+<div *ngIf="flightReservationsLoaded && vehicleReservationsLoaded">
+    <div class="mat-h2">
+        Invitations
     </div>
-    Reservations
     <br/>
     <div class="row">
-        <app-reservation-list [reservationList]="flightReservations" [type]="'reservation'"></app-reservation-list>
+        <div class="col-md-12">
+            <app-reservation-list [reservationList]="flightInvitations" [type]="'invitation'"></app-reservation-list>
+        </div>
     </div>
-    History
+    <hr>
+    <div class="mat-h2">
+        Reservations
+    </div>
     <br/>
     <div class="row">
-        <app-reservation-list [reservationList]="flightHistory" [type]="'history'"></app-reservation-list>
+        <div class="col-md-12">
+            <app-reservation-list [reservationList]="flightReservations" [type]="'reservation'"></app-reservation-list>
+            <app-reservation-list [reservationList]="vehicleReservations" [type]="'reservation'"></app-reservation-list>
+        </div>
+    </div>
+    <hr>
+    <div class="mat-h2">
+        History
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-12">
+            <app-reservation-list [reservationList]="flightHistory" [type]="'history'"></app-reservation-list>
+            <app-reservation-list [reservationList]="vehicleHistory" [type]="'history'"></app-reservation-list>
+        </div>
     </div>
 </div>

@@ -42,6 +42,8 @@ namespace Careoplane.Models
         [Required]
         public RentACar RentACar { get; set; }
 
+        public ICollection<VehicleRating> Ratings { get; set; }
+
         public void FromTO(TOVehicle toVehicle, RentACar rentACar)
         {
             Brand = toVehicle.Brand;
@@ -75,7 +77,16 @@ namespace Careoplane.Models
             toVehicle.Location = Location;
             toVehicle.NumOfSeats = NumOfSeats;
             toVehicle.PricePerDay = PricePerDay;
-            toVehicle.Rating = Rating;
+            double ratingSum = 0;
+            if (Ratings.Count != 0)
+            {
+                Ratings.ToList().ForEach(rating => ratingSum += rating.VehicleRatingValue);
+                toVehicle.Rating = ratingSum / Ratings.Count;
+            }
+            else
+            {
+                toVehicle.Rating = 0;
+            }
             toVehicle.RentACar = RentACar.Name;
             toVehicle.Type = Type;
             toVehicle.UnavailableDates = new List<TOPrimaryObject>();
@@ -98,6 +109,17 @@ namespace Careoplane.Models
         [Key]
         public int DateId { get; set; }
         public DateTime Date { get; set; }
+
+        [Required]
+        public Vehicle Vehicle { get; set; }
+    }
+
+    public class VehicleRating
+    {
+        [Key]
+        public int VehicleRatingId { get; set; }
+
+        public int VehicleRatingValue { get; set; }
 
         [Required]
         public Vehicle Vehicle { get; set; }

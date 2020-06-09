@@ -30,6 +30,7 @@ import { EmailConfirmationComponent } from './components/main/email-confirmation
 import { GraphComponent } from './components/main/graph/graph.component';
 import { FlightReservation } from './models/flight-reservation.model';
 import { FlightReservationDetailsComponent } from './components/main/reservations/flight-reservation-details/flight-reservation-details.component';
+import { VehicleReservationDetailsComponent } from './components/main/reservations/vehicle-reservation-details/vehicle-reservation-details.component';
 
 
 const routes: Routes = [
@@ -79,6 +80,7 @@ const routes: Routes = [
     {path: 'reservations', component: ReservationsComponent},
     {path: ':id/:type/flight-reservation-details', component: FlightReservationDetailsComponent},
     {path: 'flight-reservation-details', component: FlightReservationDetailsComponent},
+    {path: ':id/:type/vehicle-reservation-details', component: VehicleReservationDetailsComponent},
     {path: 'discounts', component: DiscountsComponent},
     {path: 'add-admin', component: UserAuthentificationComponent},
     {path: 'profile/statistics', component: GraphComponent},
