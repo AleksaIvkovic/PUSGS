@@ -21,6 +21,7 @@ export class FriendsListComponent implements OnInit {
       this.userService.requestUser.subscribe(
         result => {
           this.friends = result;
+          this.userService.requestCount.next(this.friends.length);
         }
       )
     }

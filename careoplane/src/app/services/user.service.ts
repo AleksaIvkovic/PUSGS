@@ -26,6 +26,7 @@ export class UserService {
     friendsUser = new Subject<TOFriend[]>();
     sentUser = new Subject<TOFriend[]>();
     searchUser = new Subject<User[]>();
+    requestCount = new Subject<number>();
 
     private user: User = new User(
         'regular',

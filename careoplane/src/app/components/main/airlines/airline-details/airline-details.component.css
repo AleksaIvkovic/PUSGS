@@ -15,5 +15,5 @@ border-radius: 8px;
 img {
     height: 150px;
     width: 150px;
-    -o-object-fit: contain;
+    /* -o-object-fit: contain; */
   }
