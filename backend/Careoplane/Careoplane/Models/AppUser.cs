@@ -17,6 +17,7 @@ namespace Careoplane.Models
         public bool IsFirstLogIn { get; set; }
         public List<Friend> FriendsA { get; set; }
         public List<Friend> FriendsB { get; set; }
+        public int NumberOfPoint { get; set; }
 
         public TOAppUser ToTO()
         {

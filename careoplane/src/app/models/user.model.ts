@@ -17,7 +17,8 @@ export class User {
         public company: string = '',
         public tOFriendsA: TOFriend[] = [],
         public tOFriendsB: TOFriend[] = [],
-        public toFlightReservation: FlightReservation[] = []
+        public toFlightReservation: FlightReservation[] = [],
+        public numberOfPoint: number = 0
     ) {}
 
     public ToTO(): TOUser {

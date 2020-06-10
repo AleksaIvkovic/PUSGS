@@ -21,8 +21,8 @@ namespace Careoplane.Controllers
     [ApiController]
     public class UploadController : ControllerBase
     {
-        private UserManager<AppUser> _userManager;
-        private DatabaseContext _context;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly DatabaseContext _context;
         public UploadController(UserManager<AppUser> userManager, DatabaseContext context)
         {
             _context = context;
@@ -37,7 +37,7 @@ namespace Careoplane.Controllers
             string role = User.Claims.First(c => c.Type == "Roles").Value;
             var user = await _userManager.FindByIdAsync(userId);
 
-            if (role != "aeroAdminNew")
+            if (role != "aeroAdminNew" && role != "aeroAdmin")
             {
                 return BadRequest();
             }

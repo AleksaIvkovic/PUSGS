@@ -6,6 +6,66 @@
 </a>
 <br/>  
 <mat-horizontal-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="firstfirstFormGroup">
+    <ng-template matStepLabel>Enter passenger/s information</ng-template>
+      <form [formGroup]="firstfirstFormGroup">
+        <div formArrayName="passengerChoiceControl">
+          <div *ngFor="let passenger of getChoiceList(); let i = index" [formGroupName]="i">
+            <hr/>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mat-h3" style="margin-top: 15px;">
+                  Chose a friend or yourself
+                </div>
+              </div>
+              <div class="col-md-3">
+                <mat-form-field appearance="fill">
+                  <mat-label>username</mat-label>
+                  <mat-select [formControlName]="'username'">
+                    <mat-option *ngFor="let friend of friends" [value]="friend">
+                      {{friend}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="mat-h3" style="margin-top: 15px;">
+                  Or enter passengers information
+                </div>
+              </div>
+              <div class="col-md">
+                <div formGroupName="full name">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <mat-form-field appearance="fill">
+                        <mat-label>Name</mat-label>
+                        <input matInput [formControlName]="'name'">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field appearance="fill">
+                        <mat-label>Surname</mat-label>
+                        <input matInput [formControlName]="'surname'">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-4">
+                      <mat-form-field appearance="fill">
+                        <mat-label>Passport</mat-label>
+                        <input matInput [formControlName]="'passport'">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>  
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <button mat-button matStepperNext color="primary" (click)="CreatePassengerList()" [disabled]="CheckFirstStep()">Next</button>
+  </mat-step>
+
   <mat-step [stepControl]="firstFormGroup">
     <ng-template matStepLabel>Choose seats</ng-template>
     <app-seat-selector [type]="classType" [num]="1"></app-seat-selector>
@@ -24,50 +84,17 @@
                   <input matInput [disabled]="true" [formControlName]="'id'">
                 </mat-form-field>
               </div>
-              <div class="col-md-1">
-                <div class="mat-h4">Friend or you</div>
-              </div>
               <div class="col-md-2">
                 <mat-form-field appearance="fill">
-                  <mat-label>username</mat-label>
-                  <mat-select [formControlName]="'username'">
-                    <mat-option *ngFor="let friend of friends" [value]="friend">
-                      {{friend}}
+                  <mat-label>passenger</mat-label>
+                  <mat-select [formControlName]="'passenger'">
+                    <mat-option *ngFor="let passenger of passengersList" [value]="passenger">
+                      {{passenger.username}}
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
-              <div class="col-md-1">
-                <div class="mat-h4">OR</div>
-              </div>
-              <div class="col-md-3">
-                <div class="mat-h4">Passenger without an account</div>
-              </div>
-              <div class="col-md-2">
-                <div formGroupName="full name">
-                  <div class="row">
-                    <div class="col-md">
-                      <mat-form-field appearance="fill">
-                        <mat-label>Name</mat-label>
-                        <input matInput [formControlName]="'name'">
-                      </mat-form-field>
-                    </div>
-                    <div class="col-md">
-                      <mat-form-field appearance="fill">
-                        <mat-label>Surname</mat-label>
-                        <input matInput [formControlName]="'surname'">
-                      </mat-form-field>
-                    </div>
-                    <div class="col-md">
-                      <mat-form-field appearance="fill">
-                        <mat-label>Passport</mat-label>
-                        <input matInput [formControlName]="'passport'">
-                      </mat-form-field>
-                    </div>
-                  </div>
-                </div>  
-              </div>
-              </div>
+            </div>
           </div>
         </div>
       </form>
@@ -95,56 +122,23 @@
                     <input matInput [disabled]="true" [formControlName]="'id'">
                   </mat-form-field>
                 </div>
-                <div class="col-md-1">
-                  <div class="mat-h4">Friend or you</div>
-                </div>
                 <div class="col-md-2">
                   <mat-form-field appearance="fill">
-                    <mat-label>username</mat-label>
-                    <mat-select [formControlName]="'username'">
-                      <mat-option *ngFor="let friend of friends" [value]="friend">
-                        {{friend}}
+                    <mat-label>passenger</mat-label>
+                    <mat-select [formControlName]="'passenger'">
+                      <mat-option *ngFor="let passenger of passengersList" [value]="passenger">
+                        {{passenger.username}}
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
                 </div>
-                <div class="col-md-1">
-                  <div class="mat-h4">OR</div>
-                </div>
-                <div class="col-md-3">
-                  <div class="mat-h4">Passenger without an account</div>
-                </div>
-                <div class="col-md-2">
-                  <div formGroupName="full name">
-                    <div class="row">
-                      <div class="col-md">
-                        <mat-form-field appearance="fill">
-                          <mat-label>Name</mat-label>
-                          <input matInput [formControlName]="'name'">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-md">
-                        <mat-form-field appearance="fill">
-                          <mat-label>Surname</mat-label>
-                          <input matInput [formControlName]="'surname'">
-                        </mat-form-field>
-                      </div>
-                      <div class="col-md">
-                        <mat-form-field appearance="fill">
-                          <mat-label>Passport</mat-label>
-                          <input matInput [formControlName]="'passport'">
-                        </mat-form-field>
-                      </div>
-                    </div>
-                  </div>  
-                </div>
-                </div>
+              </div>
             </div>
           </div>
         </form>
   
         <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext (click)="CalculatePrice()" color="primary" [disabled]="CheckSecondStep()">Next</button>
+        <button mat-button matStepperNext (click)="CalculatePrice()" color="primary" [disabled]="CheckFourthStep()">Next</button>
     </mat-step>
   </div>
 

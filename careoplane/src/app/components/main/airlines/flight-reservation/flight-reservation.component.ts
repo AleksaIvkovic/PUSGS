@@ -21,21 +21,38 @@ import { DatePipe } from '@angular/common';
 export class FlightReservationComponent implements OnInit {
 
   firstFormGroup: FormGroup;
+  firstfirstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
   fourthFormGroup: FormGroup;
+
+  passengerChoiceControl: FormArray;
   passengersControl: FormArray;
   passengersControl2: FormArray;
+
   flight1: Flight;
   flight2: Flight = null;
+
   tickets = [] as any;
   tickets2 = [] as any;
+
   passengers: number;
+
   checked: boolean = true;
   checked2: boolean = true;
+
   classType: string;
+
   friends: string[] = [];
+  passengersList: {
+    username: string,
+    name: string,
+    surname: string,
+    passport: string
+  }[] = [];
+
   secondFlight: boolean = false;
+
   finalPrice: number = 0;
 
   constructor(private datePipe: DatePipe, private userService: UserService, private router: Router, private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
@@ -93,30 +110,32 @@ export class FlightReservationComponent implements OnInit {
         this.classType = params['classType'];
         this.passengers = params['passengers'];
 
+        this.passengerChoiceControl = new FormArray([]);
         this.passengersControl = new FormArray([]);
         this.passengersControl2 = new FormArray([]);
 
         for(let i = 0; i < this.passengers; i++){
+          this.passengerChoiceControl.push(new FormGroup({
+            'username': new FormControl(''),
+            'full name': new FormGroup({
+              'name': new FormControl(''),
+              'surname': new FormControl(''),
+              'passport': new FormControl('')
+            })
+          }, this.checkPassengerInformationForm))
           this.passengersControl.push(new FormGroup({
             'id': new FormControl(''),
-            'username': new FormControl(''),
-            'full name': new FormGroup({
-              'name': new FormControl(''),
-              'surname': new FormControl(''),
-              'passport': new FormControl('')
-            })
-          }, this.checkForm))
+            'passenger': new FormControl('')
+          }, this.checkPassengerForm))
           this.passengersControl2.push(new FormGroup({
             'id': new FormControl(''),
-            'username': new FormControl(''),
-            'full name': new FormGroup({
-              'name': new FormControl(''),
-              'surname': new FormControl(''),
-              'passport': new FormControl('')
-            })
-          }, this.checkForm))
+            'passenger': new FormControl('')
+          }, this.checkPassengerForm))
         }
 
+        this.firstfirstFormGroup = new FormGroup({
+          'passengerChoiceControl': this.passengerChoiceControl
+        });
         this.secondFormGroup = new FormGroup({
           'passengersControl': this.passengersControl
         });
@@ -163,16 +182,26 @@ export class FlightReservationComponent implements OnInit {
         if(tempSeat.seatId == this.tickets.seatstoStore[counter])
           seat = tempSeat;
       }
+
+      if((<FormGroup>passenger).controls['passenger'].value.name == ''){
+        flightReservationDetails.passengerSeats.push(
+          new PassengersSeat(seat,
+          (<FormGroup>passenger).controls['passenger'].value.username,
+          '',
+          '',
+          '')
+        );
+      }
+      else{
+        flightReservationDetails.passengerSeats.push(
+          new PassengersSeat(seat,
+            '',
+            (<FormGroup>passenger).controls['passenger'].value.name,
+            (<FormGroup>passenger).controls['passenger'].value.surname,
+            (<FormGroup>passenger).controls['passenger'].value.passport)
+        );
+      }
       
-      flightReservationDetails.passengerSeats.push(
-
-
-        new PassengersSeat(seat,
-        (<FormGroup>passenger).controls['username'].value,
-        (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['name'].value,
-        (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['surname'].value,
-        (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['passport'].value)
-      );
       counter++;
     }
 
@@ -192,13 +221,24 @@ export class FlightReservationComponent implements OnInit {
             seat = tempSeat;
         }
 
-        flightReservationDetails2.passengerSeats.push(
-          new PassengersSeat(seat,
-          (<FormGroup>passenger).controls['username'].value,
-          (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['name'].value,
-          (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['surname'].value,
-          (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['passport'].value)
-        );
+        if((<FormGroup>passenger).controls['passenger'].value.name == ''){
+          flightReservationDetails2.passengerSeats.push(
+            new PassengersSeat(seat,
+            (<FormGroup>passenger).controls['passenger'].value.username,
+            '',
+            '',
+            '')
+          );
+        }
+        else{
+          flightReservationDetails2.passengerSeats.push(
+            new PassengersSeat(seat,
+              '',
+              (<FormGroup>passenger).controls['passenger'].value.name,
+              (<FormGroup>passenger).controls['passenger'].value.surname,
+              (<FormGroup>passenger).controls['passenger'].value.passport)
+          );
+        }
         counter++;
       }
 
@@ -245,6 +285,10 @@ export class FlightReservationComponent implements OnInit {
     return (<FormArray>this.secondFormGroup.get('passengersControl')).controls
   }
 
+  getChoiceList(){
+    return (<FormArray>this.firstfirstFormGroup.get('passengerChoiceControl')).controls
+  }
+
   getList2(){
     return (<FormArray>this.fourthFormGroup.get('passengersControl')).controls
   }
@@ -267,14 +311,11 @@ export class FlightReservationComponent implements OnInit {
     }
   }
 
-  checkForm(control: FormArray): {[s:string]:boolean}
+  checkPassengerInformationForm(control: FormArray): {[s:string]:boolean}
   {
     if(!control){
       return null;
     }
-
-    console.log((<FormControl>(control.controls['username'])).value === '');
-    console.log(!(<FormGroup>control.controls['full name']).valid);
 
     if(
       ((<FormControl>(control.controls['username'])).value === '') 
@@ -287,6 +328,24 @@ export class FlightReservationComponent implements OnInit {
     }
 
     return null;
+  }
+
+  checkPassengerForm(control: FormArray): {[s:string]:boolean}
+  {
+    if(!control){
+      return null;
+    }
+
+    if((<FormControl>(control.controls['passenger'])).value === '')
+    {
+      return {'': true};
+    }
+
+    return null;
+  }
+
+  CheckFirstStep(){
+    return !this.firstfirstFormGroup.valid;
   }
 
   CheckSecondStep(){
@@ -304,6 +363,32 @@ export class FlightReservationComponent implements OnInit {
     else{
       if(this.tickets2 != null){
         this.finalPrice = this.tickets.totalamount + this.tickets2.totalamount;
+      }
+    }
+  }
+
+  CreatePassengerList(){
+    this.passengersList = [];
+    for(let passenger of (<FormArray>this.firstfirstFormGroup.controls['passengerChoiceControl']).controls){
+      let username = '';
+      if((<FormGroup>passenger).controls['username'].value != ''){
+        username = (<FormGroup>passenger).controls['username'].value;
+        this.passengersList.push({
+          'username': username,
+          'name' : '',
+          'surname' : '',
+          'passport' : '',
+        });
+      }
+      else{
+        username = (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['name'].value + ' ' + 
+                  (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['surname'].value; 
+        this.passengersList.push({
+          'username': username,
+          'name' : (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['name'].value,
+          'surname' : (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['surname'].value,
+          'passport' : (<FormGroup>(<FormGroup>passenger).controls['full name']).controls['passport'].value,
+        });
       }
     }
   }

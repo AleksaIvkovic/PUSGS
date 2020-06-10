@@ -22,7 +22,7 @@ namespace Careoplane.Controllers
     public class FlightReservationsController : ControllerBase
     {
         private readonly DatabaseContext _context;
-        private UserManager<AppUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         public FlightReservationsController(UserManager<AppUser> userManager, DatabaseContext context)
         {
             _context = context;
@@ -347,6 +347,10 @@ namespace Careoplane.Controllers
 
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
             var inviter = await _userManager.FindByIdAsync(userId);
+
+            flightReservation.FlightReservationDetails.ForEach(flightReservation => { inviter.NumberOfPoint += (int)Math.Round(flightReservation.Flight.Distance); });
+
+            await _userManager.UpdateAsync(inviter);
 
             _context.FlightReservations.Add(tempFlightReservation);
             await _context.SaveChangesAsync();
