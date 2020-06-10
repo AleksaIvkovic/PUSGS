@@ -64,7 +64,7 @@ namespace Careoplane.Models
             //vehicle.FromTO(toVehicleReservation.Vehicle, rentACar);
             VehicleId = toVehicleReservation.VehicleId;
             UserName = toVehicleReservation.UserName;
-            CreationDate = DateTime.Parse(toVehicleReservation.CreationDate);
+            CreationDate = DateTime.Now;
             IsVehicleRated = toVehicleReservation.IsVehicleRated;
             IsRentACarRated = toVehicleReservation.IsRentACarRated;
         }

@@ -29,6 +29,7 @@ namespace Careoplane.Controllers
 
         // GET: api/VehicleReservations
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<TOVehicleReservation>>> GetVehicleReservation()
         {
             List<VehicleReservation> VehicleReservationList = await _context.VehicleReservation.ToListAsync();
@@ -65,6 +66,12 @@ namespace Careoplane.Controllers
         {
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
             string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "regular")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user != null)
@@ -86,8 +93,16 @@ namespace Careoplane.Controllers
 
         // GET: api/VehicleReservations/5
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOVehicleReservation>> GetVehicleReservation(int id)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "regular")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             var vehicleReservation = await _context.VehicleReservation.FindAsync(id);
 
             if (vehicleReservation == null)
@@ -102,8 +117,16 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> PutVehicleReservation(int id, TOVehicleReservation toVehicleReservation)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "regular")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             VehicleReservation vehicleReservation = new VehicleReservation();
             vehicleReservation.FromTO(toVehicleReservation);
 
@@ -137,8 +160,16 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOVehicleReservation>> PostVehicleReservation(TOVehicleReservation toVehicleReservation)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "regular")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             VehicleReservation vehicleReservation = new VehicleReservation();
             vehicleReservation.FromTO(toVehicleReservation);
 
@@ -164,8 +195,16 @@ namespace Careoplane.Controllers
 
         // DELETE: api/VehicleReservations/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOVehicleReservation>> DeleteVehicleReservation(int id)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "regular")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             var vehicleReservation = await _context.VehicleReservation.FindAsync(id);
             if (vehicleReservation == null)
             {
@@ -173,6 +212,20 @@ namespace Careoplane.Controllers
             }
 
             _context.VehicleReservation.Remove(vehicleReservation);
+            await _context.SaveChangesAsync();
+
+            var vehicle = await _context.Vehicles.Include(vehicle => vehicle.UnavailableDates).FirstOrDefaultAsync(vehicle => vehicle.VehicleId == vehicleReservation.VehicleId);
+
+            vehicle.UnavailableDates.ToList().ForEach(
+                unavailableDate =>
+                {
+                    if (unavailableDate.Date.Date >= vehicleReservation.FromDate.Date && unavailableDate.Date.Date <= vehicleReservation.ToDate.Date)
+                    {
+                        _context.Remove(unavailableDate);
+                    }
+                }
+            );
+
             await _context.SaveChangesAsync();
 
             return vehicleReservation.ToTO();
