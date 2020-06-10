@@ -22,7 +22,7 @@ import { PriceSegmentSeat } from 'src/app/models/price-segment-seat.model';
 export class AirlineEditComponent implements OnInit {
   airline: Airline = new Airline();
   seats: FormArray = new FormArray([],this.checkArray.bind(this));
-  edit: boolean;
+  edit: boolean = false;
   addressValid: boolean = false;
   group: FormGroup;
   visible = true;
@@ -108,7 +108,12 @@ export class AirlineEditComponent implements OnInit {
   verifyAddress(){
     this.geocoderService.checkAddress((<FormGroup>this.group.controls['address']).controls['street'].value + ',' +
       (<FormGroup>this.group.controls['address']).controls['city'].value + ',' +
-      (<FormGroup>this.group.controls['address']).controls['country'].value, this.addressValid, this.dirty)
+      (<FormGroup>this.group.controls['address']).controls['country'].value).subscribe(
+        result => {
+          this.addressValid = result;
+          this.dirty = false;
+        }
+      )
   }
 
   onSubmit()
@@ -179,6 +184,9 @@ export class AirlineEditComponent implements OnInit {
               this.airlineService.saveImage(formData).subscribe(
                 result => {
                   this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
+                },
+                error => {
+                  console.log(error);
                 }
               );
             },

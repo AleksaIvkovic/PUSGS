@@ -44,10 +44,10 @@ namespace Careoplane.Controllers
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
-            if (role != "aeroAdmin")
-            {
-                return BadRequest("You are not authorised to do this action");
-            }
+            //if (role != "aeroAdmin")
+            //{
+            //    return BadRequest("You are not authorised to do this action");
+            //}
 
             var airline = await _context.Airlines
                 .Include(a => a.Destinations)
@@ -384,7 +384,7 @@ namespace Careoplane.Controllers
 
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAirline", new { id = tempAirline.Name }, tempAirline);
+            return Ok();
         }
 
         [HttpPut("Rate")]

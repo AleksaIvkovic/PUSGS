@@ -15,7 +15,7 @@ export class TOAirline {
         airline.address = this.address;
         airline.description = this.description;
         airline.destinations = this.destinations;
-        airline.picture = this.picture;
+        airline.picture = this.image;
         airline.prices = this.prices;
         airline.rating = this.rating;
         airline.seatingArrangement = this.seatingArrangements;
@@ -47,7 +47,7 @@ export class TOAirline {
         public seatingArrangements: TOPriceSegmentSeat[] = [],
         public segmentLengths: TOPriceSegmentSeat[] = [],
         public flights: TOFlight[] = [],
-        public picture: string = "",
+        public image: string = "",
         public rating: number = 0,
         public destinations: TOPrimaryObject[] = [],
         public fastTickets: TOFastTicket[] = []){

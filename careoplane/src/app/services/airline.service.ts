@@ -272,6 +272,6 @@ export class AirlineService {
   }
 
   saveImage(formData){
-    return this.http.post('https://localhost:' + localStorage.getItem('port') + '/api/Upload', formData);
+    return this.http.post('http://localhost:' + localStorage.getItem('port') + '/api/Upload', formData);
   }
 }

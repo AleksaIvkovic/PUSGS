@@ -15,6 +15,7 @@ export class FlightReservationDetailsComponent implements OnInit {
   type : string = null;
   username: string;
   expired: boolean = false;
+  canCancel: boolean = false;
   flightScored: boolean[] = [];
   airlineScored: boolean[] = [];
   constructor(private ratingDialog: MatDialog, private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService) { }
@@ -29,6 +30,7 @@ export class FlightReservationDetailsComponent implements OnInit {
           this.airlineService.getReservation(+params['id'], this.username).subscribe(
             result => {
               this.reservation = result;
+              this.CheckTime();
 
               for(let details of this.reservation.flightReservationDetails){
                 for(let passengerSeat of details.passengerSeats){
@@ -135,11 +137,13 @@ export class FlightReservationDetailsComponent implements OnInit {
   }
 
   CheckTime(){
-    if(this.reservation.flightReservationDetails != null && this.reservation.flightReservationDetails == []){
-      if(new Date(this.reservation.flightReservationDetails[0].flight.departure).valueOf() > (new Date().valueOf() - (3*60*60*1000)))
-        return false;
-      return true;
+    if(this.reservation.flightReservationDetails != null && this.reservation.flightReservationDetails != []){
+      if(new Date(this.reservation.flightReservationDetails[0].flight.departure).valueOf() - (3*60*60*1000) < (new Date().valueOf()))
+        this.canCancel = false;
+      else
+        this.canCancel = true;
     }
-    return false;
+    else
+      this.canCancel = false;
   }
 }
