@@ -2,12 +2,14 @@
     mat-mini-fab *ngIf="!admin">
     <mat-icon>arrow_back</mat-icon>
 </a>
+<br/>
+<br/>
 <div class="row">
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-2">
                 <div class="row">
-                    <img class="images" src={{airline.picture}} alt={{airline.name}}>
+                    <img class="images" [src]="createImgPath(airline.picture)" alt={{airline.name}}>
                 </div>
                 <div class="row" *ngIf="admin">
                     <div class="col-md">
@@ -83,8 +85,10 @@
               </mat-panel-description>
             </mat-expansion-panel-header>
             <div>
-                <div class="mat-h2" *ngFor="let destination of airline.destinations; let i = last">
-                    {{destination.value}}{{i ? ' ': ','}}&nbsp;&nbsp;
+                <div class="row">
+                    <div class="mat-h2" *ngFor="let destination of airline.destinations; let i = last">
+                        {{destination.value}}{{i ? ' ': ','}}&nbsp;&nbsp;
+                    </div>
                 </div>
             </div>
           </mat-expansion-panel>

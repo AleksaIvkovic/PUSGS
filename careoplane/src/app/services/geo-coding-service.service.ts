@@ -1,27 +1,43 @@
 import { Injectable, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class GeoCodingServiceService {
-  public constructor() { }
+export class GeoCodingServiceService{
+  public constructor(private http: HttpClient) { }
 
-  public checkAddress(address: string, addressValid: boolean, dirty: boolean){
+  private key = "AIzaSyDy0xDgkk5udz0GwJbBXWNp3TmsVQaR0_I";
+  public verifiedAddress  = new Subject<boolean>();
+  b = "b";
+
+  public checkAddress(address: string): Observable<boolean>{
     var geocoder = new google.maps.Geocoder();
+
+    return new Observable(observer => {
+      geocoder.geocode({'address': address}, (results, status) => {
+        if (status == google.maps.GeocoderStatus.OK) {
+          observer.next(true);
+        } else {
+          observer.next(false);
+        }
+        observer.complete();
+      });
+    })
 
     geocoder.geocode({'address':address}, function(results, status) {
       if (status === 'OK') {
-        addressValid = true;
-        dirty = false;
+        return true;
       }
       else{
-        addressValid = false;
-        dirty = false;
+        return false;
       }
     });
+  }
 
-    return false;
+  nextvalue(value: boolean){
+    this.verifiedAddress.next(value);
   }
 
   public LatLon(address: string, map: google.maps.Map, gmap: ElementRef):void{

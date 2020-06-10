@@ -10,7 +10,7 @@
             <button mat-raised-button color="warn" (click)="Cancel()">Decline</button>
         </div>
     </div>
-    <div class="row" *ngIf="type==='reservation' && CheckTime()">
+    <div class="row" *ngIf="type==='reservation' && canCancel">
         <div class="col-md">
             <button mat-raised-button color="warn" (click)="Cancel()">Cancel</button>
         </div>

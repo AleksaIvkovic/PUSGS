@@ -49,7 +49,7 @@ namespace Careoplane.Controllers
 
         [HttpGet]
         [Route("Company")]
-        public async Task<ActionResult<string>> GetCompanyForVehicle([FromQuery]string vehicleId)
+        public async Task<Object> GetCompanyForVehicle([FromQuery] string vehicleId)
         {
             var vehicle = await _context.Vehicles.Include(vehicle => vehicle.RentACar).Where(vehicle => vehicle.VehicleId == int.Parse(vehicleId)).FirstOrDefaultAsync();
 
@@ -58,7 +58,9 @@ namespace Careoplane.Controllers
                 return NotFound();
             }
 
-            return vehicle.RentACar.Name;
+            string company = vehicle.RentACar.Name;
+
+            return Ok(new { company });
         }
 
         [HttpPut("Rate")]

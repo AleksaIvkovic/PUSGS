@@ -33,11 +33,12 @@ namespace Careoplane.Controllers
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
-            if (role != "aeroAdmin" && role != "regular")
-            {
-                return BadRequest("You are not authorised to do this action");
+            //if (role != "aeroAdmin" && role != "regular")
+            //{
+            //    return BadRequest("You are not authorised to do this action");
 
-            }
+            //}
+
             var flight = await _context.Flights
                 .Include(f => f.Connections)
                 .Include(f => f.SeatingArrangements)
@@ -106,10 +107,10 @@ namespace Careoplane.Controllers
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
-            if (role != "aeroAdmin")
-            {
-                return BadRequest("You are not authorised to do this action");
-            }
+            //if (role != "aeroAdmin")
+            //{
+            //    return BadRequest("You are not authorised to do this action");
+            //}
 
 
             if (id != flight.FlightId)
@@ -150,10 +151,10 @@ namespace Careoplane.Controllers
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
-            if (role != "aeroAdmin")
-            {
-                return BadRequest("You are not authorised to do this action");
-            }
+            //if (role != "aeroAdmin")
+            //{
+            //    return BadRequest("You are not authorised to do this action");
+            //}
 
             Flight tempFlight = new Flight(flight, _context);
             _context.Flights.Add(tempFlight);
@@ -210,10 +211,10 @@ namespace Careoplane.Controllers
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
-            if (role != "aeroAdmin")
-            {
-                return BadRequest("You are not authorised to do this action");
-            }
+            //if (role != "aeroAdmin")
+            //{
+            //    return BadRequest("You are not authorised to do this action");
+            //}
 
             var flight = await _context.Flights.FindAsync(id);
             if (flight == null)

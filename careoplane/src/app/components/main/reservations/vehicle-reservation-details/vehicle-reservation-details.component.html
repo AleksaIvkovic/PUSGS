@@ -11,7 +11,7 @@
         {{ rentACarName }}
     </div>
     <div class="mat-h4">
-        <div class="row" *ngIf="type === 'reservation' && CheckTime()">
+        <div class="row" *ngIf="type === 'reservation' && canCancel">
             <div class="col-md">
                 <button mat-raised-button color="warn" (click)="OnCancel()">Cancel</button>
             </div>

@@ -17,6 +17,7 @@ export class VehicleReservationDetailsComponent implements OnInit {
   type: string = '';
   rentACarName: string = '';
   reservationId: number = 0;
+  canCancel: boolean = false;
 
   constructor(
     private ratingDialog: MatDialog, 
@@ -36,9 +37,10 @@ export class VehicleReservationDetailsComponent implements OnInit {
         this.vehicleService.getReservation(this.reservationId).subscribe(
           (response: any) => {
             this.reservation = response;
+            this.CheckTime();
             this.vehicleService.getCompanyForVehicle(this.reservation.vehicleId).subscribe(
-              (response: string) => {
-                this.rentACarName = response;
+              (result: any) => {
+                this.rentACarName = result.company;
               },
               error => {
                 console.log(error);
@@ -103,12 +105,12 @@ export class VehicleReservationDetailsComponent implements OnInit {
 
   CheckTime() {
     if(this.reservation != null){
-      if(new Date(this.reservation.fromDate).valueOf() > (new Date().valueOf() - (2*24*60*60*1000))) {
-        return false;
-      }
-      return true;
-    }
-    return false;
+      if(new Date(this.reservation.fromDate).valueOf() - (2*24*60*60*1000) < (new Date().valueOf())) {
+        this.canCancel = false;
+      } else
+      this.canCancel = true;
+    } else
+    this.canCancel = false;
   }
   
 }

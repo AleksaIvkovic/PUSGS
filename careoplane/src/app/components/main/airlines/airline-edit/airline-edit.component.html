@@ -164,7 +164,7 @@
           <button mat-raised-button color="warn" type="button" (click)="Cancel()">Cancel</button>
         </div>
         <div class="col-md-3">
-          <button mat-raised-button color="primary" type="submit" [disabled]="!group.valid || !addressValid || !(uploadedFile == null || edit)">Submit</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="!group.valid || !addressValid || (uploadedFile == null && !edit)">Submit</button>
         </div>
       </div>
     </div>

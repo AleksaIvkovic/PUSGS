@@ -85,4 +85,9 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
   Back(){
     this.router.navigate(['../../','list'], { relativeTo: this.activeRoute }); 
   }
+
+  public createImgPath = (serverPath: string) => {
+    let s = `http://localhost:` + localStorage.getItem('port') + `/${this.airline.picture}`; 
+    return s;
+  }
 }

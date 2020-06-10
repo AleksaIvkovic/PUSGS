@@ -69,7 +69,7 @@ export class AirlinesListComponent implements OnInit {
         result => {
           for(let airline of result){
             this.airlines.push(Object.assign(new TOAirline(),airline).convert());
-            this.airlineService.images[airline.name] = airline.picture;
+            this.airlineService.images[airline.name] = airline.image;
   
             for(let airline of this.airlines){
               for(let city of airline.destinations){

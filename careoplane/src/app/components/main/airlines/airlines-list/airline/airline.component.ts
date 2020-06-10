@@ -14,9 +14,12 @@ export class AirlineComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.name)
+    console.log(this.image)
   }
 
   public createImgPath = (serverPath: string) => {
-    return `https://localhost:5001/${serverPath}`;
+    let s = `http://localhost:` + localStorage.getItem('port') + `/${this.image}`; 
+    return s;
   }
 }

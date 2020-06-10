@@ -26,6 +26,7 @@ namespace Careoplane.Controllers
         public UploadController(UserManager<AppUser> userManager, DatabaseContext context)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpPost, DisableRequestSizeLimit]
