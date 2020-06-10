@@ -49,7 +49,7 @@ namespace Careoplane.Controllers
 
         [HttpGet]
         [Route("Company")]
-        public async Task<Object> GetCompanyForVehicle([FromQuery] string vehicleId)
+        public async Task<Object> GetCompanyForVehicle([FromQuery]string vehicleId)
         {
             var vehicle = await _context.Vehicles.Include(vehicle => vehicle.RentACar).Where(vehicle => vehicle.VehicleId == int.Parse(vehicleId)).FirstOrDefaultAsync();
 
@@ -65,7 +65,7 @@ namespace Careoplane.Controllers
 
         [HttpPut("Rate")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> RateAirline(JObject tempObject)
+        public async Task<IActionResult> RateVehicle(JObject tempObject)
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
@@ -118,8 +118,16 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> PutVehicle(int id, TOVehicle toVehicle)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "racAdmin" && role != "racAdminNew")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             Vehicle vehicle = new Vehicle();
             var rentACar = _context.RentACars.FirstOrDefault(r => r.Name == toVehicle.RentACar);
             vehicle.FromTO(toVehicle, rentACar);
@@ -154,8 +162,16 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOVehicle>> PostVehicle(TOVehicle toVehicle)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "racAdmin" && role != "racAdminNew")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             Vehicle vehicle = new Vehicle();
             var rentACar = _context.RentACars.FirstOrDefault(r => r.Name == toVehicle.RentACar);
             vehicle.FromTO(toVehicle, rentACar);
@@ -168,8 +184,16 @@ namespace Careoplane.Controllers
 
         // DELETE: api/Vehicles/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOVehicle>> DeleteVehicle(int id)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "racAdmin" && role != "racAdminNew")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             var vehicle = await _context.Vehicles.Include(v => v.RentACar).Include(v => v.UnavailableDates).FirstOrDefaultAsync(v => v.VehicleId == id);
             if (vehicle == null)
             {

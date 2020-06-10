@@ -58,6 +58,14 @@ export class VehicleService {
         return this.http.put(address, params);
     }
 
+    cancelReservation(reservationId: number) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/VehicleReservations/' + reservationId;
+        return this.http
+        .delete(
+            address
+        );
+    }
+
     postVehicle(newVehicle: Vehicle) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles';
         return this.http

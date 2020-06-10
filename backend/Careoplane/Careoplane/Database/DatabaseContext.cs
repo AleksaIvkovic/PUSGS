@@ -29,6 +29,8 @@ namespace Careoplane.Database
 
         public DbSet<VehicleReservation> VehicleReservation { get; set; }
 
+        public DbSet<Careoplane.Models.Discount> Discount { get; set; }
+
         #endregion
     }
 }

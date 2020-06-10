@@ -6,6 +6,7 @@ import { VehicleReservation } from 'src/app/models/vehicle-reservation.model';
 import { TOVehicleReservation } from 'src/app/t-o-models/t-o-vehicle-reservation.model';
 import { RentACarService } from 'src/app/services/rent-a-car.service';
 import { RatingComponent } from 'src/app/components/rating/rating.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-vehicle-reservation-details',
@@ -24,7 +25,8 @@ export class VehicleReservationDetailsComponent implements OnInit {
     private activeRoute: ActivatedRoute, 
     private router: Router,
     private vehicleService: VehicleService,
-    private rentACarService: RentACarService
+    private rentACarService: RentACarService,
+    private _snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -56,7 +58,15 @@ export class VehicleReservationDetailsComponent implements OnInit {
   }
 
   OnCancel() {
-
+    this.vehicleService.cancelReservation(this.reservationId).subscribe(
+      response => {
+        this._snackBar.open('Reservation has been canceled successfully.', 'OK', {duration: 5000,});
+        this.router.navigate(['../../../', 'reservations'], {relativeTo: this.activeRoute});
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   RateVehicle() {
@@ -104,13 +114,16 @@ export class VehicleReservationDetailsComponent implements OnInit {
   }
 
   CheckTime() {
-    if(this.reservation != null){
-      if(new Date(this.reservation.fromDate).valueOf() - (2*24*60*60*1000) < (new Date().valueOf())) {
+    if (this.reservation != null) {
+      if (new Date(this.reservation.fromDate).valueOf() - (2*24*60*60*1000) < new Date().valueOf()) {
         this.canCancel = false;
-      } else
-      this.canCancel = true;
-    } else
-    this.canCancel = false;
+      } else {
+        this.canCancel = true;
+      }
+    } 
+    else {
+      this.canCancel = false;
+    }
   }
   
 }

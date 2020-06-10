@@ -49,7 +49,7 @@ namespace Careoplane.Controllers
 
         [HttpPut("Rate")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> RateAirline(JObject tempObject)
+        public async Task<IActionResult> RateRentACar(JObject tempObject)
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
@@ -110,8 +110,16 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> PutRentACar(string id, TORentACar toRentACar)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "racAdmin" && role != "racAdminNew")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             var rentACar = await _context.RentACars.Include(r => r.Locations).Include(r => r.Prices).FirstOrDefaultAsync(r => r.Name == id);
 
             RentACar modifiedRentACar = new RentACar();
@@ -191,8 +199,16 @@ namespace Careoplane.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TORentACar>> PostRentACar(TORentACar toRentACar)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "racAdmin" && role != "racAdminNew")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             RentACar rentACar = new RentACar();
             rentACar.FromTO(toRentACar);
 
@@ -218,8 +234,16 @@ namespace Careoplane.Controllers
 
         // DELETE: api/RentACars/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TORentACar>> DeleteRentACar(string id)
         {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "sysAdmin")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
             var rentACar = await _context.RentACars.FindAsync(id);
             if (rentACar == null)
             {
