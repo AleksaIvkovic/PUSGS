@@ -26,6 +26,7 @@ export class DiscountsComponent implements OnInit {
     this.discountService.getDiscounts().subscribe(
       (response: Discount[]) => {
         this.discounts = response;
+        this.initForm();
       },
       error => {
         console.log(error);
@@ -50,7 +51,7 @@ export class DiscountsComponent implements OnInit {
     this.isEdit = false;
     this.discountsForm.patchValue({
       discount1: this.discounts[0].discountValue,
-      discount2: this.discounts[0].discountValue,
+      discount2: this.discounts[1].discountValue,
     });
     this.discountsForm.controls.discount1.disable();
     this.discountsForm.controls.discount2.disable();

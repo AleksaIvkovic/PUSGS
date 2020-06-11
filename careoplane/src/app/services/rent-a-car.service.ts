@@ -34,8 +34,6 @@ export class RentACarService {
     ];
     
     public rentACars: RentACar[] = [];
-    
-    discount: number = 10;
 
     rentACarsChanged = new Subject<RentACar[]>();
     vehicleListChanged = new Subject<Vehicle[]>();
@@ -43,6 +41,7 @@ export class RentACarService {
     reservationMade = new Subject<any>();
     onSaleClicked = new Subject<boolean>();
     vehicleSwaped = new Subject<boolean>();
+    locationLoadedSubject = new Subject<string>();
 
     newVehicleListChanged = new Subject<Vehicle[]>();
     newVehicles: Vehicle[] = [];
@@ -202,5 +201,14 @@ export class RentACarService {
               })
             }
           );
+    }
+
+    locationLoaded(address: string){
+        this.locationLoadedSubject.next(address);
+    }
+
+    getDiscountForVehicles() {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Discounts/Vehicle';
+        return this.http.get(address);
     }
 }

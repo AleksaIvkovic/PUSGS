@@ -11,6 +11,7 @@ using Careoplane.TOModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Careoplane.Controllers
 {
@@ -61,6 +62,54 @@ namespace Careoplane.Controllers
             string company = vehicle.RentACar.Name;
 
             return Ok(new { company });
+        }
+
+        [HttpGet]
+        [Route("OnSale")]
+        public async Task<ActionResult<IEnumerable<TOVehicle>>> GetVehiclesOnSale([FromQuery]string location, [FromQuery] string fromDate, [FromQuery] string toDate)
+        {
+            if (toDate == "" || toDate == null)
+            {
+                return new List<TOVehicle>();
+            }
+
+            List<Vehicle> vehicleList = await _context.Vehicles
+                .Include(vehicle => vehicle.UnavailableDates)
+                .Include(vehicle => vehicle.Ratings)
+                .Include(vehicle => vehicle.RentACar)
+                .Where(vehicle => vehicle.IsOnSale == true)
+                .Where(vehicle => vehicle.Location == location)
+                .ToListAsync();
+
+            List<TOVehicle> returnList = new List<TOVehicle>();
+            DateTime tempFromDate = DateTime.Parse(fromDate);
+            DateTime tempToDate = DateTime.Parse(toDate);
+
+            vehicleList.ForEach(vehicle =>
+            {
+               if (vehicle.UnavailableDates == null)
+                {
+                    returnList.Add(vehicle.ToTO());
+                }
+                else
+                {
+                    bool shouldAdd = true;
+                    vehicle.UnavailableDates.ToList().ForEach(date =>
+                    {
+                        if (date.Date.Date >= tempFromDate.Date && date.Date.Date <= tempToDate.Date)
+                        {
+                            shouldAdd = false;
+                        }
+                    });
+
+                    if (shouldAdd)
+                    {
+                        returnList.Add(vehicle.ToTO());
+                    }
+                }
+            });
+
+            return returnList;
         }
 
         [HttpPut("Rate")]

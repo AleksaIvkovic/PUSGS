@@ -131,6 +131,7 @@
             <div class="col-md-2">
                 <button 
                     mat-raised-button 
+                    [disabled]="!isValidAddress || !addForm.valid"
                     class="btn-success"
                     type="submit">
                     {{ isEdit ? 'Save' : 'Confirm'}}

@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="mat-h2">
+            Do you need a car to make your trip more comfortable?
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <!-- min="flight1.arrival" -->
+        <mat-form-field appearance="fill">
+            <mat-label>To Date</mat-label>
+            <input
+                (dateInput)="OnDateChange($event.value)"
+                matInput 
+                [matDatepicker]="picker" 
+                placeholder="To"
+                [min]="fromDate"
+                id="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div *ngFor="let vehicle of vehicles;">
+            <app-vehicle-sale-item [vehicle]="vehicle" [discount]="discount"></app-vehicle-sale-item>
+            <button 
+                mat-raised-button 
+                color="primary"
+                (click)="OnReserve(vehicle.vehicleId)">
+                Reserve
+            </button>
+        </div>
+    </div>
+</div>

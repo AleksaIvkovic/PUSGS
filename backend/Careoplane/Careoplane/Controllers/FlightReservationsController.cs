@@ -400,6 +400,11 @@ namespace Careoplane.Controllers
                     if(passengerSeat.Username != null && passengerSeat.Username != "" && passengerSeat.Username != inviter.UserName)
                     {
                         var user = await _userManager.FindByNameAsync(passengerSeat.Username);
+
+                        flightReservation.FlightReservationDetails.ForEach(flightReservation => { user.NumberOfPoint += (int)Math.Round(flightReservation.Flight.Distance); });
+
+                        await _userManager.UpdateAsync(user);
+
                         MailingService.SendEMailInvite(inviter, user, tempFlightReservation, new Flight(tOFlightReservationDetail.Flight,_context));
                     }
 

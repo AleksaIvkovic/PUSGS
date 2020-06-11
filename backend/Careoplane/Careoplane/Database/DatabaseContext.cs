@@ -15,6 +15,7 @@ namespace Careoplane.Database
         {
         }
 
+        public DbSet<Discount> Discounts { get; set; }
         public DbSet<Airline> Airlines { get; set; }
         public DbSet<Flight> Flights { get; set; }
         public DbSet<Seat> Seats { get; set; }

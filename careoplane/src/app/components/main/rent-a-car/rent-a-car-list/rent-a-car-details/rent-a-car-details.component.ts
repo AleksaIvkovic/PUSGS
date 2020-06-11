@@ -9,6 +9,7 @@ import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
 import { VehicleService } from 'src/app/services/vehicle.service';
 import { stringify } from 'querystring';
 import { isNull } from 'util';
+import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
 
 @Component({
   selector: 'app-rent-a-car-details',
@@ -46,7 +47,8 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     private rentACarService: RentACarService,
     private vehicleService: VehicleService,
     private route: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+    private geolocationService: GeoCodingServiceService) { }
 
   ngOnInit(): void {
     this.rentACar = new RentACar('','','');
@@ -82,6 +84,7 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
               
               this.rentACarService.rentACars = this.rentACars;
               this.rentACar = this.rentACars[this.index];
+              this.rentACarService.locationLoaded(this.rentACar.address);
               this.rentACarService.rentACarChanged.next(this.rentACar);
               this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
             },
@@ -96,6 +99,7 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
                 let toRentACar: TORentACar = Object.assign(new TORentACar('', '', ''), response);
                 this.rentACar = toRentACar.ToRegular();
                 this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+                this.rentACarService.locationLoaded(this.rentACar.address);
             },
             error => {
                 console.log(error);
@@ -106,9 +110,8 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
     );
   }
 
-  mapInitializer() {
-    this.map = new google.maps.Map(this.gmap.nativeElement, this.mapOptions);
-    this.marker.setMap(this.map);
+  mapInitializer(address: string) {
+    this.geolocationService.LatLon(address, this.map, this.gmap);
   }
 
   onEdit() {
@@ -126,7 +129,11 @@ export class RentACarDetailsComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   ngAfterViewInit() {
-    this.mapInitializer();
+    this.rentACarService.locationLoadedSubject.subscribe(
+      result => {
+        this.mapInitializer(result);
+      }
+    )
   }
 
   ngOnDestroy() {

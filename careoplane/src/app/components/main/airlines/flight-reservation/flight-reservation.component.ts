@@ -30,7 +30,7 @@ export class FlightReservationComponent implements OnInit {
   passengersControl: FormArray;
   passengersControl2: FormArray;
 
-  flight1: Flight;
+  flight1: Flight = null;
   flight2: Flight = null;
 
   tickets = [] as any;
@@ -54,6 +54,9 @@ export class FlightReservationComponent implements OnInit {
   secondFlight: boolean = false;
 
   finalPrice: number = 0;
+
+  showVehicles: boolean = false;
+  toDate: Date;
 
   constructor(private datePipe: DatePipe, private userService: UserService, private router: Router, private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
 
@@ -90,6 +93,7 @@ export class FlightReservationComponent implements OnInit {
             response => {
               this.flight1 = Object.assign(new TOFlight(), response).convert();
               this.airlineService.flightLoaded(this.flight1);
+              this.showVehicles = true;
             },
             error => {
               console.log(error);

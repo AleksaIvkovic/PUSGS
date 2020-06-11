@@ -46,7 +46,7 @@
         <textarea matInput [formControlName]="'description'" style=" height: 150px;"></textarea>
       </mat-form-field>
     </div>
-    <div class="col-md-2" *ngIf="!edit">
+    <div class="col-md-2">
       <div class="row">
         <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;" multiple>
         <button mat-fab color="accent" type="button" (click)="file.click()"  matTooltip="upload image file">
@@ -54,7 +54,9 @@
         </button>
       </div>
       <div class="row" *ngIf="uploadedFile != null">
-        {{uploadedFile.name}}
+        <div class="mat-h3">
+          {{uploadedFile.name}}
+        </div>
       </div>
     </div>
   </div>
@@ -78,7 +80,7 @@
   </div>
   <div class="row">
     <div class="col-md-3">
-      <mat-label>Price per class</mat-label>
+      <mat-label>Price per class (per km)</mat-label>
     </div>
     <div class="col-md-3">
       <mat-label>Number of rows per class</mat-label>
@@ -89,6 +91,7 @@
       <mat-form-field appearance="fill">
         <mat-label>First class</mat-label>
         <input matInput type="number" [min]="1" [formControlName]="'priceFirstClass'">
+        <span matPrefix>€&nbsp;</span>
       </mat-form-field>
     </div>
     <div class="col-md-3">
@@ -103,6 +106,7 @@
       <mat-form-field appearance="fill">
         <mat-label>Business class</mat-label>
         <input matInput type="number" [min]="1" [formControlName]="'priceBusinessClass'">
+        <span matPrefix>€&nbsp;</span>
       </mat-form-field>
     </div>
     <div class="col-md-3">
@@ -117,6 +121,7 @@
       <mat-form-field appearance="fill">
         <mat-label>Economy class</mat-label>
         <input matInput type="number" [min]="1" [formControlName]="'priceEconomyClass'">
+        <span matPrefix>€&nbsp;</span>
       </mat-form-field>
     </div>
     <div class="col-md-3">

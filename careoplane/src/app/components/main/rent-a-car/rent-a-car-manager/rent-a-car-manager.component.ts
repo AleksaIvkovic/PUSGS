@@ -13,6 +13,7 @@ import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
 import { MatDialog } from '@angular/material/dialog';
 import { LogInComponent } from 'src/app/components/log-in/log-in.component';
 import { ChangePasswordComponent } from 'src/app/components/change-password/change-password.component';
+import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
 
 @Component({
   selector: 'app-rent-a-car-manager',
@@ -27,6 +28,7 @@ export class RentACarManagerComponent implements OnInit {
   isEdit = false;
   rentACar: RentACar;
   isFirstLogIn = false;
+  isValidAddress = false;
 
   visible = true;
   selectable = true;
@@ -41,6 +43,7 @@ export class RentACarManagerComponent implements OnInit {
     private router: Router,
     private _snackBar: MatSnackBar,
     private logInDialog: MatDialog,
+    private geocoderService: GeoCodingServiceService
   ) { }
 
   ngOnInit(): void {
@@ -59,8 +62,10 @@ export class RentACarManagerComponent implements OnInit {
         error => {
             console.log(error);
         });
+      this.isValidAddress = true;
     } else {
       this.isEdit = false;
+      this.isValidAddress = false;
       this.initForm();
       this.isFirstLogIn = localStorage.getItem('is-first-log-in') == 'true';
       if (this.isFirstLogIn) {
@@ -80,7 +85,7 @@ export class RentACarManagerComponent implements OnInit {
       'city': this.isEdit ?  new FormControl(this.rentACar.address.split(',')[1].substr(1), Validators.required) : new FormControl(null, Validators.required),
       'state': this.isEdit ?  new FormControl(this.rentACar.address.split(',')[2].substr(1), Validators.required) : new FormControl(null, Validators.required),
       'description': this.isEdit ?  new FormControl(this.rentACar.description, Validators.required) : new FormControl(null, Validators.required),
-      'locations': this.isEdit ?  new FormControl(null, Validators.required) : new FormControl(null, Validators.required),
+      'locations': this.isEdit ?  new FormControl(null) : new FormControl(null),
       'car': this.isEdit ?  new FormControl(this.rentACar.prices[0], Validators.required) : new FormControl(null, Validators.required),
       'van': this.isEdit ?  new FormControl(this.rentACar.prices[1], Validators.required) : new FormControl(null, Validators.required),
       'truck': this.isEdit ?  new FormControl(this.rentACar.prices[2], Validators.required) : new FormControl(null, Validators.required),
@@ -94,6 +99,11 @@ export class RentACarManagerComponent implements OnInit {
 
   onVerifyAddress() {
     this.locationOfRentACar = this.addForm.value['address'] + ', ' + this.addForm.value['city'] + ', ' + this.addForm.value['state'];
+    this.geocoderService.checkAddress(this.locationOfRentACar).subscribe(
+        result => {
+          this.isValidAddress = result;
+        }
+      )
     this.locations.push(this.addForm.value['city'].trim());
   }
 

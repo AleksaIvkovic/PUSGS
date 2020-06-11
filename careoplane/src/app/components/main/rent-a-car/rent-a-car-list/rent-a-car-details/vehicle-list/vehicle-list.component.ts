@@ -32,7 +32,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   searchPerformed = false;
   numOfDays = 1;
-  discount = this.rentACarService.discount;
+  discount = 0;
 
   minPickUpDate: Date = new Date();
   minReturnDate: Date = new Date();
@@ -59,6 +59,14 @@ export class VehicleListComponent implements OnInit, OnDestroy {
     private router: Router) { }
 
   ngOnInit(): void {
+    this.rentACarService.getDiscountForVehicles().subscribe(
+      (result: any) => {
+        this.discount = result.discount;
+      },
+      error => {
+        console.log(error);
+      }
+    );
     if (this.router.url.includes('profile')) { //Admin this.rentACar === undefined || this.rentACar.name === ''
       this.rentACarService.newVehicleListChanged.
       subscribe(

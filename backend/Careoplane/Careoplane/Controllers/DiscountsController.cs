@@ -31,6 +31,17 @@ namespace Careoplane.Controllers
             return await _context.Discount.ToListAsync();
         }
 
+        [HttpGet]
+        [Route("Vehicle")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<Object> GetDiscountForVehicle()
+        {
+            var discountObj = await _context.Discount.Where(discount => discount.Type == "vehicle").FirstOrDefaultAsync();
+            var discount = discountObj.DiscountValue;
+
+            return Ok(new { discount });
+        }
+
         // PUT: api/Discounts/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

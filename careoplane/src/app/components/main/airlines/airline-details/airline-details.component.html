@@ -11,9 +11,11 @@
                 <div class="row">
                     <img class="images" [src]="createImgPath(airline.picture)" alt={{airline.name}}>
                 </div>
+                <br>
                 <div class="row" *ngIf="admin">
                     <div class="col-md">
                         <button
+                        style="width: 100px;"
                         mat-raised-button 
                         color="primary"
                         (click)="onEdit()">
@@ -23,7 +25,9 @@
                 </div>
                 <div class="row" *ngIf="admin">
                     <div class="col-md">
+                        <br>
                         <button
+                        style="width: 100px;"
                         mat-raised-button 
                         color="primary"
                         (click)="AddFlight()">

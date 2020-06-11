@@ -13,6 +13,8 @@ import { UserService } from 'src/app/services/user.service';
 import { TOPrimaryObject } from 'src/app/t-o-models/t-o-primary-object.model';
 import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 import { PriceSegmentSeat } from 'src/app/models/price-segment-seat.model';
+import { MatDialog } from '@angular/material/dialog';
+import { ChangePasswordComponent } from 'src/app/components/change-password/change-password.component';
 
 @Component({
   selector: 'app-airline-edit',
@@ -30,10 +32,17 @@ export class AirlineEditComponent implements OnInit {
   addOnBlur = true;
   dirty = false;
   uploadedFile = null;
+  isFirstLogIn: boolean = false;
 
   readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
-  constructor(private userService: UserService, private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService,private geocoderService: GeoCodingServiceService) { }
+  constructor(
+    private userService: UserService, 
+    private activeRoute: ActivatedRoute, 
+    private router: Router, 
+    private airlineService: AirlineService,
+    private geocoderService: GeoCodingServiceService,
+    private logInDialog: MatDialog) { }
 
   ngOnInit(): void {
     this.formInit();
@@ -48,6 +57,15 @@ export class AirlineEditComponent implements OnInit {
       );
       this.edit = true;
       this.addressValid = true;
+    } else {
+      this.isFirstLogIn = localStorage.getItem('is-first-log-in') == 'true';
+      if (this.isFirstLogIn) {
+        let dialogRef = this.logInDialog.open(
+          ChangePasswordComponent, {
+            data: {password: '', confirmPassword: ''}
+          }
+        );
+      }
     }
   }
 
@@ -203,7 +221,22 @@ export class AirlineEditComponent implements OnInit {
     else{
       this.airlineService.editAirline(this.airline).subscribe(
         responseData => {
-          this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
+          if(this.uploadedFile != null){
+            const formData = new FormData();
+            formData.append('file', this.uploadedFile, this.uploadedFile.name);
+        
+            this.airlineService.saveImage(formData).subscribe(
+              result => {
+                this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
+              },
+              error => {
+                console.log(error);
+              }
+            );
+          }
+          else{
+            this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
+          }
         },
         error => {
           console.log(error);

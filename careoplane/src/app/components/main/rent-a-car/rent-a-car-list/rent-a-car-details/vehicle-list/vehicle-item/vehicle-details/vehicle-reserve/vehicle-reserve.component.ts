@@ -25,7 +25,7 @@ export class VehicleReserveComponent implements OnInit, OnDestroy {
   returnDate;
   returnLocation;
   numOfDays = 1;
-  discount = this.rentACarService.discount;
+  discount = 0;
 
   constructor(
     private userService: UserService,
@@ -37,6 +37,15 @@ export class VehicleReserveComponent implements OnInit, OnDestroy {
     { }
 
   ngOnInit(): void {
+    this.rentACarService.getDiscountForVehicles().subscribe(
+      (result: any) => {
+        this.discount = result.discount;
+      },
+      error => {
+        console.log(error);
+      }
+    );
+
     this.subscription = this.route.params
     .subscribe(
       (params: Params) => {

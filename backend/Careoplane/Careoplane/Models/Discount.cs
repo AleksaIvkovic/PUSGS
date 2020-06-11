@@ -13,6 +13,6 @@ namespace Careoplane.Models
 
         public string Type { get; set; }
 
-        public int DiscountValue { get; set; }
+        public double DiscountValue { get; set; }
     }
 }

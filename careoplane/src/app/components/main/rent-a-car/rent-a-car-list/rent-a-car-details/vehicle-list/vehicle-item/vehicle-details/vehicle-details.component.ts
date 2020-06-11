@@ -26,7 +26,7 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
   isAdmin: boolean = false;
   isLoggedIn: boolean = false;
   rentACar: RentACar;
-  discount = this.rentACarService.discount;
+  discount = 0;
   isReserved: boolean = false;
 
   // displayedColumns: string[] = ['brand', 'year', 'type', 'seats', 'price', 'location', 'rating'];
@@ -44,6 +44,14 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
     this.isReserved = false;
     this.vehicle = new Vehicle('', '', 0, 0, 0);
     this.isLoggedIn = localStorage.getItem('role') === null ? false : true;
+    this.rentACarService.getDiscountForVehicles().subscribe(
+      (result: any) => {
+        this.discount = result.discount;
+      },
+      error => {
+        console.log(error);
+      }
+    );
     this.subscription = this.route.params
     .subscribe(
       (params: Params) => {

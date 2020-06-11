@@ -100,4 +100,14 @@ export class VehicleService {
             reservation.ToTO(rentACar)
         );
     }
+
+    getVehiclesOnSale(location: string, fromDate: Date, toDate: Date) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles/OnSale';
+        var params = new HttpParams()
+        .append('location', location)
+        .append('fromDate', fromDate.toDateString())
+        .append('toDate', toDate == null ? '' : toDate.toDateString());
+        
+        return this.http.get(address, {params: params});
+    }
 }

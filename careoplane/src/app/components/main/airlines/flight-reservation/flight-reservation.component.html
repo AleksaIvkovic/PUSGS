@@ -143,6 +143,15 @@
   </div>
 
   <mat-step>
+    <ng-template matStepLabel>Reserve Vehicle</ng-template>
+
+    <app-vehicle-sale-list [location]='flight1 == null ? "" : flight1.destination' [fromDate]='flight1 == null ? toDate : flight1.arrival' [toDate]='flight2 == null ? toDate : flight2.departure'></app-vehicle-sale-list>
+
+    <button mat-button matStepperPrevious>Back</button>
+    <button mat-button matStepperNext (click)="CalculatePrice()" color="primary">Next</button>
+  </mat-step>
+
+  <mat-step>
     <ng-template matStepLabel>Done</ng-template>
     <p>You are now done.</p>
     <p>{{finalPrice}}</p>
