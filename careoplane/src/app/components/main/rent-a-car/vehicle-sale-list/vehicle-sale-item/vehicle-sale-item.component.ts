@@ -45,6 +45,7 @@ export class VehicleSaleItemComponent implements OnInit {
   OnCancel() {
     this.vehicleService.vehicleReservationCreated.next(null);
     this.vehicleService.vehicleRentACar.next(null);
+    this.vehicleService.vehicleForReservation.next(null);
   }
 
   OnChoose() {
@@ -64,6 +65,7 @@ export class VehicleSaleItemComponent implements OnInit {
 
     this.vehicleService.vehicleReservationCreated.next(newVehicleReservation);
     this.vehicleService.vehicleRentACar.next(this.rentACar);
+    this.vehicleService.vehicleForReservation.next(this.vehicle);
   }
 
 }

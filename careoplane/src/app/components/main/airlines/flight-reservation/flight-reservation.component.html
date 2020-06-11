@@ -68,12 +68,14 @@
 
   <mat-step [stepControl]="firstFormGroup">
     <ng-template matStepLabel>Choose seats</ng-template>
+    <hr>
     <app-seat-selector [type]="classType" [num]="1"></app-seat-selector>
     <button mat-button matStepperNext color="primary" [disabled]="checked" >Next</button>
   </mat-step>
   
   <mat-step [stepControl]="secondFormGroup">
-    <ng-template matStepLabel>Enter passenger/s information</ng-template>
+    <ng-template matStepLabel>Passenger/s seat/s</ng-template>
+      <hr>
       <form [formGroup]="secondFormGroup">
         <div formArrayName="passengersControl">
           <div *ngFor="let passenger of getList(); let i = index" [formGroupName]="i">
@@ -106,12 +108,14 @@
   <div *ngIf="secondFlight">
     <mat-step [stepControl]="thirdFormGroup">
       <ng-template matStepLabel>Choose seats</ng-template>
+      <hr>
       <app-seat-selector [type]="classType" [num]="2"></app-seat-selector>
       <button mat-button matStepperNext color="primary" [disabled]="checked2" >Next</button>
     </mat-step>
     
     <mat-step [stepControl]="fourthFormGroup">
-      <ng-template matStepLabel>Enter passenger/s information</ng-template>
+      <ng-template matStepLabel>Passenger/s seat/s</ng-template>
+        <hr>
         <form [formGroup]="fourthFormGroup">
           <div formArrayName="passengersControl">
             <div *ngFor="let passenger of getList2(); let i = index" [formGroupName]="i">
@@ -144,9 +148,11 @@
 
   <mat-step>
     <ng-template matStepLabel>Reserve Vehicle</ng-template>
-    <div class="mat-h3" *ngIf="rentACar != null">
-      You have chosen a vehicle from {{rentACar.name}}
+    <hr>
+    <div class="mat-h2" *ngIf="rentACar != null">
+      <strong>You have chosen {{vehicle.brand}} from {{rentACar.name}}</strong>
     </div>
+    <br/>
     <app-vehicle-sale-list [location]='flight1 == null ? "" : flight1.destination' [fromDate]='flight1 == null ? toDate : flight1.arrival' [toDate]='flight2 == null ? toDate : flight2.departure' [toDateMax]='flight2 == null ? toDate : flight2.departure'></app-vehicle-sale-list>
 
     <button mat-button matStepperPrevious>Back</button>
@@ -160,17 +166,19 @@
         You are now done
       </div>
       <div class="row">
-        <div class="col-md-2">
-          Final price is €{{finalPrice}}
+        <div class="col-md-5" *ngIf="showPoints">
+          Final price is {{finalPrice | currency: 'EUR'}}
         </div>
-        <div class="col-md-2">
-
+        <div class="col-md-5" *ngIf="!showPoints">
+          Final price is <del>{{oldPrice | currency: 'EUR'}}</del>&nbsp;&nbsp;<strong style="color: #E91E63;">{{finalPrice | currency: 'EUR'}}</strong>
         </div>
-        <div class="col-md-2" *ngIf="showPoints">
-          <button mat-raised-button color="accent" (click)="UsePoints()">Use Points</button>
+        <div class="col-md-1">
         </div>
-        <div class="col-md-2" *ngIf="!showPoints">
-          <button mat-raised-button (click)="CancelUsePoints()">Cancel</button>
+        <div class="col-md-3" *ngIf="showPoints">
+          <button mat-raised-button color="accent" (click)="UsePoints()" style="width: 100px;">Use Points</button>
+        </div>
+        <div class="col-md-3" *ngIf="!showPoints">
+          <button mat-raised-button color="warn" (click)="CancelUsePoints()" style="width: 100px;">Cancel</button>
         </div>
       </div>
     </div>

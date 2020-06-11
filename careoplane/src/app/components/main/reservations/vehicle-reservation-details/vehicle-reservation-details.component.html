@@ -22,7 +22,7 @@
         {{ vehicle.brand }}
     </div>
     <div class="col-md-2">
-        {{ reservation.price }} ‎€
+        {{ reservation.price | currency: 'EUR' }}
     </div>
 </div>
 <br>

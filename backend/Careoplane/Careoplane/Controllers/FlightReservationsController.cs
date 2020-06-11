@@ -550,6 +550,15 @@ namespace Careoplane.Controllers
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
             var inviter = await _userManager.FindByIdAsync(userId);
 
+            VehicleReservation vehicleReservation = null;
+            Vehicle vehicle = null;
+
+            if (flightReservation.VehicleReservationId != 0)
+            {
+                vehicleReservation = await _context.VehicleReservation.FindAsync(flightReservation.VehicleReservationId);
+                vehicle = await _context.Vehicles.Include(vehicle => vehicle.RentACar).FirstOrDefaultAsync(vehicle => vehicle.VehicleId == vehicleReservation.VehicleId);
+            }
+
             FlightReservation tempFlightReservation = new FlightReservation()
             {
                 ReservationId = 0,
@@ -598,7 +607,7 @@ namespace Careoplane.Controllers
                         FlightScored = false,
                     };
 
-                    if (passengerSeat.Username != null && passengerSeat.Username == inviter.UserName)
+                    if (passengerSeat.Username == "" || passengerSeat.Username == inviter.UserName)
                     {
                         passengerSeat.Accepted = true;
                     }
@@ -617,7 +626,7 @@ namespace Careoplane.Controllers
 
                         await _userManager.UpdateAsync(user);
 
-                        MailingService.SendEMailInvite(inviter, user, tempFlightReservation, new Flight(tOFlightReservationDetail.Flight,_context));
+                        MailingService.SendEMailInvite(inviter, user, flightReservation, vehicle, tempFlightReservation.ReservationId);
                     }
 
                     Seat seat = await _context.Seats.FindAsync(passengerSeat.SeatId);
@@ -629,7 +638,7 @@ namespace Careoplane.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            MailingService.SendEMailReceipt(inviter, tempFlightReservation, new Flight(tempFlight, _context));
+            MailingService.SendEMailReceipt(inviter, flightReservation, vehicle);
 
             return CreatedAtAction("GetFlightReservation", new { id = flightReservation.ReservationId }, flightReservation);
         }

@@ -16,6 +16,7 @@ import { VehicleReservation } from 'src/app/models/vehicle-reservation.model';
 import { RentACar } from 'src/app/models/rent-a-car.model';
 import { Discount } from 'src/app/models/discount.model';
 import { DiscountService } from 'src/app/services/discount.service';
+import { Vehicle } from 'src/app/models/vehicle.model';
 
 
 @Component({
@@ -64,11 +65,13 @@ export class FlightReservationComponent implements OnInit {
   toDate: Date;
   vehicleReservation: VehicleReservation = null;
   rentACar: RentACar = null;
+  vehicle: Vehicle = null;
 
   discount: Discount;
   user: User;
   showPoints: boolean = true;
   numberOfUsedPoints: number = 0;
+  oldPrice: number = 0;
 
   constructor(
     private datePipe: DatePipe, 
@@ -214,6 +217,12 @@ export class FlightReservationComponent implements OnInit {
     this.vehicleService.vehicleRentACar.subscribe(
       result => {
         this.rentACar = result;
+      }
+    );
+
+    this.vehicleService.vehicleForReservation.subscribe(
+      result => {
+        this.vehicle = result;
       }
     );
   }
@@ -479,6 +488,7 @@ export class FlightReservationComponent implements OnInit {
   }
 
   UsePoints(){
+    this.oldPrice = this.finalPrice;
     let neededPoints = this.finalPrice / this.discount.discountValue;
     if(neededPoints < this.user.numberOfPoint){
       this.numberOfUsedPoints = neededPoints;

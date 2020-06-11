@@ -60,10 +60,14 @@
                 </div>
                 <div class="col-md">
                     <div *ngIf="passenger.username == username && !flightScored[i] && type==='history'">
-                        <button mat-raised-button color="primary" (click)="ScoreFlight(details.flight.flightId, passenger.passengerSeatId, i)">Rate Flight</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button mat-raised-button color="primary" (click)="ScoreFlight(details.flight.flightId, passenger.passengerSeatId, i)">
+                            Rate Flight
+                        </button>&nbsp;&nbsp;&nbsp;&nbsp;
                     </div>
                     <div *ngIf="passenger.username == username && !airlineScored[i] && type==='history'">
-                        <button mat-raised-button color="primary" (click)="ScoreAirline(details.flight.airlineName, passenger.passengerSeatId, i)">Rate Airline</button>
+                        <button mat-raised-button color="primary" (click)="ScoreAirline(details.flight.airlineName, passenger.passengerSeatId, i)">
+                            Rate Airline
+                        </button>
                     </div>
                 </div>
             </div>

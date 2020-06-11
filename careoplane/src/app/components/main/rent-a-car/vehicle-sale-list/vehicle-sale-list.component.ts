@@ -14,6 +14,7 @@ export class VehicleSaleListComponent implements OnInit {
   discount = 0;
   numberOfDays: number = 0;
   showTable: boolean = false;
+  showPicker: boolean = false;
   @Input() location: string;
   @Input() fromDate: Date;
   @Input() toDate: Date;
@@ -40,6 +41,14 @@ export class VehicleSaleListComponent implements OnInit {
   public OnDateChange(event): void {
     this.toDate = new Date((<Date>event).toDateString());
     this.SearchVehicles();
+  }
+
+  OnYes() {
+    if (this.toDate == null) {
+      this.showPicker = true;
+    } else {
+      this.SearchVehicles();
+    }
   }
 
   SearchVehicles() {
