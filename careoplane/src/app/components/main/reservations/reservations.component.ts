@@ -24,6 +24,10 @@ export class ReservationsComponent implements OnInit {
   vehicleReservations: VehicleReservation[] = [];
   vehicleHistory: VehicleReservation[] = [];
 
+  reservations: any[] = [];
+  invitations: any[] = [];
+  history: any[] = [];
+
   constructor(
     private userService: UserService,
     private router: Router,
@@ -41,8 +45,10 @@ export class ReservationsComponent implements OnInit {
           let flight2Exists = flightReservation.flightReservationDetails.length != 1 ? true : false;
           if(flight2Exists ? new Date(flightReservation.flightReservationDetails[1].flight.arrival).valueOf() < new Date().valueOf() :
           new Date(flightReservation.flightReservationDetails[0].flight.arrival).valueOf() < new Date().valueOf()){
-            if(!this.checkReservations(flightReservation.reservationId,this.flightHistory))
+            if(!this.checkReservations(flightReservation.reservationId,this.flightHistory)){
               this.flightHistory.push(flightReservation);
+              this.history.push(flightReservation);
+            }
           }
           else{
             for(let flightDetails of flightReservation.flightReservationDetails){
@@ -50,11 +56,17 @@ export class ReservationsComponent implements OnInit {
                 if(passengerSeat.username == localStorage.getItem('username')){
                   if(passengerSeat.accepted){
                     if(!this.checkReservations(flightReservation.reservationId,this.flightReservations))
+                    {
                       this.flightReservations.push(flightReservation);
+                      this.reservations.push(flightReservation)
+                    }
                   }
                   else{
                     if(!this.checkReservations(flightReservation.reservationId,this.flightInvitations))
+                    {
                       this.flightInvitations.push(flightReservation);
+                      this.invitations.push(flightReservation);
+                    }  
                   }
                 }
               }
@@ -82,8 +94,10 @@ export class ReservationsComponent implements OnInit {
 
           if (new Date(vehicleReservation.toDate).valueOf() < (new Date()).valueOf()) { // Prosla rezervacija
             this.vehicleHistory.push(reservation);
+            this.history.push(reservation);
           } else {
             this.vehicleReservations.push(reservation);
+            this.reservations.push(reservation);
           }
         });
         this.vehicleReservationsLoaded = true;

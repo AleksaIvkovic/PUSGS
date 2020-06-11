@@ -1,3 +1,21 @@
+<div class="row" *ngIf="!unauthenticatedUser">
+    <a 
+        [routerLink]="['../../../', 'reservations']"
+        routerLinkActive="active"
+        mat-mini-fab >
+        <mat-icon>arrow_back</mat-icon>
+    </a>
+</div>
+<div class="row" *ngIf="unauthenticatedUser">
+    <a 
+        [routerLink]="['../']"
+        routerLinkActive="active"
+        mat-mini-fab >
+        <mat-icon>arrow_back</mat-icon>
+    </a>
+</div>
+<br>
+<br>
 <div *ngIf="expired">
     This invitation has expired
 </div>

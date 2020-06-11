@@ -57,16 +57,30 @@ export class FlightReservationDetailsComponent implements OnInit {
         if(params['id']){
           this.unauthenticatedUser = true;
           this.username = params['username'];
+          this.type = 'invitation';
           this.airlineService.getReservation(+params['id'],this.username).subscribe(
-            result => {
+            (result:FlightReservation) => {
               this.reservation = result;
+              for(let reservationDetails of this.reservation.flightReservationDetails){
+                for(let passenger of reservationDetails.passengerSeats){
+                  if(passenger.username == this.username){
+                    if(passenger.accepted){
+                      this.type = 'reservation';
+                      this.CheckTime();
+                    }
+                  }
+                }
+              }
+              switch(this.reservation.flightReservationDetails.length){
+                case 1: this.type = new Date(this.reservation.flightReservationDetails[0].flight.arrival).valueOf() < new Date().valueOf() ? 'history' : this.type; break;
+                case 2: this.type = new Date(this.reservation.flightReservationDetails[1].flight.arrival).valueOf() < new Date().valueOf() ? 'history' : this.type; break; 
+              }
             },
             error => {
               console.log(error);
               this.expired = true;
             }
           )
-          this.type = 'invitation';
         }
       }
     )
