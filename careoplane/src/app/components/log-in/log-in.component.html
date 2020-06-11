@@ -56,14 +56,36 @@
             </form>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="col-md-6">
-            <button type="button" (click)="LoginWithGoogle()" mat-flat-button color="primary"><img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Google-512.png" width="25" height="25">Login with Google</button>
+            <button 
+                type="button"
+                style="width: 190px; margin-left: 5px;" 
+                (click)="LoginWithGoogle()" 
+                mat-flat-button 
+                color="primary">
+                <img src="https://cdn2.iconfinder.com/data/icons/social-icons-33/128/Google-512.png" 
+                    width="22" 
+                    height="22">
+                Log In with Google
+            </button>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="col-md-6">
-            <button type="button" (click)="logInWithFB()" mat-flat-button color="primary">Log In With Facebook</button>
+            <button 
+                type="button" 
+                style="width: 190px; margin-left: 5px;"
+                (click)="logInWithFB()" 
+                mat-flat-button 
+                color="primary">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" 
+                    width="22" 
+                    height="22">
+                Log In with Facebook
+            </button>
         </div>
     </div>
 </mat-dialog-content>

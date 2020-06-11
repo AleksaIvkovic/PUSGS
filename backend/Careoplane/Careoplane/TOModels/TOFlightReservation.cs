@@ -23,7 +23,14 @@ namespace Careoplane.TOModels
             TimeOfCreation = flightReservation.TimeOfCreation.ToString();
             Creator = flightReservation.Creator;
             VehicleReservationId = flightReservation.VehicleReservationId;
-            Type = "flight";
+            if(VehicleReservationId == 0)
+            {
+                Type = "flight";
+            }
+            else
+            {
+                Type = "double";
+            }
 
             foreach(FlightReservationDetail flightReservationDetail in flightReservation.FlightReservationDetails)
             {

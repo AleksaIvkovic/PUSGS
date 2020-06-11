@@ -83,7 +83,7 @@ export class LogInComponent implements OnInit {
       },
       err => {
         if (err.status == 400) {
-          this._snackBar.open('Incorrect email/username or password.', 'OK', {duration: 5000,});
+          this._snackBar.open(err.error.message, 'OK', {duration: 5000,});
           this.logInForm.patchValue({
             usermail: '',
             password: ''

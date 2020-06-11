@@ -25,7 +25,9 @@ export class ReservationItemComponent implements OnInit {
       this.toDate = (<VehicleReservation>this.reservation).toDate;
       this.fromLocation = (<VehicleReservation>this.reservation).fromLocation;
       this.toLocation = (<VehicleReservation>this.reservation).toLocation;
-    } else if (this.reservation.type === 'flight') {
+    }
+     else 
+    {
       let flight = (<FlightReservation>this.reservation).flightReservationDetails[0].flight;
       let flight2 = null;
       if((<FlightReservation>this.reservation).flightReservationDetails.length != 1){

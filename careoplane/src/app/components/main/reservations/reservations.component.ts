@@ -38,7 +38,9 @@ export class ReservationsComponent implements OnInit {
     this.airlineService.getReservations().subscribe(
       result => {
         for(let flightReservation of result){
-          if(new Date(flightReservation.flightReservationDetails[0].flight.arrival).valueOf() < new Date().valueOf()){
+          let flight2Exists = flightReservation.flightReservationDetails.length != 1 ? true : false;
+          if(flight2Exists ? new Date(flightReservation.flightReservationDetails[1].flight.arrival).valueOf() < new Date().valueOf() :
+          new Date(flightReservation.flightReservationDetails[0].flight.arrival).valueOf() < new Date().valueOf()){
             if(!this.checkReservations(flightReservation.reservationId,this.flightHistory))
               this.flightHistory.push(flightReservation);
           }

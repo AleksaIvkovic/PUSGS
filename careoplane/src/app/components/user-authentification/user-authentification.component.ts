@@ -170,7 +170,11 @@ export class UserAuthentificationComponent implements OnInit {
       }
       },
       error => {
-        console.log(error);
+        if (error.status == 400) {
+          this._snackBar.open(error.error.message, 'OK', {duration: 5000,});
+        }
+        else
+          console.log(error);
       });
   }
 
