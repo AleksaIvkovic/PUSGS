@@ -6,34 +6,41 @@
         <mat-icon>arrow_back</mat-icon>
     </a>
 </div>
-<div class="row">
-    <div class="mat-h2">
-        {{ rentACarName }}
+<br>
+<div class="row" *ngIf="type === 'reservation' && canCancel">
+    <div class="col-md">
+        <button mat-raised-button color="warn" (click)="OnCancel()">Cancel</button>
     </div>
-    <div class="mat-h4">
-        <div class="row" *ngIf="type === 'reservation' && canCancel">
-            <div class="col-md">
-                <button mat-raised-button color="warn" (click)="OnCancel()">Cancel</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md" style="display: flex; align-items: center;">
-                {{reservation.fromLocation}}&nbsp;&nbsp;
-                ({{reservation.fromDate | date: 'dd/MM/yyyy'}})&nbsp;&nbsp;&nbsp;&nbsp;
-                <mat-icon>arrow_right_alt</mat-icon>&nbsp;&nbsp;
-                {{reservation.toLocation}}&nbsp;&nbsp;&nbsp;&nbsp;
-                ({{reservation.toDate | date: 'dd/MM/yyyy'}})
-            </div>
-        </div>
-        <div class="row" *ngIf="type === 'history'">
-            <div class="col-md">
-                <div *ngIf="!reservation.isVehicleRated">
-                    <button mat-raised-button color="primary" (click)="RateVehicle()">Rate Vehicle</button>&nbsp;&nbsp;&nbsp;&nbsp;
-                </div>
-                <div *ngIf="!reservation.isRentACarRated">
-                    <button mat-raised-button color="primary" (click)="RateRentACar()">Rate Rent A Car</button>
-                </div>
-            </div>
-        </div>
+</div>
+<hr>
+<div class="row mat-h2">
+    {{ rentACarName }}
+</div>
+<br>
+<div class="row mat-h3">
+    <div class="col-md-2">
+        {{ vehicle.brand }}
+    </div>
+    <div class="col-md-2">
+        {{ reservation.price }} ‎€
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-md" style="display: flex; align-items: center;">
+        {{reservation.fromLocation}}&nbsp;&nbsp;
+        ({{reservation.fromDate | date: 'dd/MM/yyyy'}})&nbsp;&nbsp;&nbsp;&nbsp;
+        <mat-icon>arrow_right_alt</mat-icon>&nbsp;&nbsp;
+        {{reservation.toLocation}}&nbsp;&nbsp;&nbsp;&nbsp;
+        ({{reservation.toDate | date: 'dd/MM/yyyy'}})
+    </div>
+</div>
+<br>
+<div class="row" *ngIf="type === 'history'">
+    <div class="col-md-2" *ngIf="!reservation.isVehicleRated">
+        <button mat-raised-button color="primary" (click)="RateVehicle()">Rate Vehicle</button>&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+    <div class="col-md-2" *ngIf="!reservation.isRentACarRated">
+        <button mat-raised-button color="primary" (click)="RateRentACar()">Rate Rent A Car</button>
     </div>
 </div>

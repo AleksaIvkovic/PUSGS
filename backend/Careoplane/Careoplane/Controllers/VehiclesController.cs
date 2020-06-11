@@ -153,7 +153,12 @@ namespace Careoplane.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TOVehicle>> GetVehicle(int id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _context.Vehicles
+                .Include(vehicle => vehicle.UnavailableDates)
+                .Include(vehicle => vehicle.Ratings)
+                .Include(vehicle => vehicle.RentACar)
+                .Where(vehicle => vehicle.VehicleId == id)
+                .FirstOrDefaultAsync();
 
             if (vehicle == null)
             {

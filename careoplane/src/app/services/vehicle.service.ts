@@ -112,4 +112,12 @@ export class VehicleService {
         
         return this.http.get(address, {params: params});
     }
+
+    getVehicle(vehicleId: number) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles/' + vehicleId.toString();
+        return this.http
+        .get(
+            address
+        );
+    }
 }

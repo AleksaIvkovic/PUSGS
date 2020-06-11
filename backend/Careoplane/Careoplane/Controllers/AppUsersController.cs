@@ -346,14 +346,6 @@ namespace Careoplane.Controllers
             var test = _appSettings.JWT_Secret;
             if (VerifyToken(model.IdToken) || model.Email != "")
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-
-                if (user != null)
-                {
-                    return Ok("Email is allready taken");
-                    //return StatusCode(400, "Email is already taken");
-                }
-
                 var applicationUser = new AppUser()
                 {
                     UserName = model.Email,

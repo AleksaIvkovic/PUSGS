@@ -7,6 +7,8 @@ import { TOVehicleReservation } from 'src/app/t-o-models/t-o-vehicle-reservation
 import { RentACarService } from 'src/app/services/rent-a-car.service';
 import { RatingComponent } from 'src/app/components/rating/rating.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Vehicle } from 'src/app/models/vehicle.model';
+import { TOVehicle } from 'src/app/t-o-models/t-o-vehicle.model';
 
 @Component({
   selector: 'app-vehicle-reservation-details',
@@ -20,6 +22,7 @@ export class VehicleReservationDetailsComponent implements OnInit {
   reservationId: number = 0;
   canCancel: boolean = false;
   notCombined: boolean = true;
+  vehicle: Vehicle;
 
   @Input() id: number = null;
 
@@ -34,6 +37,7 @@ export class VehicleReservationDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.reservation = new VehicleReservation(0, null, '', null, '', 0, 0);
+    this.vehicle = new Vehicle('','',0,0,0);
 
     if (this.id != null) {
       if (this.type) {
@@ -45,6 +49,15 @@ export class VehicleReservationDetailsComponent implements OnInit {
             this.vehicleService.getCompanyForVehicle(this.reservation.vehicleId).subscribe(
               (result: any) => {
                 this.rentACarName = result.company;
+              },
+              error => {
+                console.log(error);
+              }
+            );
+            this.vehicleService.getVehicle(this.reservation.vehicleId).subscribe(
+              (result: TOVehicle) => {
+                let tempVehicle = Object.assign(new TOVehicle('','',0,0,0,'',0,[],false,''), result);
+                this.vehicle = tempVehicle.ToRegular();
               },
               error => {
                 console.log(error);
@@ -69,6 +82,15 @@ export class VehicleReservationDetailsComponent implements OnInit {
                 this.vehicleService.getCompanyForVehicle(this.reservation.vehicleId).subscribe(
                   (result: any) => {
                     this.rentACarName = result.company;
+                  },
+                  error => {
+                    console.log(error);
+                  }
+                );
+                this.vehicleService.getVehicle(this.reservation.vehicleId).subscribe(
+                  (result: TOVehicle) => {
+                    let tempVehicle = Object.assign(new TOVehicle('','',0,0,0,'',0,[],false,''), result);
+                    this.vehicle = tempVehicle.ToRegular();
                   },
                   error => {
                     console.log(error);

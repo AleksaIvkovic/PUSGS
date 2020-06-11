@@ -36,7 +36,9 @@ namespace Careoplane.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<Object> GetDiscountForVehicle()
         {
-            var discountObj = await _context.Discount.Where(discount => discount.Type == "vehicle").FirstOrDefaultAsync();
+            var discountObj = await _context.Discount
+                .Where(discount => discount.Type == "vehicle")
+                .FirstOrDefaultAsync();
             var discount = discountObj.DiscountValue;
 
             return Ok(new { discount });
