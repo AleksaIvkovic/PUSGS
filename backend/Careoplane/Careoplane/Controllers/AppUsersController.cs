@@ -102,7 +102,8 @@ namespace Careoplane.Controllers
                 tOFriendsA,
                 tOFriendsB,
                 //tOFlightReservations,
-                user.IsFirstLogIn
+                user.IsFirstLogIn,
+                user.NumberOfPoint
             };
         }
 

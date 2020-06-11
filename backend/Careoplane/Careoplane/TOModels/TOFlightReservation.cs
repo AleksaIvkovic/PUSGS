@@ -15,6 +15,7 @@ namespace Careoplane.TOModels
         public string TimeOfCreation { get; set; }
         public int VehicleReservationId { get; set; }
         public string Creator { get; set; }
+        public double FinalPrice { get; set; }
 
         public TOFlightReservation() { }
         public TOFlightReservation(FlightReservation flightReservation, DatabaseContext _context) {
@@ -23,6 +24,8 @@ namespace Careoplane.TOModels
             TimeOfCreation = flightReservation.TimeOfCreation.ToString();
             Creator = flightReservation.Creator;
             VehicleReservationId = flightReservation.VehicleReservationId;
+            FinalPrice = flightReservation.FinalPrice;
+
             if(VehicleReservationId == 0)
             {
                 Type = "flight";

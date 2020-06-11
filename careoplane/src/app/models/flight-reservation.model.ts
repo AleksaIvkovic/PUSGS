@@ -9,6 +9,7 @@ export class FlightReservation {
         public reservationId: number = 0,
         public timeOfCreation: string = null,
         public vehicleReservationId: number = 0,
-        public creator: string = null
+        public creator: string = null,
+        public finalPrice: number = 0
     ) {}
 }

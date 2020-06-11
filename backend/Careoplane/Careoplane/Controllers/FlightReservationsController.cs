@@ -72,7 +72,15 @@ namespace Careoplane.Controllers
                         if (reservations[i].FlightReservationDetails[j].PassengerSeats[k].Accepted == false)
                         {
                             if (invitationExpired || cancelationExpired)
+                            {
+                                Seat seat = await _context.Seats.FindAsync(reservations[i].FlightReservationDetails[j].PassengerSeats[k].SeatId);
+                                seat.Occupied = false;
+
+                                _context.Entry(seat).State = EntityState.Modified;
+
+                                await _context.SaveChangesAsync();
                                 passengerSeatsToRemove.Add(reservations[i].FlightReservationDetails[j].PassengerSeats[k]);
+                            }
                         }
                     }
 
@@ -201,7 +209,15 @@ namespace Careoplane.Controllers
                         if (reservations[i].FlightReservationDetails[j].PassengerSeats[k].Accepted == false)
                         {
                             if (invitationExpired || cancelationExpired)
+                            {
+                                Seat seat = await _context.Seats.FindAsync(reservations[i].FlightReservationDetails[j].PassengerSeats[k].SeatId);
+                                seat.Occupied = false;
+
+                                _context.Entry(seat).State = EntityState.Modified;
+
+                                await _context.SaveChangesAsync();
                                 passengerSeatsToRemove.Add(reservations[i].FlightReservationDetails[j].PassengerSeats[k]);
+                            }
                         }
                     }
 
@@ -314,6 +330,12 @@ namespace Careoplane.Controllers
                     {
                         if (invitationExpired || cancelationExpired)
                         {
+                            Seat seat = await _context.Seats.FindAsync(flightReservation.FlightReservationDetails[i].PassengerSeats[j].SeatId);
+                            seat.Occupied = false;
+
+                            _context.Entry(seat).State = EntityState.Modified;
+
+                            await _context.SaveChangesAsync();
                             passengerSeatsToRemove.Add(flightReservation.FlightReservationDetails[i].PassengerSeats[j]);
                         }
                     }
@@ -444,6 +466,13 @@ namespace Careoplane.Controllers
                 {
                     if (tempFlightReservation.FlightReservationDetails[i].PassengerSeats[j].Username == tempUsername)
                     {
+                        Seat seat = await _context.Seats.FindAsync(tempFlightReservation.FlightReservationDetails[i].PassengerSeats[j].SeatId);
+                        seat.Occupied = false;
+
+                        _context.Entry(seat).State = EntityState.Modified;
+
+                        await _context.SaveChangesAsync();
+
                         tempFlightReservation.FlightReservationDetails[i].PassengerSeats.Remove(tempFlightReservation.FlightReservationDetails[i].PassengerSeats[j]);
                         break;
                     }
@@ -512,9 +541,9 @@ namespace Careoplane.Controllers
         // POST: api/FlightReservations
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
+        [HttpPost("{points}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<FlightReservation>> PostFlightReservation(TOFlightReservation flightReservation)
+        public async Task<ActionResult<FlightReservation>> PostFlightReservation(TOFlightReservation flightReservation, int points)
         {
             TOFlight tempFlight = new TOFlight();
 
@@ -526,10 +555,12 @@ namespace Careoplane.Controllers
                 ReservationId = 0,
                 TimeOfCreation = DateTime.Now,
                 Creator = inviter.UserName,
-                VehicleReservationId = flightReservation.VehicleReservationId
+                VehicleReservationId = flightReservation.VehicleReservationId,
+                FinalPrice = flightReservation.FinalPrice
             };
 
             flightReservation.FlightReservationDetails.ForEach(flightReservation => { inviter.NumberOfPoint += (int)Math.Round(flightReservation.Flight.Distance); });
+            inviter.NumberOfPoint -= points;
 
             await _userManager.UpdateAsync(inviter);
 

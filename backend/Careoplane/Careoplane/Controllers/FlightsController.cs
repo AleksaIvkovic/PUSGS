@@ -211,15 +211,24 @@ namespace Careoplane.Controllers
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
-            //if (role != "aeroAdmin")
-            //{
-            //    return BadRequest("You are not authorised to do this action");
-            //}
+            if (role != "aeroAdmin" && role != "aeroAdminNew")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
 
-            var flight = await _context.Flights.FindAsync(id);
+            var flight = await _context.Flights.Include(flight => flight.Seats).FirstOrDefaultAsync(flight => flight.FlightId == id);
             if (flight == null)
             {
                 return NotFound();
+            }
+
+            foreach(Seat seat in flight.Seats)
+            {
+                var fastTicket = await _context.FastTickets.FindAsync(seat.SeatId);
+                if(fastTicket != null)
+                {
+                    _context.FastTickets.Remove(fastTicket);
+                }
             }
 
             TOFlight toFlight = new TOFlight(flight);

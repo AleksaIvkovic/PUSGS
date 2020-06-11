@@ -101,7 +101,7 @@
                 filter:destination:'destination':true | 
                 orderBy:sortBy:sortWay:true |
                 dateFilter: departure:true">
-                <app-flight *ngIf="!fastTicket.seat.occupied"
+                <app-flight *ngIf="!fastTicket.seat.occupied && checkDate(fastTicket)"
                 [fastTicket]="fastTicket"
                 [back]="'three'"
                 [admin]="admin"></app-flight>

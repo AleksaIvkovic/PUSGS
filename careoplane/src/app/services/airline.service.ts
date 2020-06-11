@@ -94,6 +94,11 @@ export class AirlineService {
     return this.http.get<TOAirline>(address);
   }
 
+  getAirlineAdmin(name: string){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/Admin/' + name;
+    return this.http.get<TOAirline>(address);
+  }
+
   getDestinations(){
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Airlines/Destinations/' + localStorage.getItem('company');
     return this.http.get<TOPrimaryObject[]>(address);
@@ -208,8 +213,8 @@ export class AirlineService {
     return this.http.delete(address);
   }
 
-  makeReservation(reservation: FlightReservation){
-    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations';
+  makeReservation(reservation: FlightReservation, usedPoints: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations/' + usedPoints;
     return this.http.post(address,reservation);
   }
 

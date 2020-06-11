@@ -44,10 +44,10 @@ namespace Careoplane.Controllers
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
-            //if (role != "aeroAdmin")
-            //{
-            //    return BadRequest("You are not authorised to do this action");
-            //}
+            if (role != "aeroAdmin" && role != "aeroAdminNew")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
 
             var airline = await _context.Airlines
                 .Include(a => a.Destinations)
@@ -84,6 +84,38 @@ namespace Careoplane.Controllers
 
             int sum = 0;
             foreach(var rating in airline.Ratings)
+            {
+                sum += rating.Value;
+            }
+
+            if (airline.Ratings.Count() != 0)
+                airline.Rating = sum / airline.Ratings.Count();
+            else
+                airline.Rating = 0;
+            return new TOAirline(airline, _context);
+        }
+
+        [HttpGet("Admin/{id}")]
+        public async Task<ActionResult<TOAirline>> GetAirlineAdmin(string id)
+        {
+            var airline = await _context.Airlines
+                .Include(a => a.Destinations)
+                .Include(a => a.Prices)
+                .Include(a => a.Flights).ThenInclude(f => f.Connections)
+                .Include(a => a.Flights).ThenInclude(f => f.Airline)
+                .Include(a => a.Flights).ThenInclude(f => f.Ratings)
+                .Include(a => a.Flights).ThenInclude(f => f.Seats)
+                .Include(a => a.FastTickets)
+                .Include(airline => airline.Ratings)
+                .FirstOrDefaultAsync(a => a.Name == id);
+
+            if (airline == null)
+            {
+                return NotFound();
+            }
+
+            int sum = 0;
+            foreach (var rating in airline.Ratings)
             {
                 sum += rating.Value;
             }
@@ -150,6 +182,7 @@ namespace Careoplane.Controllers
                 .Include(c => c.SeatingArrangements)
                 .Include(c => c.SegmentLengths)
                 .Include(c => c.Prices)
+                .Include(c => c.Flights).ThenInclude(c => c.Seats)
                 .FirstOrDefaultAsync(c => c.Name == airline.Name);
 
             _context.Entry(oldAirline).CurrentValues.SetValues(tempAirline);
@@ -215,6 +248,30 @@ namespace Careoplane.Controllers
                     oldAirline.Prices.Add(pri);
                 }
             }
+
+            foreach(Flight flight in oldAirline.Flights)
+            {
+                if(flight.Departure > DateTime.Now)
+                {
+                    foreach(Seat seat in flight.Seats)
+                    {
+                        if (!seat.Occupied)
+                        {
+                            switch (seat.Type)
+                            {
+                                case "first": seat.Price = airline.Prices[0].Value * flight.Distance; break;
+                                case "business": seat.Price = airline.Prices[1].Value * flight.Distance; break;
+                                case "economy": seat.Price = airline.Prices[2].Value * flight.Distance; break;
+                            }
+
+                            _context.Entry(seat).State = EntityState.Modified;
+                        }
+                    }
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
             #endregion region
 
             #region segmentLength

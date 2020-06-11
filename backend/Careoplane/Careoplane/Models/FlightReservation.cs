@@ -14,7 +14,7 @@ namespace Careoplane.Models
         public DateTime TimeOfCreation { get; set; }
         public string Creator { get; set; }
         public int VehicleReservationId { get; set; }
-
+        public double FinalPrice { get; set; }
         public FlightReservation() { }
     }
 }

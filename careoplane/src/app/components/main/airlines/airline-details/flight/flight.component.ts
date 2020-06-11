@@ -92,7 +92,9 @@ export class FlightComponent implements OnInit {
 
   FastReservation(){
     this.airlineService.changeFastTicket(this.fastTicket).subscribe(
-      response => {},
+      response => {
+        this.airlineService.fastTicektListChanged(this.fastTicket.seat.seatId);
+      },
       error => {console.log(error);}
     );
   }
@@ -122,6 +124,19 @@ export class FlightComponent implements OnInit {
         console.log(error);
       }
     )
+  }
+
+  CheckDate(){
+    return new Date(this.flight.departure).valueOf() > new Date().valueOf();
+  }
+
+  checkSeats(){
+    for(let seat of this.flight.seats){
+      if(seat.occupied){
+        return false;
+      }
+    }
+    return true;
   }
   //#endregion
 }
