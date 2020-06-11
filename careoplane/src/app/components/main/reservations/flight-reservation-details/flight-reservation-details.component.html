@@ -70,4 +70,7 @@
             <hr/>
         </div>
     </div>
+    <div *ngIf="reservation.vehicleReservationId != 0">
+        <app-vehicle-reservation-details [id]="reservation.vehicleReservationId" [type]="type"></app-vehicle-reservation-details>
+    </div>
 </div>

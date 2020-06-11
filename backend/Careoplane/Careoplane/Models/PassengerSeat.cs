@@ -17,5 +17,8 @@ namespace Careoplane.Models
         public bool Accepted { get; set; }
         public bool AirlineScored { get; set; }
         public bool FlightScored { get; set; }
+
+        public PassengerSeat() { }
+
     }
 }

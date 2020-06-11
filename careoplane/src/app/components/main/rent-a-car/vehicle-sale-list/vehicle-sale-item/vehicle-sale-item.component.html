@@ -14,8 +14,23 @@
     <div class="col-md-1">
         {{vehicle.rating}}
     </div>
+    <div class="col-md-1">
+        {{price| currency: 'EUR':true}}
+    </div>
     <div class="col-md-2">
-        {{vehicle.pricePerDay - (vehicle.pricePerDay*discount/100)| currency: 'EUR':true}}
+        <button 
+            mat-raised-button 
+            (click)="OnChoose()">
+            Choose
+        </button>
+    </div>
+    <div class="col-md-2">
+        <button 
+            mat-raised-button
+            color="warn"
+            (click)="OnCancel()">
+            Cancel
+        </button>
     </div>
 </div>
 <hr>

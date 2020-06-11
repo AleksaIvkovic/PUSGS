@@ -12,7 +12,9 @@ namespace Careoplane.Models
         public int ReservationId { get; set; }
         public List<FlightReservationDetail> FlightReservationDetails { get; set; }
         public DateTime TimeOfCreation { get; set; }
-        //public string CreatorUsername { get; set; }
-        //public int VehicleReservationId { get; set; }
+        public string Creator { get; set; }
+        public int VehicleReservationId { get; set; }
+
+        public FlightReservation() { }
     }
 }

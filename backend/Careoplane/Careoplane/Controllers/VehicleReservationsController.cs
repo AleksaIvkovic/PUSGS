@@ -49,7 +49,9 @@ namespace Careoplane.Controllers
 
             for (int i = 0; i < stringIds.Count() - 1; i++)
             {
-                var tempList = await _context.VehicleReservation.Where(vehicleReservation => vehicleReservation.VehicleId == int.Parse(stringIds[i])).ToListAsync();
+                var tempList = await _context.VehicleReservation
+                    .Where(vehicleReservation => vehicleReservation.VehicleId == int.Parse(stringIds[i]))
+                    .ToListAsync();
                 VehicleReservationList.AddRange(tempList);
             }
 
@@ -78,7 +80,10 @@ namespace Careoplane.Controllers
             {
                 List<VehicleReservation> VehicleReservationList = new List<VehicleReservation>();
 
-                VehicleReservationList = await _context.VehicleReservation.Where(vehicleReservation => vehicleReservation.UserName == user.UserName).ToListAsync();
+                VehicleReservationList = await _context.VehicleReservation
+                    .Where(vehicleReservation => vehicleReservation.UserName == user.UserName)
+                    .Where(vehicleReservation => vehicleReservation.Type == "vehicle")
+                    .ToListAsync();
 
                 List<TOVehicleReservation> TOVehicleReservationList = new List<TOVehicleReservation>();
                 VehicleReservationList.ForEach(reservation => TOVehicleReservationList.Add(reservation.ToTO()));
@@ -161,7 +166,7 @@ namespace Careoplane.Controllers
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<TOVehicleReservation>> PostVehicleReservation(TOVehicleReservation toVehicleReservation)
+        public async Task<Object> PostVehicleReservation(TOVehicleReservation toVehicleReservation)
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
@@ -190,7 +195,8 @@ namespace Careoplane.Controllers
             }
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            int id = vehicleReservation.ReservationId;
+            return Ok(new { id });
         }
 
         // DELETE: api/VehicleReservations/5

@@ -117,12 +117,12 @@
             <div *ngFor="let passenger of getList2(); let i = index" [formGroupName]="i">
               <div class="row">
                 <div class="col-md-1">
-                  <mat-form-field appearance="fill">
+                  <mat-form-field appearance="fill" style="width: 50px;">
                     <mat-label>Seat</mat-label>
                     <input matInput [disabled]="true" [formControlName]="'id'">
                   </mat-form-field>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                   <mat-form-field appearance="fill">
                     <mat-label>passenger</mat-label>
                     <mat-select [formControlName]="'passenger'">
@@ -144,8 +144,8 @@
 
   <mat-step>
     <ng-template matStepLabel>Reserve Vehicle</ng-template>
-
-    <app-vehicle-sale-list [location]='flight1 == null ? "" : flight1.destination' [fromDate]='flight1 == null ? toDate : flight1.arrival' [toDate]='flight2 == null ? toDate : flight2.departure'></app-vehicle-sale-list>
+    {{vehicleReservation}}
+    <app-vehicle-sale-list [location]='flight1 == null ? "" : flight1.destination' [fromDate]='flight1 == null ? toDate : flight1.arrival' [toDate]='flight2 == null ? toDate : flight2.departure' [toDateMax]='flight2 == null ? toDate : flight2.departure'></app-vehicle-sale-list>
 
     <button mat-button matStepperPrevious>Back</button>
     <button mat-button matStepperNext (click)="CalculatePrice()" color="primary">Next</button>

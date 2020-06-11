@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VehicleService } from 'src/app/services/vehicle.service';
@@ -15,10 +15,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class VehicleReservationDetailsComponent implements OnInit {
   reservation: VehicleReservation;
-  type: string = '';
+  @Input() type: string = '';
   rentACarName: string = '';
   reservationId: number = 0;
   canCancel: boolean = false;
+  notCombined: boolean = true;
+
+  @Input() id: number = null;
 
   constructor(
     private ratingDialog: MatDialog, 
@@ -32,11 +35,10 @@ export class VehicleReservationDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.reservation = new VehicleReservation(0, null, '', null, '', 0, 0);
 
-    this.activeRoute.params.subscribe(
-      params => {
-        this.type = params['type'];
-        this.reservationId = +params['id'];
-        this.vehicleService.getReservation(this.reservationId).subscribe(
+    if (this.id != null) {
+      if (this.type) {
+        this.notCombined = false;
+        this.vehicleService.getReservation(this.id).subscribe(
           (response: any) => {
             this.reservation = response;
             this.CheckTime();
@@ -54,7 +56,33 @@ export class VehicleReservationDetailsComponent implements OnInit {
           }
         );
       }
-    );
+    } else {
+      this.activeRoute.params.subscribe(
+        params => {
+          if (params['type']) {
+            this.type = params['type'];
+            this.reservationId = +params['id'];
+            this.vehicleService.getReservation(this.reservationId).subscribe(
+              (response: any) => {
+                this.reservation = response;
+                this.CheckTime();
+                this.vehicleService.getCompanyForVehicle(this.reservation.vehicleId).subscribe(
+                  (result: any) => {
+                    this.rentACarName = result.company;
+                  },
+                  error => {
+                    console.log(error);
+                  }
+                );
+              },
+              error => {
+                console.log(error);
+              }
+            );
+          }
+        }
+      );
+    }
   }
 
   OnCancel() {

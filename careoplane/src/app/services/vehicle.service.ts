@@ -14,6 +14,8 @@ export class VehicleService {
     }
 
     vehicleListChanged = new Subject<Vehicle[]>();
+    vehicleReservationCreated = new Subject<VehicleReservation>();
+    vehicleRentACar = new Subject<RentACar>();
 
     getVehiclesForCompany(company: string) {
         let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles/ForCompany';

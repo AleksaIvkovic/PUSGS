@@ -1,13 +1,18 @@
 <div class="row">
-    <div class="col-md-12">
-        <div class="mat-h2">
-            Do you need a car to make your trip more comfortable?
-        </div>
+    <div class="col-md-5 mat-h2">
+        Do you need a vehicle to make your trip more comfortable?
+    </div>
+    <div class="col-md-2">
+        <button 
+                mat-raised-button 
+                color="primary"
+                (click)="SearchVehicles()">
+                Yes
+            </button>
     </div>
 </div>
-<div class="row">
+<div class="row" *ngIf="toDateMax == null">
     <div class="col-md-12">
-        <!-- min="flight1.arrival" -->
         <mat-form-field appearance="fill">
             <mat-label>To Date</mat-label>
             <input
@@ -16,6 +21,7 @@
                 [matDatepicker]="picker" 
                 placeholder="To"
                 [min]="fromDate"
+                [max]="toDateMax"
                 id="picker">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
@@ -23,15 +29,16 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12" *ngIf="showTable">
         <div *ngFor="let vehicle of vehicles;">
-            <app-vehicle-sale-item [vehicle]="vehicle" [discount]="discount"></app-vehicle-sale-item>
-            <button 
-                mat-raised-button 
-                color="primary"
-                (click)="OnReserve(vehicle.vehicleId)">
-                Reserve
-            </button>
+            <app-vehicle-sale-item 
+            [location]='location' 
+            [fromDate]='fromDate' 
+            [toDate]='toDate' 
+            [vehicle]="vehicle" 
+            [discount]="discount" 
+            [numberOfDays]="numberOfDays">
+        </app-vehicle-sale-item>
         </div>
     </div>
 </div>

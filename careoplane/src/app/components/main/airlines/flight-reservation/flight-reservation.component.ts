@@ -11,6 +11,9 @@ import { User } from 'src/app/models/user.model';
 import { FlightReservationDetails } from 'src/app/models/flight-reservation-details.model';
 import { PassengersSeat } from 'src/app/models/passengers-seat.model';
 import { DatePipe } from '@angular/common';
+import { VehicleService } from 'src/app/services/vehicle.service';
+import { VehicleReservation } from 'src/app/models/vehicle-reservation.model';
+import { RentACar } from 'src/app/models/rent-a-car.model';
 
 
 @Component({
@@ -57,8 +60,18 @@ export class FlightReservationComponent implements OnInit {
 
   showVehicles: boolean = false;
   toDate: Date;
+  vehicleReservation: VehicleReservation = null;
+  rentACar: RentACar = null;
 
-  constructor(private datePipe: DatePipe, private userService: UserService, private router: Router, private _formBuilder: FormBuilder, private activeRoute: ActivatedRoute, private airlineService: AirlineService) {}
+  constructor(
+    private datePipe: DatePipe, 
+    private userService: UserService, 
+    private router: Router, 
+    private _formBuilder: FormBuilder, 
+    private activeRoute: ActivatedRoute, 
+    private airlineService: AirlineService,
+    private vehicleService: VehicleService
+    ) {}
 
   ngOnInit(): void {
     this.userService.getUser().subscribe(
@@ -170,10 +183,23 @@ export class FlightReservationComponent implements OnInit {
     this.thirdFormGroup = this._formBuilder.group({
       firstCtrl: ['']
     });
+
+    this.vehicleService.vehicleReservationCreated.subscribe(
+      result => {
+        this.vehicleReservation = result;
+      }
+    );
+
+    this.vehicleService.vehicleRentACar.subscribe(
+      result => {
+        this.rentACar = result;
+      }
+    );
   }
 
-  Done(){
+  reserveFlight(id: number){
     let reservation: FlightReservation = new FlightReservation();
+    reservation.vehicleReservationId = id;
     let flightReservationDetails: FlightReservationDetails = new FlightReservationDetails();
     flightReservationDetails.flight = new TOFlight(this.flight1.airlineName,this.flight1.origin,
       this.flight1.destination,this.datePipe.transform(this.flight1.departure, 'dd.MM.yyyy HH:mm'),
@@ -259,6 +285,22 @@ export class FlightReservationComponent implements OnInit {
         console.log(error);
       }
     )
+  }
+
+  Done(){
+    if(this.vehicleReservation != null){
+      this.vehicleService.reserveVehicle(this.vehicleReservation,this.rentACar).subscribe(
+        (result : any) => {
+          this.reserveFlight(result.id)
+        },
+        error => {
+          console.log(error);
+        }
+      )
+    }
+    else{
+      this.reserveFlight(0);
+    }
   }
 
   checkTickets(){

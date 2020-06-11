@@ -12,9 +12,12 @@ import { RentACarService } from 'src/app/services/rent-a-car.service';
 export class VehicleSaleListComponent implements OnInit {
   vehicles: Vehicle[] = [];
   discount = 0;
+  numberOfDays: number = 0;
+  showTable: boolean = false;
   @Input() location: string;
   @Input() fromDate: Date;
   @Input() toDate: Date;
+  @Input() toDateMax: Date;
 
   constructor(
     private vehicleService: VehicleService,
@@ -34,10 +37,6 @@ export class VehicleSaleListComponent implements OnInit {
     this.SearchVehicles();
   }
 
-  OnReserve(vehicleId: number) {
-    console.log(vehicleId);
-  }
-
   public OnDateChange(event): void {
     this.toDate = new Date((<Date>event).toDateString());
     this.SearchVehicles();
@@ -54,6 +53,8 @@ export class VehicleSaleListComponent implements OnInit {
         response.forEach(toVehicle => {
           let tempToVehicle = Object.assign(new TOVehicle('','',0,0,0,'',0,[],true,''), toVehicle);
           this.vehicles.push(tempToVehicle.ToRegular());
+          this.numberOfDays = (this.toDate.setHours(0,0) - this.fromDate.setHours(0,0))  / 1000 / 60 / 60 / 24 + 1;
+          this.showTable = true;
         })
       },
       error => {
