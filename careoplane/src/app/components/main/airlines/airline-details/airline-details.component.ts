@@ -42,12 +42,19 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
       (params: Params) => {
           if(params['id']){
             this.name = params['id'];
+            this.airlineService.getAirlineDisplay(this.name).subscribe(
+              result => {
+                this.airline = Object.assign(new TOAirline(), result).convert();
+                this.airlineService.airlineLoaded(this.airline);
+                this.airlineService.airlineLocation(this.airline.address);
+              },
+              error => {console.log(error);}
+            );
           }
           else{
             this.name = localStorage.getItem('company');
             this.admin = true;
-          }
-          this.airlineService.getAirlineDisplay(this.name).subscribe(
+            this.airlineService.getAirlineAdmin(this.name).subscribe(
             result => {
               this.airline = Object.assign(new TOAirline(), result).convert();
               this.airlineService.airlineLoaded(this.airline);
@@ -55,6 +62,8 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
             },
             error => {console.log(error);}
           );
+          }
+          
       }
     );
   }

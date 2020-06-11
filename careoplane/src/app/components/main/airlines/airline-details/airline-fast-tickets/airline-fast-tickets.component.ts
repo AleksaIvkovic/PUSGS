@@ -102,4 +102,11 @@ export class AirlineFastTicketsComponent implements OnInit {
 
     return this.cities.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
   }
+
+  checkDate(fastTicket: FastTicket){
+    if(this.admin){
+      return true;
+    }
+    return new Date(fastTicket.flight.departure).valueOf() > new Date().valueOf();
+  }
 }

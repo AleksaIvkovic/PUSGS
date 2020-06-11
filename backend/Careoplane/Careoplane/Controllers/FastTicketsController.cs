@@ -43,6 +43,8 @@ namespace Careoplane.Controllers
                 return BadRequest();
             }
 
+            FastTicket tempFastTicket = await _context.FastTickets.FindAsync(fastTicket.Seat.SeatId);
+
             Seat seat = await _context.Seats.Include(seat => seat.Flight).ThenInclude(flight => flight.Airline).FirstAsync(seat => seat.SeatId == fastTicket.Seat.SeatId);
             seat.Occupied = occupied;
 
@@ -59,7 +61,11 @@ namespace Careoplane.Controllers
                 {
                     FlightReservation flightReservation = new FlightReservation()
                     {
-                        ReservationId = 0
+                        ReservationId = 0,
+                        Creator = user.UserName,
+                        FinalPrice = fastTicket.NewPrice,
+                        TimeOfCreation = DateTime.Now,
+                        VehicleReservationId = 0
                     };
 
                     FlightReservationDetail flightReservationDetail = new FlightReservationDetail()
@@ -78,7 +84,10 @@ namespace Careoplane.Controllers
                         Username = user.UserName,
                         Accepted = true,
                         AirlineScored = false,
-                        FlightScored = false
+                        FlightScored = false ,
+                        Name = "",
+                        Surname = "",
+                        Passport = ""
                     };
 
                     flightReservationDetail.PassengerSeats = new List<PassengerSeat>();
@@ -89,6 +98,9 @@ namespace Careoplane.Controllers
 
                     _context.FlightReservations.Add(flightReservation);
 
+                    await _context.SaveChangesAsync();
+
+                    _context.FastTickets.Remove(tempFastTicket);
                     await _context.SaveChangesAsync();
                 }
             }
@@ -120,6 +132,7 @@ namespace Careoplane.Controllers
 
             Seat seat = await _context.Seats.Include(seat => seat.Flight).ThenInclude(flight => flight.Airline).FirstAsync(seat => seat.SeatId == fastTicket.SeatId);
             seat.Occupied = false;
+            seat.Discount = 0;
 
             _context.Entry(seat).State = EntityState.Modified;
             await _context.SaveChangesAsync();

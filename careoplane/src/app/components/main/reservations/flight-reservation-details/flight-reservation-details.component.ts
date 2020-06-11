@@ -18,6 +18,7 @@ export class FlightReservationDetailsComponent implements OnInit {
   canCancel: boolean = false;
   flightScored: boolean[] = [];
   airlineScored: boolean[] = [];
+  unauthenticatedUser: boolean = false;
   constructor(private ratingDialog: MatDialog, private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
@@ -54,6 +55,7 @@ export class FlightReservationDetailsComponent implements OnInit {
     this.activeRoute.queryParams.subscribe(
       params => {
         if(params['id']){
+          this.unauthenticatedUser = true;
           this.username = params['username'];
           this.airlineService.getReservation(+params['id'],this.username).subscribe(
             result => {
@@ -117,7 +119,13 @@ export class FlightReservationDetailsComponent implements OnInit {
   Accept(){
     this.airlineService.acceptInvitation(this.reservation, this.username).subscribe(
       result => {
-        this.router.navigate(['../../../','reservations'],{relativeTo:this.activeRoute});
+        if(this.unauthenticatedUser){
+          this.router.navigateByUrl("/main");
+        }
+        else{
+          this.router.navigate(['../../../','reservations'],{relativeTo:this.activeRoute});
+        }
+        
       },
       error => {
         console.log(error);
@@ -128,7 +136,12 @@ export class FlightReservationDetailsComponent implements OnInit {
   Cancel(){
     this.airlineService.declineInvitation(this.reservation, this.username).subscribe(
       result => {
-        this.router.navigate(['../../../','reservations'],{relativeTo:this.activeRoute});
+        if(this.unauthenticatedUser){
+          this.router.navigateByUrl("/main");
+        }
+        else{
+          this.router.navigate(['../../../','reservations'],{relativeTo:this.activeRoute});
+        }
       },
       error => {
         console.log(error);

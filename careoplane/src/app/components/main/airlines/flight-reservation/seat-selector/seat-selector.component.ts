@@ -235,7 +235,12 @@ export class SeatSelectorComponent implements OnInit {
                 if(seat.name == map_element.row_label+chars[seatNoCounter]){
                   if(seat.occupied || seat.discount != 0){
                     if(this.admin && seat.discount != 0){
-                      status = 'sale';
+                      if(seat.occupied){
+                        status = 'unavailable';
+                      }
+                      else{
+                        status = 'sale';
+                      }
                     }
                     else{
                       status = 'unavailable';

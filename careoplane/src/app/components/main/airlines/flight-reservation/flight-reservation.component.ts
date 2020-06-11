@@ -14,6 +14,8 @@ import { DatePipe } from '@angular/common';
 import { VehicleService } from 'src/app/services/vehicle.service';
 import { VehicleReservation } from 'src/app/models/vehicle-reservation.model';
 import { RentACar } from 'src/app/models/rent-a-car.model';
+import { Discount } from 'src/app/models/discount.model';
+import { DiscountService } from 'src/app/services/discount.service';
 
 
 @Component({
@@ -63,6 +65,11 @@ export class FlightReservationComponent implements OnInit {
   vehicleReservation: VehicleReservation = null;
   rentACar: RentACar = null;
 
+  discount: Discount;
+  user: User;
+  showPoints: boolean = true;
+  numberOfUsedPoints: number = 0;
+
   constructor(
     private datePipe: DatePipe, 
     private userService: UserService, 
@@ -70,26 +77,40 @@ export class FlightReservationComponent implements OnInit {
     private _formBuilder: FormBuilder, 
     private activeRoute: ActivatedRoute, 
     private airlineService: AirlineService,
-    private vehicleService: VehicleService
+    private vehicleService: VehicleService,
+    private discountService: DiscountService
     ) {}
 
   ngOnInit(): void {
     this.userService.getUser().subscribe(
       response => {
-        let user = Object.assign(new User("","","","","","","",""),response);
+        this.user = Object.assign(new User("","","","","","","",""),response);
         this.friends.push('')
 
-        for(let friend of user.tOFriendsA){
+        for(let friend of this.user.tOFriendsA){
           if(friend.status != "pending")
             this.friends.push(friend.friendB.userName);
         }
 
-        for(let friend of user.tOFriendsB){
+        for(let friend of this.user.tOFriendsB){
           if(friend.status != "pending")
             this.friends.push(friend.friendA.userName);
         }
 
-        this.friends.push(user.userName);
+        this.friends.push(this.user.userName);
+      },
+      error => {
+        console.log(error);
+      }
+    )
+
+    this.discountService.getDiscounts().subscribe(
+      (result: Discount[]) => {
+        for(let discount of result){
+          if(discount.type === 'points'){
+            this.discount = discount;
+          }
+        }
       },
       error => {
         console.log(error);
@@ -200,6 +221,7 @@ export class FlightReservationComponent implements OnInit {
   reserveFlight(id: number){
     let reservation: FlightReservation = new FlightReservation();
     reservation.vehicleReservationId = id;
+    reservation.finalPrice = this.finalPrice;
     let flightReservationDetails: FlightReservationDetails = new FlightReservationDetails();
     flightReservationDetails.flight = new TOFlight(this.flight1.airlineName,this.flight1.origin,
       this.flight1.destination,this.datePipe.transform(this.flight1.departure, 'dd.MM.yyyy HH:mm'),
@@ -275,7 +297,7 @@ export class FlightReservationComponent implements OnInit {
       reservation.flightReservationDetails.push(flightReservationDetails2);
     }
 
-    this.airlineService.makeReservation(reservation).subscribe(
+    this.airlineService.makeReservation(reservation, this.numberOfUsedPoints).subscribe(
       result =>
       {
         this.router.navigate(['../../../'], {relativeTo: this.activeRoute});
@@ -403,13 +425,30 @@ export class FlightReservationComponent implements OnInit {
   }
 
   CalculatePrice(){
-    if(this.flight2 == null){
-      this.finalPrice = this.tickets.totalamount;
+    if(this.flight1 == null){
+      if(this.flight2 == null){
+        this.finalPrice = this.vehicleReservation.price;
+      }
+      else if(this.vehicleReservation == null){
+        this.finalPrice = this.tickets2.totalamount;
+      }
+      else{
+        this.finalPrice = this.vehicleReservation.price + this.tickets2.totalamount;
+      }
+    }
+    else if(this.flight2 == null){
+      if(this.vehicleReservation == null){
+        this.finalPrice = this.tickets.totalamount;
+      }
+      else{
+        this.finalPrice = this.vehicleReservation.price + this.tickets.totalamount;
+      }
+    }
+    else if(this.vehicleReservation == null){
+      this.finalPrice = this.tickets2.totalamount + this.tickets.totalamount;
     }
     else{
-      if(this.tickets2 != null){
-        this.finalPrice = this.tickets.totalamount + this.tickets2.totalamount;
-      }
+      this.finalPrice = this.tickets.totalamount + this.tickets2.totalamount + this.vehicleReservation.price;
     }
   }
 
@@ -437,5 +476,26 @@ export class FlightReservationComponent implements OnInit {
         });
       }
     }
+  }
+
+  UsePoints(){
+    let neededPoints = this.finalPrice / this.discount.discountValue;
+    if(neededPoints < this.user.numberOfPoint){
+      this.numberOfUsedPoints = neededPoints;
+    }
+    else{
+      this.numberOfUsedPoints = this.user.numberOfPoint;
+    }
+    this.finalPrice = this.finalPrice - (this.discount.discountValue * this.user.numberOfPoint);
+    if(this.finalPrice < 0){
+      this.finalPrice = 0;
+    }
+    this.showPoints = false
+  }
+
+  CancelUsePoints(){
+    this.CalculatePrice();
+    this.showPoints = true;
+    this.numberOfUsedPoints = 0;
   }
 }
