@@ -28,6 +28,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
   arrival : Date;
   connections : number;
   price : number;
+  showImage: boolean = false;
 
   @ViewChild('mapContainer', {static: false}) gmap: ElementRef;
   map: google.maps.Map;
@@ -45,6 +46,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
             this.airlineService.getAirlineDisplay(this.name).subscribe(
               result => {
                 this.airline = Object.assign(new TOAirline(), result).convert();
+                this.showImage = true;
                 this.airlineService.airlineLoaded(this.airline);
                 this.airlineService.airlineLocation(this.airline.address);
               },
@@ -57,6 +59,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
             this.airlineService.getAirlineDisplay(this.name).subscribe(
             result => {
               this.airline = Object.assign(new TOAirline(), result).convert();
+              this.showImage = true;
               this.airlineService.airlineLoaded(this.airline);
               this.airlineService.airlineLocation(this.airline.address);
             },

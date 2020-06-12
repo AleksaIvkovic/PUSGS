@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-md-2">
                 <div class="row">
-                    <img class="images" [src]="createImgPath(airline.picture)" alt={{airline.name}}>
+                    <img class="images" [src]="createImgPath(airline.picture)" alt={{airline.name}} *ngIf="showImage">
                 </div>
                 <br>
                 <div class="row" *ngIf="admin">

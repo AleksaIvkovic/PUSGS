@@ -40,6 +40,7 @@ import { RacAdminNewGuard } from './guards/rac-admin-new.guard';
 import { AuthenticatedGuard } from './guards/authenticated.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { CancelGuard } from './guards/cancel.guard';
+import { UserGuard } from './guards/user.guard';
 
 
 const routes: Routes = [
@@ -47,19 +48,19 @@ const routes: Routes = [
   {path: 'notauthorized', component: UnauthorizedComponent},
   {path: 'main', component: MainComponent, children: [
     {path:'', redirectTo: 'airlines', pathMatch: 'full'},
-    {path: 'airlines', component: AirlinesComponent, children: [
+    {path: 'airlines', component: AirlinesComponent, canActivateChild: [UserGuard], children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: AirlinesListComponent},
       {path: ':id/details', component: AirlineDetailsComponent},
-      {path: 'reservation', component: FlightReservationComponent, canActivate: [RegularGuard], canDeactivate: [CancelGuard]}
+      {path: 'reservation', component: FlightReservationComponent, canDeactivate: [CancelGuard]}
     ]},
-    {path: 'rent-a-car', component: RentACarComponent, children: [
+    {path: 'rent-a-car', component: RentACarComponent, canActivateChild: [UserGuard], children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: RentACarListComponent},
       {path: ':id/details', component: RentACarDetailsComponent, children: [
         {path: '', component: VehicleStartComponent, pathMatch: 'full'},
         {path: ':idv/details', component: VehicleDetailsComponent},
-        {path: ':idv/reserve', component: VehicleReserveComponent, canActivate: [RegularGuard]}
+        {path: ':idv/reserve', component: VehicleReserveComponent}
       ]},
     ]},
     {path: 'rent-a-car-profile', component: RentACarProfileComponent, canActivate: [RacAdminGuard], children: [
