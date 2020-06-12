@@ -3,6 +3,8 @@ import { DiscountService } from 'src/app/services/discount.service';
 import { Discount } from 'src/app/models/discount.model';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
+import { UrlTree } from '@angular/router';
 
 @Component({
   selector: 'app-discounts',
@@ -55,6 +57,7 @@ export class DiscountsComponent implements OnInit {
     });
     this.discountsForm.controls.discount1.disable();
     this.discountsForm.controls.discount2.disable();
+    this.discountsForm.markAsPristine();
   }
 
   OnSave() {
@@ -88,6 +91,15 @@ export class DiscountsComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  canExit(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    if(this.discountsForm.dirty){
+      return confirm("All unsaved changes will be lost. Are you sure you want to leave this page?");
+    }
+    else{
+      return true;
+    }
   }
 
 }

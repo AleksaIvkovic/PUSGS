@@ -47,6 +47,7 @@ export class SeatDetailsComponent implements OnInit {
 
   Cancel(){
     this.airlineService.ticketDoneChange(null);
+    this.seatForm.reset();
     this.router.navigate(['../../'], {relativeTo: this.activeRoute});
   }
 
@@ -62,5 +63,14 @@ export class SeatDetailsComponent implements OnInit {
         console.log(error);
       }
     )
+  }
+
+  canExit(){
+    if(this.seatForm.dirty){
+      return confirm("Are you sure?");
+    }
+    else{
+      return true;
+    }
   }
 }

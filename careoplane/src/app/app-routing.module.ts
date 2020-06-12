@@ -31,17 +31,27 @@ import { GraphComponent } from './components/main/graph/graph.component';
 import { FlightReservation } from './models/flight-reservation.model';
 import { FlightReservationDetailsComponent } from './components/main/reservations/flight-reservation-details/flight-reservation-details.component';
 import { VehicleReservationDetailsComponent } from './components/main/reservations/vehicle-reservation-details/vehicle-reservation-details.component';
+import { SysAdminGuard } from './guards/sys-admin.guard';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { RegularGuard } from './guards/regular.guard';
+import { AeroAdminGuard } from './guards/aero-admin.guard';
+import { RacAdminGuard } from './guards/rac-admin.guard';
+import { RacAdminNewGuard } from './guards/rac-admin-new.guard';
+import { AuthenticatedGuard } from './guards/authenticated.guard';
+import { AdminGuard } from './guards/admin.guard';
+import { CancelGuard } from './guards/cancel.guard';
 
 
 const routes: Routes = [
   {path: '', redirectTo:'main', pathMatch: 'full'},
+  {path: 'notauthorized', component: UnauthorizedComponent},
   {path: 'main', component: MainComponent, children: [
     {path:'', redirectTo: 'airlines', pathMatch: 'full'},
     {path: 'airlines', component: AirlinesComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
       {path: 'list', component: AirlinesListComponent},
       {path: ':id/details', component: AirlineDetailsComponent},
-      {path: 'reservation', component: FlightReservationComponent}
+      {path: 'reservation', component: FlightReservationComponent, canActivate: [RegularGuard], canDeactivate: [CancelGuard]}
     ]},
     {path: 'rent-a-car', component: RentACarComponent, children: [
       {path: '', redirectTo: 'list', pathMatch: 'full'},
@@ -49,45 +59,45 @@ const routes: Routes = [
       {path: ':id/details', component: RentACarDetailsComponent, children: [
         {path: '', component: VehicleStartComponent, pathMatch: 'full'},
         {path: ':idv/details', component: VehicleDetailsComponent},
-        {path: ':idv/reserve', component: VehicleReserveComponent}
+        {path: ':idv/reserve', component: VehicleReserveComponent, canActivate: [RegularGuard]}
       ]},
     ]},
-    {path: 'rent-a-car-profile', component: RentACarProfileComponent, children: [
+    {path: 'rent-a-car-profile', component: RentACarProfileComponent, canActivate: [RacAdminGuard], children: [
       {path: ':idvh/details', component: VehicleDetailsComponent},
-      {path: ':idvh/edit', component: VehicleManagerComponent},
-      {path: 'add-vehicle', component: VehicleManagerComponent},
+      {path: ':idvh/edit', component: VehicleManagerComponent, canDeactivate: [CancelGuard]},
+      {path: 'add-vehicle', component: VehicleManagerComponent, canDeactivate: [CancelGuard]},
     ]},
-    {path: 'rent-a-car-profile/edit', component: RentACarManagerComponent},
-    {path: 'rent-a-car-profile/statistic', component: GraphComponent},
-    {path: 'airline-profile', component: AirlinesComponent, children:[
+    {path: 'rent-a-car-profile/edit', component: RentACarManagerComponent, canActivate: [RacAdminGuard], canDeactivate: [CancelGuard]},
+    {path: 'rent-a-car-profile/statistic', component: GraphComponent, canActivate: [RacAdminGuard]},
+    {path: 'airline-profile', component: AirlinesComponent, canActivateChild: [AeroAdminGuard], children:[
       {path: '', redirectTo: 'details', pathMatch: 'full'},
       {path: 'details', component: AirlineDetailsComponent},
-      {path: 'edit', component: AirlineEditComponent},
-      {path: 'new', component: AirlineEditComponent},
-      {path: ':fid/edit-flight', component: FlightEditComponent},
-      {path: 'add-flight', component: FlightEditComponent},
+      {path: 'edit', component: AirlineEditComponent, canDeactivate: [CancelGuard]},
+      {path: 'new', component: AirlineEditComponent, canDeactivate: [CancelGuard]},
+      {path: ':fid/edit-flight', component: FlightEditComponent, canDeactivate: [CancelGuard]},
+      {path: 'add-flight', component: FlightEditComponent, canDeactivate: [CancelGuard]},
       {path: ':fid/edit-seats', component: SeatsEditComponent, children:[
         {path: '', component:SeatStarterComponent, pathMatch:'full'},
-        {path: ':id/seat', component: SeatDetailsComponent}
+        {path: ':id/seat', component: SeatDetailsComponent, canDeactivate: [CancelGuard]}
       ]}
     ]},
-    {path: 'new-rent-a-car-profile', component: RentACarManagerComponent, children: [
+    {path: 'new-rent-a-car-profile', component: RentACarManagerComponent, canActivate: [RacAdminNewGuard], canDeactivate: [CancelGuard], children: [
       {path: 'add-vehicle', component: VehicleManagerComponent},
       {path: ':idvh/details', component: VehicleDetailsComponent},
       {path: ':idvh/edit', component: VehicleManagerComponent},
     ]},
-    {path: 'user-profile', component: UserAuthentificationComponent},
-    {path: 'reservations', component: ReservationsComponent},
-    {path: ':id/:type/flight-reservation-details', component: FlightReservationDetailsComponent},
+    {path: 'user-profile', component: UserAuthentificationComponent, canActivate: [AuthenticatedGuard], canDeactivate: [CancelGuard]},
+    {path: 'reservations', component: ReservationsComponent, canActivate: [RegularGuard]},
+    {path: ':id/:type/flight-reservation-details', component: FlightReservationDetailsComponent, canActivate: [RegularGuard]},
     {path: 'flight-reservation-details', component: FlightReservationDetailsComponent},
-    {path: ':id/:type/vehicle-reservation-details', component: VehicleReservationDetailsComponent},
-    {path: 'discounts', component: DiscountsComponent},
-    {path: 'add-admin', component: UserAuthentificationComponent},
-    {path: 'profile/statistics', component: GraphComponent},
-    {path: 'friends', component: FriendsComponent},
+    {path: ':id/:type/vehicle-reservation-details', component: VehicleReservationDetailsComponent, canActivate: [RegularGuard]},
+    {path: 'discounts', component: DiscountsComponent, canActivate: [SysAdminGuard], canDeactivate: [CancelGuard]},
+    {path: 'add-admin', component: UserAuthentificationComponent, canActivate: [SysAdminGuard], canDeactivate: [CancelGuard]},
+    {path: 'profile/statistics', component: GraphComponent, canActivate: [AdminGuard]},
+    {path: 'friends', component: FriendsComponent, canActivate: [RegularGuard]},
     {path: 'confirmation', component: EmailConfirmationComponent}
   ]},
-  {path: 'user-authentification', component: UserAuthentificationComponent}
+  {path: 'user-authentification', component: UserAuthentificationComponent, canDeactivate: [CancelGuard]}
 ];
 
 @NgModule({

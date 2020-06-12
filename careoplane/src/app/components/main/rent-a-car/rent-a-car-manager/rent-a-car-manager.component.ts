@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { RentACarService } from 'src/app/services/rent-a-car.service';
 import { Vehicle } from 'src/app/models/vehicle.model';
 import { RentACar } from 'src/app/models/rent-a-car.model';
@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LogInComponent } from 'src/app/components/log-in/log-in.component';
 import { ChangePasswordComponent } from 'src/app/components/change-password/change-password.component';
 import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-rent-a-car-manager',
@@ -125,6 +126,7 @@ export class RentACarManagerComponent implements OnInit {
   }
 
   onCancel() {
+    this.addForm.reset();
     this.router.navigate(['main/rent-a-car-profile']);
   }
 
@@ -140,6 +142,7 @@ export class RentACarManagerComponent implements OnInit {
       this.rentACarService.editRentACar(this.rentACar).subscribe(
         response => {
           this._snackBar.open('Information updated successfully', 'OK', {duration: 5000,});
+          this.addForm.reset();
           this.router.navigate(['main/rent-a-car-profile']);
         },
         error => {});
@@ -164,6 +167,7 @@ export class RentACarManagerComponent implements OnInit {
             (response: any) => {
               localStorage.setItem('company', response.company)
               this._snackBar.open('Rent a car service created successfully', 'OK', {duration: 5000,});
+              this.addForm.reset();
               this.router.navigate(['main/rent-a-car-profile']);
             },
             error => {
@@ -177,6 +181,15 @@ export class RentACarManagerComponent implements OnInit {
           this._snackBar.open('Rent a car service with that name already exists', 'OK', {duration: 5000,});
         }
       )
+    }
+  }
+
+  canExit(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    if(this.addForm.dirty){
+      return confirm("All unsaved changes will be lost. Are you sure you want to leave this page?");
+    }
+    else{
+      return true;
     }
   }
 }

@@ -67,12 +67,12 @@ namespace Careoplane.Controllers
                 };
                 _context.Add(fastTicket);
             }
-            else if(seat.Discount == 0)
+            else if(seat.Discount == 0 && oldSeat.Discount != 0)
             {
                 FastTicket fastTicket = await _context.FastTickets.FindAsync(tempSeat.SeatId);
                 _context.Remove(fastTicket);
             }
-            else
+            else if(seat.Discount != oldSeat.Discount)
             {
                 FastTicket oldFastTicket = await _context.FastTickets.FindAsync(tempSeat.SeatId);
                 FastTicket fastTicket = new FastTicket()

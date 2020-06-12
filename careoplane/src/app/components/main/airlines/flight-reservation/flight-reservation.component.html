@@ -70,6 +70,7 @@
     <ng-template matStepLabel>Choose seats</ng-template>
     <hr>
     <app-seat-selector [type]="classType" [num]="1"></app-seat-selector>
+    <button mat-button matStepperPrevious>Back</button>
     <button mat-button matStepperNext color="primary" [disabled]="checked" >Next</button>
   </mat-step>
   

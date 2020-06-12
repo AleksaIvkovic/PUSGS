@@ -113,6 +113,7 @@ import { RatingComponent } from './components/rating/rating.component';
 import { VehicleReservationDetailsComponent } from './components/main/reservations/vehicle-reservation-details/vehicle-reservation-details.component';
 import { VehicleSaleListComponent } from './components/main/rent-a-car/vehicle-sale-list/vehicle-sale-list.component';
 import { VehicleSaleItemComponent } from './components/main/rent-a-car/vehicle-sale-list/vehicle-sale-item/vehicle-sale-item.component';
+import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
 
 export function socialConfigs() {  
   const config = new AuthServiceConfig(  
@@ -187,6 +188,7 @@ export function socialConfigs() {
     VehicleReservationDetailsComponent,
     VehicleSaleListComponent,
     VehicleSaleItemComponent,
+    UnauthorizedComponent,
   ],
   entryComponents: [
     LogInComponent

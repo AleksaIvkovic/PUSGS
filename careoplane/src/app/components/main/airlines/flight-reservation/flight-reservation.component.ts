@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute, Params, Router, UrlTree } from '@angular/router';
+import { Subscription, Observable } from 'rxjs';
 import {FormBuilder, FormGroup, Validators, FormArray, FormControl} from '@angular/forms';
 import { Flight } from 'src/app/models/flight.model';
 import { AirlineService } from 'src/app/services/airline.service';
@@ -309,6 +309,12 @@ export class FlightReservationComponent implements OnInit {
     this.airlineService.makeReservation(reservation, this.numberOfUsedPoints).subscribe(
       result =>
       {
+        this.firstfirstFormGroup.reset();
+        this.firstFormGroup.reset();
+        this.secondFormGroup.reset();
+        this.thirdFormGroup.reset();
+        this.fourthFormGroup.reset();
+        this.Reset();
         this.router.navigate(['../../../'], {relativeTo: this.activeRoute});
       },
       error =>
@@ -356,6 +362,10 @@ export class FlightReservationComponent implements OnInit {
 
   Reset(){
     this.airlineService.resetTickets(this.tickets, this.tickets2);
+    this.vehicleReservation = null;
+    this.vehicle = null;
+    this.rentACar = null;
+    this.passengersList = [];
   }
 
   getList(){
@@ -507,5 +517,23 @@ export class FlightReservationComponent implements OnInit {
     this.CalculatePrice();
     this.showPoints = true;
     this.numberOfUsedPoints = 0;
+  }
+
+  canExit(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    // if(this.addForm.dirty){
+    //   return confirm("All unsaved changes will be lost. Are you sure you want to leave this page?");
+    // }
+    // else{
+    //   return true;
+    // }
+    if (this.firstfirstFormGroup.dirty || this.firstFormGroup.dirty || this.secondFormGroup.dirty
+      || this.thirdFormGroup.dirty || this.fourthFormGroup.dirty || this.vehicleReservation != null 
+      || this.vehicle != null || this.rentACar != null) 
+      {
+        return confirm("All reservation details will be lost. Are you sure you want to leave this page?");
+      }
+      else {
+        return true;
+      }
   }
 }

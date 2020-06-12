@@ -108,7 +108,7 @@ export class HeaderComponent implements OnInit {
       this.router.navigate(['main/airline-profile/new']);
     } else if (this.role === 'sysAdmin') {
       this.isSysAdmin = true;
-      this.router.navigate(['main/discounts']);
+      this.router.navigate(['main/add-admin']);
     }
   }
 

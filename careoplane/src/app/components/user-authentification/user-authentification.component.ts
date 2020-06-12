@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { User } from 'src/app/models/user.model';
 import { ConfirmPasswordValidator } from 'src/app/validators/confirm-password.validator';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-user-authentification',
@@ -155,6 +156,7 @@ export class UserAuthentificationComponent implements OnInit {
           this.addForm.markAsUntouched();
 
           this._snackBar.open('Admin was created successfully. Pass: ' + pass, 'OK', {duration: 5000,});
+          this.addForm.reset();
       } else {
         response.errors.forEach(element => {
           switch (element.code) {
@@ -313,6 +315,24 @@ export class UserAuthentificationComponent implements OnInit {
     this.isChangePassword = false;
     this.registerForm.markAsPristine();
     this.registerForm.markAsUntouched();
+  }
+
+  canExit(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    if (this.addForm == undefined) {
+      if (this.registerForm.dirty){
+        return confirm("All unsaved changes will be lost. Are you sure you want to leave this page?");
+      }
+      else{
+        return true;
+      }
+    }
+
+    if(this.addForm.dirty){
+      return confirm("All unsaved changes will be lost. Are you sure you want to leave this page?");
+    }
+    else{
+      return true;
+    }
   }
 
 }

@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { RentACarService } from 'src/app/services/rent-a-car.service';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params, UrlTree } from '@angular/router';
 import { RentACar } from 'src/app/models/rent-a-car.model';
 import { UserService } from 'src/app/services/user.service';
 import { Vehicle } from 'src/app/models/vehicle.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subscriber, Subscription } from 'rxjs';
+import { Subscriber, Subscription, Observable } from 'rxjs';
 import { TORentACar } from 'src/app/t-o-models/t-o-rent-a-car.model';
 import { VehicleService } from 'src/app/services/vehicle.service';
 
@@ -115,6 +115,7 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
           });
           this.rentACar.vehicles.push(vehicle);
           this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+          this.addForm.reset();
           this.router.navigate(['../'], {relativeTo: this.activeRoute});
         }, 
         error => {
@@ -136,6 +137,7 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
           this.rentACar.vehicles[index] = this.vehicle;
           this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
           this._snackBar.open('Vehicle edited successfully', 'OK', {duration: 5000,});
+          this.addForm.reset();
           this.router.navigate(['../../'], {relativeTo: this.activeRoute});
         },
         error => {
@@ -147,9 +149,20 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
 
   onCancel() {
     if (this.isEdit) {
+      this.addForm.reset();
       this.router.navigate(['../../'], {relativeTo: this.activeRoute});
     } else {
+      this.addForm.reset();
       this.router.navigate(['../'], {relativeTo: this.activeRoute});
+    }
+  }
+
+  canExit(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    if(this.addForm.dirty){
+      return confirm("All unsaved changes will be lost. Are you sure you want to leave this page?");
+    }
+    else{
+      return true;
     }
   }
 
@@ -158,5 +171,4 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
       this.subscribtion.unsubscribe();
     }
   }
-
 }

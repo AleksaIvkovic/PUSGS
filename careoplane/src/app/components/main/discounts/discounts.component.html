@@ -34,28 +34,29 @@
                 </mat-form-field>
             </div>
             <div class="row">
-                <div class="col-md-2">
+                <div class="col-md-1" *ngIf="!isEdit">
                     <button 
-                        *ngIf="!isEdit"
-                        style="margin-left: 225px;"
+                        style="margin-left: -16px; width: 90px;"
                         mat-raised-button 
                         color="primary"
                         type="button"
                         (click)="OnEdit()">
                         Edit Info
                     </button>
+                </div>
+                <div class="col-md-1" *ngIf="isEdit">
                     <button 
-                        *ngIf="isEdit"
                         [disabled]="discountsForm.invalid || !discountsForm.dirty"
-                        style="margin-left: 225px;"
+                        style="margin-left: -16px; width: 90px;"
                         mat-raised-button 
                         class="btn-success"
                         type="submit">
                         Save
                     </button>
+                </div>
+                <div class="col-md-1" *ngIf="isEdit">
                     <button
-                        *ngIf="isEdit"
-                        style="margin-left: 225px;"
+                        style="width: 90px;"
                         mat-raised-button 
                         color='warn'
                         type="button"

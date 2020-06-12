@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { matFormFieldAnimations } from '@angular/material/form-field';
 import { Airline } from 'src/app/models/airline.model';
 import { AirlineService } from 'src/app/services/airline.service';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, UrlTree } from '@angular/router';
 import { GeoCodingServiceService } from 'src/app/services/geo-coding-service.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -15,6 +15,7 @@ import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 import { PriceSegmentSeat } from 'src/app/models/price-segment-seat.model';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangePasswordComponent } from 'src/app/components/change-password/change-password.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-airline-edit',
@@ -201,6 +202,8 @@ export class AirlineEditComponent implements OnInit {
           
               this.airlineService.saveImage(formData).subscribe(
                 result => {
+                  this.group.reset();
+                  this.uploadedFile = null;
                   this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
                 },
                 error => {
@@ -227,6 +230,8 @@ export class AirlineEditComponent implements OnInit {
         
             this.airlineService.saveImage(formData).subscribe(
               result => {
+                this.group.reset();
+                this.uploadedFile = null;
                 this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
               },
               error => {
@@ -235,6 +240,8 @@ export class AirlineEditComponent implements OnInit {
             );
           }
           else{
+            this.group.reset();
+            this.uploadedFile = null;
             this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});
           }
         },
@@ -320,5 +327,14 @@ export class AirlineEditComponent implements OnInit {
     }
 
     this.uploadedFile = <File>files[0];
+  }
+
+  canExit(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    if(this.group.dirty || this.uploadedFile != null){
+      return confirm("All unsaved changes will be lost. Are you sure you want to leave this page?");
+    }
+    else{
+      return true;
+    }
   }
 }

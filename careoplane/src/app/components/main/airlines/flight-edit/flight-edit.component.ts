@@ -4,7 +4,7 @@ import {COMMA, ENTER, DASH} from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Flight } from 'src/app/models/flight.model';
 import { Airline } from 'src/app/models/airline.model';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, UrlTree } from '@angular/router';
 import { AirlineService } from 'src/app/services/airline.service';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TOPrimaryObject } from 'src/app/t-o-models/t-o-primary-object.model';
@@ -13,6 +13,7 @@ import { UserService } from 'src/app/services/user.service';
 import { Admin } from 'src/app/models/admin.model';
 import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 import { DatePipe } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-flight-edit',
@@ -81,7 +82,7 @@ export class FlightEditComponent implements OnInit {
         'destination': new FormControl(this.flight.destination, [Validators.required, this.checkDestination.bind(this)]),
         'departure': new FormControl(this.datePipe.transform(this.flight.departure, 'dd.MM.yyyy HH:mm'), [Validators.required, this.checkDepartureDate.bind(this)]),
         'arrival': new FormControl(this.datePipe.transform(this.flight.arrival, 'dd.MM.yyyy HH:mm'), [Validators.required, this.checkArrivalDate.bind(this)]),
-        'distance': new FormControl(this.flight.distance, Validators.required),
+        'distance': new FormControl(this.flight.distance, [Validators.required, Validators.min(1)]),
         'connectionsForm': this.connectionsForm
       });
 
@@ -96,7 +97,7 @@ export class FlightEditComponent implements OnInit {
         'destination': new FormControl(this.flight.destination, [Validators.required, this.checkDestination.bind(this)]),
         'departure': new FormControl(this.flight.departure, [Validators.required, this.checkDepartureDate.bind(this)]),
         'arrival': new FormControl(this.flight.arrival, [Validators.required, this.checkArrivalDate.bind(this)]),
-        'distance': new FormControl(this.flight.distance, Validators.required),
+        'distance': new FormControl(this.flight.distance, [Validators.required, Validators.min(1)]),
         'connectionsForm': this.connectionsForm
       });
     }
@@ -125,6 +126,7 @@ export class FlightEditComponent implements OnInit {
       this.flight.airlineName = localStorage.getItem('company');
       this.airlineService.AddFlgiht(this.flight).subscribe(
         response => {
+          this.group.reset();
           this.router.navigate(['../'],{relativeTo: this.activeRoute});
         },
         error => {
@@ -138,6 +140,7 @@ export class FlightEditComponent implements OnInit {
 
       this.airlineService.EditFlight(this.flight).subscribe(
         response => {
+          this.group.reset();
           this.router.navigate(['../../'],{relativeTo: this.activeRoute});
         },
         error => {
@@ -207,5 +210,14 @@ export class FlightEditComponent implements OnInit {
       this.router.navigate(['../../'],{relativeTo: this.activeRoute});
     else
       this.router.navigate(['../'],{relativeTo: this.activeRoute});
+  }
+
+  canExit(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    if(this.group.dirty){
+      return confirm("All unsaved changes will be lost. Are you sure you want to leave this page?");
+    }
+    else{
+      return true;
+    }
   }
 }
