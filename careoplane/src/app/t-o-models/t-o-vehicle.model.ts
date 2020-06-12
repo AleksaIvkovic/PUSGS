@@ -13,8 +13,9 @@ export class TOVehicle {
         public unavailableDates: TOPrimaryObject[] = [],
         public isOnSale: boolean = false,
         public rentACar: string,
-        public vehicleId: number = 0) {
-    }
+        public vehicleId: number = 0,
+        public version: number = 0
+    ) {}
 
     public ToRegular(): Vehicle {
         let unavailableDates: Date[] = [];
@@ -34,7 +35,8 @@ export class TOVehicle {
             unavailableDates,
             this.isOnSale,
             this.rentACar,
-            this.vehicleId
+            this.vehicleId,
+            this.version
         );
     }
 }

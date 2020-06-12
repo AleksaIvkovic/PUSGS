@@ -106,11 +106,15 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
 
   onRemoveVehicle() {
     this.vehicleService.deleteVehicle(this.vehicle).subscribe(
-      response => {
-        this.rentACar.vehicles.splice(this.rentACar.vehicles.indexOf(this.vehicle), 1);
-        this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
-        this._snackBar.open('Vehicle removed successfully', 'OK', {duration: 5000,});
-        this.router.navigate(['../../'], {relativeTo: this.route});
+      (response: any) => {
+        if (response.success) {
+          this.rentACar.vehicles.splice(this.rentACar.vehicles.indexOf(this.vehicle), 1);
+          this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+          this._snackBar.open('Vehicle removed successfully', 'OK', {duration: 5000,});
+          this.router.navigate(['../../'], {relativeTo: this.route});
+        } else {
+          this._snackBar.open('Someone has made a reservation before the change/s could be saved', 'OK', {duration: 5000,});
+        }
       },
       error => {
         console.log(error);

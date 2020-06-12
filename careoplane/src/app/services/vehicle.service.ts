@@ -79,7 +79,7 @@ export class VehicleService {
     }
 
     deleteVehicle(vehicle: Vehicle) {
-        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles/' + vehicle.vehicleId;
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/Vehicles/' + vehicle.vehicleId + "?version=" + vehicle.version;
         return this.http
         .delete(
             address
@@ -95,8 +95,8 @@ export class VehicleService {
         );
     }
 
-    reserveVehicle(reservation: VehicleReservation, rentACar: RentACar) {
-        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/VehicleReservations';
+    reserveVehicle(reservation: VehicleReservation, rentACar: RentACar, version: number) {
+        let address = 'http://localhost:' + localStorage.getItem('port') + '/api/VehicleReservations?version=' + version;
         return this.http
         .post(
             address,

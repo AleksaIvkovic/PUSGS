@@ -166,7 +166,7 @@ namespace Careoplane.Controllers
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<Object> PostVehicleReservation(TOVehicleReservation toVehicleReservation)
+        public async Task<Object> PostVehicleReservation(TOVehicleReservation toVehicleReservation, [FromQuery]int version)
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
@@ -178,11 +178,19 @@ namespace Careoplane.Controllers
             VehicleReservation vehicleReservation = new VehicleReservation();
             vehicleReservation.FromTO(toVehicleReservation);
 
+            bool success = false;
+            Vehicle vehicle = await _context.Vehicles.Include(v => v.UnavailableDates).FirstOrDefaultAsync(v => v.VehicleId == vehicleReservation.VehicleId);
+            if (vehicle.Version != version)
+            {
+                //Provera da li je zbog edita ili rezervacije duple
+                return Ok(new { success });
+            }
+
             _context.VehicleReservation.Add(vehicleReservation);
             await _context.SaveChangesAsync();
 
             //Treba popuniti Unavailable Dates
-            Vehicle vehicle = await _context.Vehicles.Include(v => v.UnavailableDates).FirstOrDefaultAsync(v=> v.VehicleId == vehicleReservation.VehicleId);
+            
 
             for (int i = 0; i < vehicleReservation.NumOfDays; i++)
             {
@@ -193,10 +201,13 @@ namespace Careoplane.Controllers
                     Date = vehicleReservation.FromDate.AddDays(i)
                 });
             }
+
+            vehicle.Version++;
             await _context.SaveChangesAsync();
 
             int id = vehicleReservation.ReservationId;
-            return Ok(new { id });
+            success = true;
+            return Ok(new { id, success });
         }
 
         // DELETE: api/VehicleReservations/5

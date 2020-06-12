@@ -36,8 +36,9 @@ namespace Careoplane.Models
 
         public ICollection<SegmentFlight> SegmentLengths { get; set; }
 
-        
         public ICollection<FlightRating> Ratings { get; set; }
+        public int Version { get; set; }
+
         public Flight() { }
 
         public Flight(TOFlight flight, DatabaseContext _context) {
@@ -49,6 +50,7 @@ namespace Careoplane.Models
             FlightId = flight.FlightId;
             Origin = flight.Origin;
             Destination = flight.Destination;
+            Version = flight.Version;
         }
 
         public DateTime ConvertJsDate(string jsDate)

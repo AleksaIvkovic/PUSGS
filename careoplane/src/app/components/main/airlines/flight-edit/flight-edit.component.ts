@@ -14,6 +14,7 @@ import { Admin } from 'src/app/models/admin.model';
 import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
 import { DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-flight-edit',
@@ -34,7 +35,12 @@ export class FlightEditComponent implements OnInit {
   destinations: string[] = [];
   edit: boolean;
 
-  constructor(private datePipe: DatePipe, private router: Router, private activeRoute: ActivatedRoute, private airlineService: AirlineService, private userService: UserService) { }
+  constructor(private datePipe: DatePipe, 
+    private router: Router, 
+    private activeRoute: ActivatedRoute, 
+    private airlineService: AirlineService, 
+    private userService: UserService,
+    private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.InitForm();
@@ -139,9 +145,24 @@ export class FlightEditComponent implements OnInit {
       this.flight.arrival = this.group.controls['arrival'].value;
 
       this.airlineService.EditFlight(this.flight).subscribe(
-        response => {
-          this.group.reset();
-          this.router.navigate(['../../'],{relativeTo: this.activeRoute});
+        (response: any) => {
+          if(response.success){
+            this.group.reset();
+            this.router.navigate(['../../'],{relativeTo: this.activeRoute});
+          }
+          else{
+            this._snackBar.open('Something went wrong', 'OK', { duration: 5000, });
+            this.airlineService.getFlightDB(this.flight.id).subscribe(
+              result => {
+                this.flight = Object.assign(new TOFlight(),result).convert();
+                this.edit = true;
+                this.InitForm();
+              },
+              error => {
+                console.log(error);
+              }
+            )
+          }
         },
         error => {
           console.log(error);

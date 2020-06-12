@@ -127,18 +127,22 @@ export class VehicleManagerComponent implements OnInit, OnDestroy {
       this.vehicle.pricePerDay = this.addForm.value['price'];
       this.vehicle.location = this.addForm.value['location'];
       this.vehicleService.putVehicle(this.vehicle).subscribe(
-        response => {
-          let index = -1;
-          this.rentACar.vehicles.forEach(v => {
-            if (v.vehicleId == this.vehicle.vehicleId) {
-              index = this.rentACar.vehicles.indexOf(v);
-            }
-          });
-          this.rentACar.vehicles[index] = this.vehicle;
-          this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
-          this._snackBar.open('Vehicle edited successfully', 'OK', {duration: 5000,});
-          this.addForm.reset();
-          this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+        (response: any) => {
+          if (response.success) {
+            let index = -1;
+            this.rentACar.vehicles.forEach(v => {
+              if (v.vehicleId == this.vehicle.vehicleId) {
+                index = this.rentACar.vehicles.indexOf(v);
+              }
+            });
+            this.rentACar.vehicles[index] = this.vehicle;
+            this.vehicleService.vehicleListChanged.next(this.rentACar.vehicles.slice());
+            this._snackBar.open('Vehicle edited successfully', 'OK', {duration: 5000,});
+            this.addForm.reset();
+            this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+          } else {
+            this._snackBar.open('Someone has made a reservation before the change/s could be saved', 'OK', {duration: 5000,});
+          }
         },
         error => {
           console.log(error);

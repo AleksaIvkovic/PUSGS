@@ -32,5 +32,7 @@ namespace Careoplane.TOModels
         
         public string RentACar { get; set; }
 
+        public int Version { get; set; }
+
     }
 }

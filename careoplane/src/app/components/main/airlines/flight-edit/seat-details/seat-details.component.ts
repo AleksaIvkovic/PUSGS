@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, Params } from '@angular/router';
 import { AirlineService } from 'src/app/services/airline.service';
 import { Seat } from 'src/app/models/seat.model';
 import { TOSeat } from 'src/app/t-o-models/t-o-seat.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-seat-details',
@@ -13,8 +14,12 @@ import { TOSeat } from 'src/app/t-o-models/t-o-seat.model';
 export class SeatDetailsComponent implements OnInit {
   seatForm: FormGroup
   seat: Seat = new Seat();
+  version: number;
 
-  constructor(private activeRoute: ActivatedRoute,private router: Router, private airlineService: AirlineService) { }
+  constructor(private activeRoute: ActivatedRoute,
+    private router: Router, 
+    private airlineService: AirlineService,
+    private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -27,6 +32,8 @@ export class SeatDetailsComponent implements OnInit {
             this.initForm();
           }
         )
+
+        this.version = +params['version'];
       }
     )
   }
@@ -45,19 +52,35 @@ export class SeatDetailsComponent implements OnInit {
     this.seatForm.controls['price'].disable({onlySelf: true});
   }
 
-  Cancel(){
-    this.airlineService.ticketDoneChange(null);
-    this.seatForm.reset();
-    this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+  Cancel(check: number){
+    if(check == -1){
+      this.airlineService.ticketDoneChange(
+        new Seat(-1)
+      );
+      this.seatForm.reset();
+      this.router.navigate(['../../../../../'], {relativeTo: this.activeRoute});
+    }
+    else{
+      this.airlineService.ticketDoneChange(null);
+      this.seatForm.reset();
+      this.router.navigate(['../../../'], {relativeTo: this.activeRoute});
+    }
   }
 
   Change(){
     this.seat.discount = this.seatForm.controls['discount'].value;
-    this.airlineService.changeSeat(this.seat).subscribe(
-      response => {
-        this.seatForm.reset();
-        this.airlineService.ticketDoneChange(this.seat);
-        this.router.navigate(['../../'], {relativeTo: this.activeRoute});
+    this.airlineService.changeSeat(this.seat, this.version).subscribe(
+      (response: any) => {
+        if(response.success){
+          this.seatForm.reset();
+          this.airlineService.ticketDoneChange(this.seat);
+          this.router.navigate(['../../../'], {relativeTo: this.activeRoute});
+        }
+        else{
+          this._snackBar.open('Something went wrong', 'OK', { duration: 5000, });
+          this.Cancel(-1);
+          //izmeni logiku da ponovo dobavi let
+        }
       },
       error => {
         console.log(error);

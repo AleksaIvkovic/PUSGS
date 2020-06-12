@@ -14,8 +14,6 @@ export class SeatsEditComponent implements OnInit {
   constructor(private router: Router, private activeRoute: ActivatedRoute, private airlineServie: AirlineService) { }
 
   ngOnInit(): void {
-    
-
     this.activeRoute.params.subscribe((params: Params) => {
       this.airlineServie.getFlightDB(+params['fid']).subscribe(
         result => {
@@ -32,7 +30,7 @@ export class SeatsEditComponent implements OnInit {
       this.router.navigate(['../../'],{relativeTo: this.activeRoute});
     }
     else{
-      this.router.navigate(['../../../../'],{relativeTo: this.activeRoute});
+      this.router.navigate(['../../../../../'],{relativeTo: this.activeRoute});
     }
   }
 

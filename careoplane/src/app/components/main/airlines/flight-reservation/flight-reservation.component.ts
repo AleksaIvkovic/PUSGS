@@ -235,7 +235,7 @@ export class FlightReservationComponent implements OnInit {
     flightReservationDetails.flight = new TOFlight(this.flight1.airlineName,this.flight1.origin,
       this.flight1.destination,this.datePipe.transform(this.flight1.departure, 'dd.MM.yyyy HH:mm'),
       this.datePipe.transform(this.flight1.arrival, 'dd.MM.yyyy HH:mm'),this.flight1.distance,
-      this.flight1.connections,this.flight1.id,[],[],[],[]);
+      this.flight1.connections,this.flight1.id,[],[],[],[],this.flight1.rating,this.flight1.version);
     let counter = 0;
     for(let passenger of (<FormArray>this.secondFormGroup.controls['passengersControl']).controls){
       let seat;
@@ -273,7 +273,8 @@ export class FlightReservationComponent implements OnInit {
       flightReservationDetails2.flight = new TOFlight(this.flight2.airlineName,this.flight2.origin,
         this.flight2.destination,this.datePipe.transform(this.flight2.departure, 'dd.MM.yyyy HH:mm'),
         this.datePipe.transform(this.flight2.arrival, 'dd.MM.yyyy HH:mm'),
-        this.flight2.distance,this.flight2.connections,this.flight2.id,[],[],[],[]);
+        this.flight2.distance,this.flight2.connections,this.flight2.id,[],[],[],[],
+        this.flight2.rating, this.flight2.version);
       let counter = 0;
       for(let passenger of (<FormArray>this.fourthFormGroup.controls['passengersControl']).controls){
         let seat;
@@ -326,7 +327,7 @@ export class FlightReservationComponent implements OnInit {
 
   Done(){
     if(this.vehicleReservation != null){
-      this.vehicleService.reserveVehicle(this.vehicleReservation,this.rentACar).subscribe(
+      this.vehicleService.reserveVehicle(this.vehicleReservation,this.rentACar,this.vehicle.version).subscribe(
         (result : any) => {
           this.reserveFlight(result.id)
         },

@@ -44,6 +44,8 @@ namespace Careoplane.Models
 
         public ICollection<VehicleRating> Ratings { get; set; }
 
+        public int Version { get; set; }
+
         public void FromTO(TOVehicle toVehicle, RentACar rentACar)
         {
             Brand = toVehicle.Brand;
@@ -67,6 +69,7 @@ namespace Careoplane.Models
             });
             VehicleId = toVehicle.VehicleId;
             Year = toVehicle.Year;
+            Version = toVehicle.Version;
         }
 
         public TOVehicle ToTO()
@@ -99,6 +102,7 @@ namespace Careoplane.Models
                 }));
             toVehicle.VehicleId = VehicleId;
             toVehicle.Year = Year;
+            toVehicle.Version = Version;
 
             return toVehicle;
         }

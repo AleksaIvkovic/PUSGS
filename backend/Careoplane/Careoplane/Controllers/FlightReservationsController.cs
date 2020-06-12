@@ -471,6 +471,18 @@ namespace Careoplane.Controllers
 
                         _context.Entry(seat).State = EntityState.Modified;
 
+                        if(seat.Discount != 0)
+                        {
+                            FastTicket fastTicket = new FastTicket()
+                            {
+                                SeatId = seat.SeatId,
+                                Airline = _context.Airlines.Find(tempFlightReservation.FlightReservationDetails[i].AirlineName),
+                                NewPrice = seat.Price * (1 - (0.01 * seat.Discount))
+                            };
+
+                            _context.FastTickets.Add(fastTicket);
+                        }
+
                         await _context.SaveChangesAsync();
 
                         tempFlightReservation.FlightReservationDetails[i].PassengerSeats.Remove(tempFlightReservation.FlightReservationDetails[i].PassengerSeats[j]);

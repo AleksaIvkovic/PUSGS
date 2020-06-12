@@ -33,7 +33,7 @@ namespace Careoplane.Controllers
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> PutFastTicket(int id, [FromBody]JObject Obj)
+        public async Task<IActionResult> PutFastTicket(int id, [FromBody] JObject Obj, [FromQuery] int version)
         {
             TOFastTicket fastTicket = Obj["fastTicket"].ToObject<TOFastTicket>();
             bool occupied = Obj["occupied"].ToObject<bool>();
@@ -42,6 +42,16 @@ namespace Careoplane.Controllers
             {
                 return BadRequest();
             }
+
+            Flight tempFlight = await _context.Flights.FindAsync(fastTicket.Seat.FlightId);
+
+            var success = false;
+            if(tempFlight.Version != version)
+            {
+                return Ok(new { success });
+            }
+            tempFlight.Version++;
+            _context.Entry(tempFlight).State = EntityState.Modified;
 
             FastTicket tempFastTicket = await _context.FastTickets.FindAsync(fastTicket.Seat.SeatId);
 
@@ -97,9 +107,6 @@ namespace Careoplane.Controllers
                     flightReservation.FlightReservationDetails.Add(flightReservationDetail);
 
                     _context.FlightReservations.Add(flightReservation);
-
-                    await _context.SaveChangesAsync();
-
                     _context.FastTickets.Remove(tempFastTicket);
                     await _context.SaveChangesAsync();
                 }
@@ -116,7 +123,8 @@ namespace Careoplane.Controllers
                 }
             }
 
-            return NoContent();
+            success = true;
+            return Ok(new { success });
         }
 
         // DELETE: api/FastTickets/5

@@ -54,7 +54,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
           else{
             this.name = localStorage.getItem('company');
             this.admin = true;
-            this.airlineService.getAirlineAdmin(this.name).subscribe(
+            this.airlineService.getAirlineDisplay(this.name).subscribe(
             result => {
               this.airline = Object.assign(new TOAirline(), result).convert();
               this.airlineService.airlineLoaded(this.airline);
@@ -62,8 +62,7 @@ export class AirlineDetailsComponent implements OnInit, AfterViewInit{
             },
             error => {console.log(error);}
           );
-          }
-          
+        }
       }
     );
   }

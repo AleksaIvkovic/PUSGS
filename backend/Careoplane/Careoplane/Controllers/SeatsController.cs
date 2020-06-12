@@ -39,17 +39,50 @@ namespace Careoplane.Controllers
             return new TOSeat(seat);
         }
 
+        [HttpGet("Flight/{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<Object> GetSeatForFlight(int id)
+        {
+            var seats = await _context.Seats.Where(seat => seat.Flight.FlightId == id).ToListAsync();
+
+            if (seats == null)
+            {
+                return NotFound();
+            }
+
+            var notFound = true;
+
+            foreach(Seat seat in seats)
+            {
+                if (seat.Occupied)
+                {
+                    notFound = false;
+                }
+            }
+
+            return Ok(new { notFound });
+        }
+
         // PUT: api/Seats/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> PutSeat(int id, TOSeat seat)
+        public async Task<IActionResult> PutSeat(int id, TOSeat seat, [FromQuery]int version)
         {
             if (id != seat.SeatId)
             {
                 return BadRequest();
             }
+
+            Flight tempFlight = await _context.Flights.FindAsync(seat.FlightId);
+            var success = false;
+            if(tempFlight.Version != version)
+            {
+                return Ok(new { success });
+            }
+            tempFlight.Version++;
+            _context.Entry(tempFlight).State = EntityState.Modified;
 
             Seat oldSeat = await _context.Seats
                 .Include(s => s.Flight).ThenInclude(f => f.Airline)
@@ -102,7 +135,8 @@ namespace Careoplane.Controllers
                 }
             }
 
-            return NoContent();
+            success = true;
+            return Ok(new { success });
         }
 
         private bool SeatExists(int id)

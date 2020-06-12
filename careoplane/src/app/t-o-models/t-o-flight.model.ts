@@ -18,13 +18,14 @@ export class TOFlight {
         public prices: number[] = [],
         public seatingArangement : TOPriceSegmentSeat[] = [],
         public segments : TOPriceSegmentSeat[] = [],
-        public rating: number = 0
+        public rating: number = 0,
+        public version: number = 0
         ){}
 
         public convert(): Flight {
             let flight: Flight = new Flight(this.airlineName,this.origin,this.destination,
                 new Date(this.departure), new Date(this.arrival),this.distance,this.connections,
-                this.flightId,[],this.prices,this.seatingArangement,this.segments,this.rating);
+                this.flightId,[],this.prices,this.seatingArangement,this.segments,this.rating, this.version);
 
             for(let seat of this.seats){
                 let toSeat: TOSeat = Object.assign(new TOSeat(),seat);

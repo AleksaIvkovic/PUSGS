@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FastTicket } from 'src/app/models/fast-ticket.model';
 import { Airline } from 'src/app/models/airline.model';
 import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-flight',
@@ -21,9 +22,15 @@ export class FlightComponent implements OnInit {
   @Input() passengers: number;
   backStr: string;
   price: any;
-  constructor(public airlineService: AirlineService, private router: Router, private activeRoute: ActivatedRoute) { }
+  seatsValid: boolean = false;
+  constructor(public airlineService: AirlineService, 
+    private router: Router, 
+    private activeRoute: ActivatedRoute,
+    private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    this.checkSeats();
+    
     if(this.back == 'one'){
         this.backStr = '../';
     }
@@ -92,8 +99,14 @@ export class FlightComponent implements OnInit {
 
   FastReservation(){
     this.airlineService.changeFastTicket(this.fastTicket).subscribe(
-      response => {
-        this.airlineService.fastTicektListChanged(this.fastTicket.seat.seatId);
+      (response: any) => {
+        if(response.success){
+          this.airlineService.fastTicektListChanged(this.fastTicket.seat.seatId);
+        }
+        else{
+          this._snackBar.open('Something went wrong', 'OK', { duration: 5000, });
+          //dodati logiku da ponovo povuce fastTicket-e
+        }
       },
       error => {console.log(error);}
     );
@@ -116,9 +129,15 @@ export class FlightComponent implements OnInit {
   }
 
   DeleteFlight(){
-    this.airlineService.DeleteFlight(this.flight.id).subscribe(
-      res => {
-        this.airlineService.flightListChanged(this.flight.id);
+    this.airlineService.DeleteFlight(this.flight.id, this.flight.version).subscribe(
+      (res: any) => {
+        if(res.success){
+          this.airlineService.flightListChanged(this.flight.id);
+        }
+        else{
+          this._snackBar.open('Something went wrong', 'OK', { duration: 5000, });
+          this.checkSeats();
+        }
       },
       error => {
         console.log(error);
@@ -131,12 +150,11 @@ export class FlightComponent implements OnInit {
   }
 
   checkSeats(){
-    for(let seat of this.flight.seats){
-      if(seat.occupied){
-        return false;
+    this.airlineService.getSeats(this.flight.id).subscribe(
+      (response : any) => {
+        this.seatsValid = response.notFound;
       }
-    }
-    return true;
+    )
   }
   //#endregion
 }

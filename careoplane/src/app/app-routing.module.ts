@@ -78,7 +78,7 @@ const routes: Routes = [
       {path: 'add-flight', component: FlightEditComponent, canDeactivate: [CancelGuard]},
       {path: ':fid/edit-seats', component: SeatsEditComponent, children:[
         {path: '', component:SeatStarterComponent, pathMatch:'full'},
-        {path: ':id/seat', component: SeatDetailsComponent, canDeactivate: [CancelGuard]}
+        {path: ':id/:version/seat', component: SeatDetailsComponent, canDeactivate: [CancelGuard]}
       ]}
     ]},
     {path: 'new-rent-a-car-profile', component: RentACarManagerComponent, canActivate: [RacAdminNewGuard], canDeactivate: [CancelGuard], children: [

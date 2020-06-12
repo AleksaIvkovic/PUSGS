@@ -27,8 +27,9 @@ namespace Careoplane.TOModels
         public List<TOPriceSegmentSeat> SeatingArangement { get; set; }
         public List<TOPriceSegmentSeat> Segments { get; set; }
         public List<TOSeat> Seats { get; set; }
-
         public List<double> Prices { get; set; }
+        public int Version { get; set; }
+
 
         public TOFlight() { }
         public TOFlight(Flight flight) {
@@ -40,6 +41,7 @@ namespace Careoplane.TOModels
             FlightId = flight.FlightId;
             Origin = flight.Origin;
             Destination = flight.Destination;
+            Version = flight.Version;
 
             Prices = new List<double>();
             

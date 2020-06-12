@@ -98,147 +98,6 @@ namespace Careoplane.Controllers
             return returnList;
         }
 
-        // PUT: api/Flights/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> PutFlight(int id, TOFlight flight)
-        {
-            string role = User.Claims.First(c => c.Type == "Roles").Value;
-
-            //if (role != "aeroAdmin")
-            //{
-            //    return BadRequest("You are not authorised to do this action");
-            //}
-
-
-            if (id != flight.FlightId)
-            {
-                return BadRequest();
-            }
-
-            Flight tempFlight = new Flight(flight, _context);
-
-            _context.Entry(tempFlight).State = EntityState.Modified;
-
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FlightExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Flights
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<TOFlight>> PostFlight(TOFlight flight)
-        {
-            string role = User.Claims.First(c => c.Type == "Roles").Value;
-
-            //if (role != "aeroAdmin")
-            //{
-            //    return BadRequest("You are not authorised to do this action");
-            //}
-
-            Flight tempFlight = new Flight(flight, _context);
-            _context.Flights.Add(tempFlight);
-            await _context.SaveChangesAsync();
-
-            tempFlight.Connections = new List<Connection>();
-            foreach(TOPrimaryObject connection in flight.Connections)
-            {
-                tempFlight.Connections.Add(new Connection()
-                {
-                    ConntectionId = 0,
-                    Flight = tempFlight,
-                    Value = connection.Value.ToString()
-                });
-            }
-
-            tempFlight.GenerateSeats();
-
-            tempFlight.SegmentLengths = new List<SegmentFlight>();
-            foreach (var segment in tempFlight.Airline.SegmentLengths)
-            {
-                tempFlight.SegmentLengths.Add(new SegmentFlight()
-                {
-                    Flight = tempFlight,
-                    SegmentFlightId = 0,
-                    Ordinal = segment.Ordinal,
-                    Value = int.Parse(segment.Value.ToString())
-                });
-            }
-
-            tempFlight.SeatingArrangements = new List<SeatArrangementFlight>();
-            foreach (var seatArrangement in tempFlight.Airline.SeatingArrangements)
-            {
-                tempFlight.SeatingArrangements.Add(new SeatArrangementFlight()
-                {
-                    Flight = tempFlight,
-                    SeatArrangementFlightId = 0,
-                    Ordinal = seatArrangement.Ordinal,
-                    Value = int.Parse(seatArrangement.Value.ToString())
-                });
-            }
-
-            _context.Entry(tempFlight).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetFlight", new { id = tempFlight.FlightId }, new TOFlight(tempFlight));
-        }
-
-        // DELETE: api/Flights/5
-        [HttpDelete("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<TOFlight>> DeleteFlight(int id)
-        {
-            string role = User.Claims.First(c => c.Type == "Roles").Value;
-
-            if (role != "aeroAdmin" && role != "aeroAdminNew")
-            {
-                return BadRequest("You are not authorised to do this action");
-            }
-
-            var flight = await _context.Flights.Include(flight => flight.Seats).FirstOrDefaultAsync(flight => flight.FlightId == id);
-            if (flight == null)
-            {
-                return NotFound();
-            }
-
-            foreach(Seat seat in flight.Seats)
-            {
-                var fastTicket = await _context.FastTickets.FindAsync(seat.SeatId);
-                if(fastTicket != null)
-                {
-                    _context.FastTickets.Remove(fastTicket);
-                }
-            }
-
-            TOFlight toFlight = new TOFlight(flight);
-
-            _context.Flights.Remove(flight);
-            await _context.SaveChangesAsync();
-
-            return toFlight;
-        }
-
         [HttpPut("Rate")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> RateFlight(JObject tempObject)
@@ -289,6 +148,165 @@ namespace Careoplane.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // PUT: api/Flights/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> PutFlight(int id, TOFlight flight)
+        {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "aeroAdmin" && role != "aeroAdminNew")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
+            if (id != flight.FlightId)
+            {
+                return BadRequest();
+            }
+
+            Flight tempFlight = await _context.Flights.FindAsync(flight.FlightId);
+
+            var success = false;
+
+            if(tempFlight.Version != flight.Version)
+            {
+                return Ok(new { success });
+            }
+
+            tempFlight.Arrival = DateTime.Parse(flight.Arrival);
+            tempFlight.Departure = DateTime.Parse(flight.Departure);
+            tempFlight.Version++;
+            
+            _context.Entry(tempFlight).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FlightExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            success = true;
+            return Ok(new { success });
+        }
+
+        // POST: api/Flights
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<TOFlight>> PostFlight(TOFlight flight)
+        {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "aeroAdminNew" && role != "aeroAdmin")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
+            Flight tempFlight = new Flight(flight, _context);
+            tempFlight.Version = 0;
+            _context.Flights.Add(tempFlight);
+            await _context.SaveChangesAsync();
+
+            tempFlight.Connections = new List<Connection>();
+            foreach(TOPrimaryObject connection in flight.Connections)
+            {
+                tempFlight.Connections.Add(new Connection()
+                {
+                    ConntectionId = 0,
+                    Flight = tempFlight,
+                    Value = connection.Value.ToString()
+                });
+            }
+
+            tempFlight.GenerateSeats();
+
+            tempFlight.SegmentLengths = new List<SegmentFlight>();
+            foreach (var segment in tempFlight.Airline.SegmentLengths)
+            {
+                tempFlight.SegmentLengths.Add(new SegmentFlight()
+                {
+                    Flight = tempFlight,
+                    SegmentFlightId = 0,
+                    Ordinal = segment.Ordinal,
+                    Value = int.Parse(segment.Value.ToString())
+                });
+            }
+
+            tempFlight.SeatingArrangements = new List<SeatArrangementFlight>();
+            foreach (var seatArrangement in tempFlight.Airline.SeatingArrangements)
+            {
+                tempFlight.SeatingArrangements.Add(new SeatArrangementFlight()
+                {
+                    Flight = tempFlight,
+                    SeatArrangementFlightId = 0,
+                    Ordinal = seatArrangement.Ordinal,
+                    Value = int.Parse(seatArrangement.Value.ToString())
+                });
+            }
+
+            _context.Entry(tempFlight).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetFlight", new { id = tempFlight.FlightId }, new TOFlight(tempFlight));
+        }
+
+        // DELETE: api/Flights/5
+        [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<TOFlight>> DeleteFlight(int id, [FromQuery]int version)
+        {
+            string role = User.Claims.First(c => c.Type == "Roles").Value;
+
+            if (role != "aeroAdmin" && role != "aeroAdminNew")
+            {
+                return BadRequest("You are not authorised to do this action");
+            }
+
+            var flight = await _context.Flights.Include(flight => flight.Seats).FirstOrDefaultAsync(flight => flight.FlightId == id);
+            if (flight == null)
+            {
+                return NotFound();
+            }
+
+            bool success = false;
+            if(flight.Version != version)
+            {
+                return Ok(new { success });
+            }
+
+            foreach(Seat seat in flight.Seats)
+            {
+                var fastTicket = await _context.FastTickets.FindAsync(seat.SeatId);
+                if(fastTicket != null)
+                {
+                    _context.FastTickets.Remove(fastTicket);
+                }
+            }
+
+            TOFlight toFlight = new TOFlight(flight);
+
+            _context.Flights.Remove(flight);
+            await _context.SaveChangesAsync();
+
+            success = true;
+            return Ok(new { success});
         }
 
         private bool FlightExists(int id)

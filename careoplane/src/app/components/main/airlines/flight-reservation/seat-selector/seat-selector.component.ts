@@ -5,6 +5,7 @@ import { AirlineService } from 'src/app/services/airline.service';
 import { Subject } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TOAirline } from 'src/app/t-o-models/t-o-airline.model';
+import { TOFlight } from 'src/app/t-o-models/t-o-flight.model';
 
 @Component({
   selector: 'app-seat-selector',
@@ -125,7 +126,7 @@ export class SeatSelectorComponent implements OnInit {
     }
     
     this.airlineService.ticketDone.subscribe(value => {
-      if(value != null){
+      if(value != null && value.flightId != -1){
         for(let seat of this.flight.seats){
           if(seat.name == value.name){
             seat.discount = value.discount;
@@ -138,8 +139,10 @@ export class SeatSelectorComponent implements OnInit {
           }
         }
       }
-      this.unselect = true;
-      this.selectSeat(this.lastSeat);
+      else{
+        this.unselect = true;
+        this.selectSeat(this.lastSeat);
+      }
     })
   }
 
@@ -389,7 +392,7 @@ export class SeatSelectorComponent implements OnInit {
             id = seat.seatId;
         }
 
-        this.router.navigate([id,'seat'],{relativeTo:this.activeRoute});
+        this.router.navigate([id,this.flight.version,'seat'],{relativeTo:this.activeRoute});
         this.unselect = false;
       }
     }

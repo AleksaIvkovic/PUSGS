@@ -106,7 +106,7 @@
                 X
             </button>
             <div *ngIf="fastTicket == null && admin">
-                <button mat-mini-fab color="warn" style="margin: 0 auto;" (click)="DeleteFlight()" *ngIf="checkSeats()">
+                <button mat-mini-fab color="warn" style="margin: 0 auto;" (click)="DeleteFlight()" *ngIf="seatsValid">
                     X
                 </button>
             </div>

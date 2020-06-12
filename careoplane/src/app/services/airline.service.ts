@@ -173,18 +173,22 @@ export class AirlineService {
 
   EditFlight(flight: Flight) {
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/' + flight.id.toString();
-    let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,flight.id,[]);
+    let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,
+      flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,
+      flight.id,[],[],[],[],flight.rating,flight.version);
     return this.http.put(address,tempFlight);
   }
 
   AddFlgiht(flight: Flight) {
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights';
-    let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,flight.id,[]);
+    let tempFlight = new TOFlight(flight.airlineName,flight.origin,flight.destination,
+      flight.departure.toString(),flight.arrival.toString(),flight.distance,flight.connections,
+      flight.id,[],[],[],[],0,0);
     return this.http.post(address,tempFlight);
   }
 
-  DeleteFlight(id: number){
-    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/' + id.toString();
+  DeleteFlight(id: number, version: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Flights/' + id.toString() + '?version=' + version;
     return this.http.delete(address);
   }
 
@@ -193,14 +197,15 @@ export class AirlineService {
     return this.http.get<TOSeat>(address);
   }
 
-  changeSeat(seat: Seat) {
-    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Seats/' + seat.seatId.toString();
+  changeSeat(seat: Seat, version: number) {
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Seats/' + 
+    seat.seatId.toString() + "?version=" + version;
     let seatTemp = new TOSeat(seat.flightId,seat.name,seat.type,seat.occupied,seat.price,seat.discount,seat.seatId);
     return this.http.put(address,seatTemp);
   }
 
   changeFastTicket(fastTicket: FastTicket){
-    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FastTickets/' + fastTicket.seat.seatId;
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FastTickets/' + fastTicket.seat.seatId + '?version=' + fastTicket.flight.version;
     let tempFastTicket = new TOFastTicket(
       new TOSeat(fastTicket.seat.flightId,fastTicket.seat.name,fastTicket.seat.type,
         fastTicket.seat.occupied,fastTicket.seat.price,fastTicket.seat.discount,fastTicket.seat.seatId), 
@@ -278,5 +283,10 @@ export class AirlineService {
 
   saveImage(formData){
     return this.http.post('http://localhost:' + localStorage.getItem('port') + '/api/Upload', formData);
+  }
+
+  getSeats(id: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/Seats/Flight/' + id;
+    return this.http.get(address);
   }
 }

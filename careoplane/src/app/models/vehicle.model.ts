@@ -14,7 +14,8 @@ export class Vehicle {
         public unavailableDates: Date[] = [],
         public isOnSale: boolean = false,
         public rentACar: string = '',
-        public vehicleId: number = 0
+        public vehicleId: number = 0,
+        public version: number = 0
     ) {}
 
     public ToTO(): TOVehicle {
@@ -35,7 +36,8 @@ export class Vehicle {
             toUnavailableDates,
             this.isOnSale,
             this.rentACar,
-            this.vehicleId
+            this.vehicleId,
+            this.version
         );
     }
 }

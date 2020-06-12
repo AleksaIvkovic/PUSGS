@@ -182,7 +182,15 @@ namespace Careoplane.Controllers
                 return BadRequest("You are not authorised to do this action");
             }
 
-            Vehicle vehicle = new Vehicle();
+            //Iscitaj vozilo i proveri verziju
+            bool success = false;
+            Vehicle vehicle = await _context.Vehicles.FindAsync(id);
+            if (vehicle.Version != toVehicle.Version)
+            {
+                return Ok(new { success });
+            }
+
+            //Vehicle vehicle = new Vehicle();
             var rentACar = _context.RentACars.FirstOrDefault(r => r.Name == toVehicle.RentACar);
             vehicle.FromTO(toVehicle, rentACar);
 
@@ -191,6 +199,7 @@ namespace Careoplane.Controllers
                 return BadRequest();
             }
 
+            vehicle.Version++;
             _context.Entry(vehicle).State = EntityState.Modified;
 
             try
@@ -209,7 +218,8 @@ namespace Careoplane.Controllers
                 }
             }
 
-            return NoContent();
+            success = true;
+            return Ok(new { success });
         }
 
         // POST: api/Vehicles
@@ -229,6 +239,7 @@ namespace Careoplane.Controllers
             Vehicle vehicle = new Vehicle();
             var rentACar = _context.RentACars.FirstOrDefault(r => r.Name == toVehicle.RentACar);
             vehicle.FromTO(toVehicle, rentACar);
+            vehicle.Version = 0;
 
             _context.Vehicles.Add(vehicle);
             await _context.SaveChangesAsync();
@@ -239,7 +250,7 @@ namespace Careoplane.Controllers
         // DELETE: api/Vehicles/5
         [HttpDelete("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<TOVehicle>> DeleteVehicle(int id)
+        public async Task<ActionResult<TOVehicle>> DeleteVehicle(int id, [FromQuery]int version)
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
@@ -248,16 +259,26 @@ namespace Careoplane.Controllers
                 return BadRequest("You are not authorised to do this action");
             }
 
-            var vehicle = await _context.Vehicles.Include(v => v.RentACar).Include(v => v.UnavailableDates).FirstOrDefaultAsync(v => v.VehicleId == id);
+            var vehicle = await _context.Vehicles
+                .Include(v => v.RentACar)
+                .Include(v => v.UnavailableDates)
+                .FirstOrDefaultAsync(v => v.VehicleId == id);
             if (vehicle == null)
             {
                 return NotFound();
             }
 
+            bool success = false;
+            if (vehicle.Version != version)
+            {
+                return Ok(new { success });
+            }
+
             _context.Vehicles.Remove(vehicle);
             await _context.SaveChangesAsync();
 
-            return vehicle.ToTO();
+            success = true;
+            return Ok(new { success });
         }
 
         private bool VehicleExists(int id)
