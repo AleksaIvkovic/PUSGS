@@ -51,6 +51,10 @@ export class ReservationsComponent implements OnInit {
             }
           }
           else{
+            if(flightReservation.creator == localStorage.getItem('username')){
+              this.reservations.push(flightReservation)
+              continue;
+            }
             for(let flightDetails of flightReservation.flightReservationDetails){
               for(let passengerSeat of flightDetails.passengerSeats){
                 if(passengerSeat.username == localStorage.getItem('username')){

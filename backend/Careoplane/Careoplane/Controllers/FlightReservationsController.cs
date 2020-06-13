@@ -148,6 +148,10 @@ namespace Careoplane.Controllers
 
             foreach (FlightReservation flightReservation in reservations)
             {
+                if(flightReservation.Creator == user.UserName)
+                {
+                    varResult.TryAdd(flightReservation.ReservationId, new TOFlightReservation(flightReservation, _context));
+                }
                 foreach (FlightReservationDetail flightReservationDetail in flightReservation.FlightReservationDetails)
                 {
                     foreach(PassengerSeat passengerSeat in flightReservationDetail.PassengerSeats)
@@ -391,6 +395,11 @@ namespace Careoplane.Controllers
 
             var found = false;
             
+            if(flightReservation.Creator == username)
+            {
+                found = true;
+            }
+
             for(int i = 0; i < flightReservation.FlightReservationDetails[0].PassengerSeats.Count(); i++)
             {
                 if(flightReservation.FlightReservationDetails[0].PassengerSeats[i].Username == username)
@@ -659,10 +668,28 @@ namespace Careoplane.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<FlightReservation>> DeleteFlightReservation(int id)
         {
-            var flightReservation = await _context.FlightReservations.FindAsync(id);
+            var flightReservation = await _context.FlightReservations
+                .Include(reservation => reservation.FlightReservationDetails)
+                .ThenInclude(details => details.PassengerSeats)
+                .FirstAsync(reservation => reservation.ReservationId == id);
             if (flightReservation == null)
             {
                 return NotFound();
+            }
+
+            if(flightReservation.VehicleReservationId != 0)
+            {
+                await deleteVehicleReservation(flightReservation.VehicleReservationId);
+            }
+
+            foreach(FlightReservationDetail flightReservationDetail in flightReservation.FlightReservationDetails)
+            {
+                foreach(PassengerSeat passengerSeat in flightReservationDetail.PassengerSeats)
+                {
+                    Seat seat = await _context.Seats.FindAsync(passengerSeat.SeatId);
+                    seat.Occupied = false;
+                    _context.Entry(seat).State = EntityState.Modified;
+                }
             }
 
             _context.FlightReservations.Remove(flightReservation);

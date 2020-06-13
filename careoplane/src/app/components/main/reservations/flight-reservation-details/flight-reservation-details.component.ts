@@ -20,6 +20,7 @@ export class FlightReservationDetailsComponent implements OnInit {
   airlineScored: boolean[] = [];
   unauthenticatedUser: boolean = false;
   creator: boolean = false;
+  isPassenger: boolean = false;
   constructor(private ratingDialog: MatDialog, private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
@@ -37,6 +38,7 @@ export class FlightReservationDetailsComponent implements OnInit {
               for(let details of this.reservation.flightReservationDetails){
                 for(let passengerSeat of details.passengerSeats){
                   if(passengerSeat.username == this.username){
+                    this.isPassenger = true;
                     this.flightScored.push(passengerSeat.flightScored);
                     this.airlineScored.push(passengerSeat.airlineScored);
                   }
@@ -178,6 +180,18 @@ export class FlightReservationDetailsComponent implements OnInit {
   }
 
   CancelAll(){
-
+    this.airlineService.cancelReservation(this.reservation.reservationId).subscribe(
+      result => {
+        if(this.unauthenticatedUser){
+          this.router.navigateByUrl("/main");
+        }
+        else{
+          this.router.navigate(['../../../','reservations'],{relativeTo:this.activeRoute});
+        }
+      },
+      error => {
+        console.log(error);
+      }
+    )
   }
 }

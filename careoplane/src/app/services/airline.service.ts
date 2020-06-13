@@ -289,4 +289,9 @@ export class AirlineService {
     let address ='http://localhost:' + localStorage.getItem('port') + '/api/Seats/Flight/' + id;
     return this.http.get(address);
   }
+
+  cancelReservation(id: number){
+    let address ='http://localhost:' + localStorage.getItem('port') + '/api/FlightReservations/' + id;
+    return this.http.delete(address);
+  }
 }
