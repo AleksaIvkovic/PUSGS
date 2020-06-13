@@ -31,6 +31,10 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkRole(){
+    return localStorage.getItem('role');
+  }
+
   ngOnDestroy(): void {
   }
 

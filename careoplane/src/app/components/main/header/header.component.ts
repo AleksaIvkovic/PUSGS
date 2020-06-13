@@ -45,6 +45,7 @@ export class HeaderComponent implements OnInit {
         }
       );
     } else {
+      this.role = null;
       //this.router.navigate(['/main']);
     }
   }
@@ -131,6 +132,25 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  navigateHome(){
+    if (this.role === 'regular') {
+      this.router.navigate(['main']);
+    } else if (this.role === 'racAdmin') {
+      this.router.navigate(['main/rent-a-car-profile']);
+    } else if (this.role === 'racAdminNew') {
+      this.router.navigate(['main/new-rent-a-car-profile']);
+    } else if (this.role === 'aeroAdmin') {
+      this.router.navigate(['main/airline-profile/details']);
+    } else if (this.role === 'aeroAdminNew') {
+      this.router.navigate(['main/airline-profile/new']);
+    } else if (this.role === 'sysAdmin') {
+      this.router.navigate(['main/add-admin']);
+    }
+    else{
+      this.router.navigate(['main']);
+    }
+  }
+
   onProfile() {
     this.router.navigate(['/main/user-profile']);
   }
@@ -161,7 +181,8 @@ export class HeaderComponent implements OnInit {
     this.isNewAdmin = false;
     this.isSysAdmin = false;
     this.isFirstLogIn = false;
-
+    this.role = null;
+    
     this.router.navigate(['/main']);
   }
 

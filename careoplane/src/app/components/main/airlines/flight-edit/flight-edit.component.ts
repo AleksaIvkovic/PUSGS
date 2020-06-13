@@ -173,8 +173,9 @@ export class FlightEditComponent implements OnInit {
 
   checkDepartureDate(control: FormControl): {[s: string]: boolean} 
   {
-    if(new Date(control.value).valueOf() <= new Date().valueOf()){
-      return {'Date is incorrect': true};
+    if(new Date(control.value).valueOf() < new Date().valueOf()){
+      //return {'Date is incorrect': true};
+      return null;
     }
     return null; 
   }
@@ -182,7 +183,8 @@ export class FlightEditComponent implements OnInit {
   checkArrivalDate(control: FormControl): {[s: string]: boolean} 
   {
     if(new Date(control.value).valueOf() <= new Date(this.minArrivalDate).valueOf()){
-      return {'Date is incorrect': true};
+      //return {'Date is incorrect': true};
+      return null;
     }
     return null; 
   }

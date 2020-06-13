@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="height: 50px;">
-  <a routerLink="main/airlines"class="navbar-brand">Careoplane</a>
+  <a (click)="navigateHome()" style="cursor: pointer;" class="navbar-brand">Careoplane</a>
   <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav mat-h2">
           <li routerLinkActive="active" class="nav-item" *ngIf="!isAirlineAdmin && !isRentACarAdmin && !isSysAdmin"><a class="nav-link with-icon" routerLink="main/airlines"><mat-icon>airplanemode_active</mat-icon>&nbsp;Airlines</a></li>

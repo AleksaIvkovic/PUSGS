@@ -42,6 +42,7 @@ export class AirlinesListComponent implements OnInit {
   departure: Date;
   ret: Date;
   num: number;
+  showMessage: boolean = false;
 
   filteredOptionsOrigin: Observable<string[]>; 
   filteredOptionsDestination: Observable<string[]>; 
@@ -147,6 +148,7 @@ export class AirlinesListComponent implements OnInit {
   }
 
   onSearch(){
+    this.showMessage = true;
     this.airlineService.updateClassType(this.searchForm.value['classType']);
     this.classType = this.searchForm.value['classType'];
     this.origin = this.searchForm.value['origin'];

@@ -44,6 +44,7 @@ export class ChangePasswordComponent implements OnInit {
         console.log(res);
         if (res.succeeded) {
           localStorage.removeItem('tempPassword');
+          localStorage.removeItem('is-first-log-in');
           this.dialogRef.close('success');
         } else {
           if (res.errors[0].code === 'PasswordTooShort') {

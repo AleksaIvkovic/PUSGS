@@ -164,7 +164,7 @@ namespace Careoplane.Controllers
         {
             string role = User.Claims.First(c => c.Type == "Roles").Value;
 
-            if(role != "aeroAdmin")
+            if(role != "aeroAdmin" && role != "aeroAdminNew")
             {
                 return BadRequest("You are not authorised to do this action");
             }
