@@ -19,7 +19,7 @@
 <div *ngIf="expired">
     This invitation has expired
 </div>
-<div *ngIf="!expired" class="mat-h4">
+<div *ngIf="!expired && reservation != null" class="mat-h4">
     <div class="row" *ngIf="type==='invitation'">
         <div class="col-md-2">
             <button mat-raised-button color="primary" (click)="Accept()" style="width: 100px;">Accept</button>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -95,7 +95,13 @@
             <hr/>
         </div>
     </div>
-    <div *ngIf="reservation.vehicleReservationId != 0">
-        <app-vehicle-reservation-details [id]="reservation.vehicleReservationId" [type]="type"></app-vehicle-reservation-details>
+    <div *ngIf="reservation != null">
+        <div *ngIf="reservation.vehicleReservationId != 0">
+            <app-vehicle-reservation-details [id]="reservation.vehicleReservationId" [type]="type"></app-vehicle-reservation-details>
+        </div>
+    </div>
+    <br/>
+    <div class="mat-h2">
+        <strong>Final price is {{reservation.finalPrice | currency: 'EUR'}}</strong>
     </div>
 </div>

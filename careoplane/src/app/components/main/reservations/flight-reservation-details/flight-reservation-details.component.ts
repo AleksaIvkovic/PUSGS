@@ -11,7 +11,7 @@ import { RatingComponent } from 'src/app/components/rating/rating.component';
   styleUrls: ['./flight-reservation-details.component.scss']
 })
 export class FlightReservationDetailsComponent implements OnInit {
-  reservation: FlightReservation;
+  reservation: FlightReservation = null;
   type : string = null;
   username: string;
   expired: boolean = false;

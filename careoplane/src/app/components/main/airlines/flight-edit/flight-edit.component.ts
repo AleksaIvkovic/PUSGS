@@ -103,7 +103,7 @@ export class FlightEditComponent implements OnInit {
         'destination': new FormControl(this.flight.destination, [Validators.required, this.checkDestination.bind(this)]),
         'departure': new FormControl(this.flight.departure, [Validators.required, this.checkDepartureDate.bind(this)]),
         'arrival': new FormControl(this.flight.arrival, [Validators.required, this.checkArrivalDate.bind(this)]),
-        'distance': new FormControl(this.flight.distance, [Validators.required, Validators.min(1)]),
+        'distance': new FormControl(null, [Validators.required, Validators.min(1)]),
         'connectionsForm': this.connectionsForm
       });
     }

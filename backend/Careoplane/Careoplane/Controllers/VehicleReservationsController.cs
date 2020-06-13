@@ -98,15 +98,15 @@ namespace Careoplane.Controllers
 
         // GET: api/VehicleReservations/5
         [HttpGet("{id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<TOVehicleReservation>> GetVehicleReservation(int id)
         {
-            string role = User.Claims.First(c => c.Type == "Roles").Value;
+            //string role = User.Claims.First(c => c.Type == "Roles").Value;
 
-            if (role != "regular")
-            {
-                return BadRequest("You are not authorised to do this action");
-            }
+            //if (role != "regular")
+            //{
+            //    return BadRequest("You are not authorised to do this action");
+            //}
 
             var vehicleReservation = await _context.VehicleReservation.FindAsync(id);
 

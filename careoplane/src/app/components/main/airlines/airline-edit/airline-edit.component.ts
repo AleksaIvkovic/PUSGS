@@ -339,4 +339,15 @@ export class AirlineEditComponent implements OnInit {
       return true;
     }
   }
+
+  checkStreet(){
+    return (<FormGroup>this.group.controls['address']).controls['street'].hasError('required');
+  }
+
+  checkCity(){
+    return (<FormGroup>this.group.controls['address']).controls['city'].hasError('required');
+  }
+  checkCountry(){
+    return (<FormGroup>this.group.controls['address']).controls['country'].hasError('required');
+  }
 }
