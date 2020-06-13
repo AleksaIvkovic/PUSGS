@@ -22,6 +22,7 @@ export class GraphComponent implements OnInit, OnDestroy {
   vehicleSubscription;
   isSearched = false;
   profitText = '';
+  datePickerValue: Date = null;
 
   graphTypes = ['Day', 'Week', 'Month'];
   type = '';
@@ -128,6 +129,7 @@ export class GraphComponent implements OnInit, OnDestroy {
         break;
     }
     this.myChart.update();
+    this.OnDateChange(this.datePickerValue);
   }
 
   public OnDateChange(event): void {

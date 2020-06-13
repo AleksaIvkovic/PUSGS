@@ -94,7 +94,7 @@ export class UserAuthentificationComponent implements OnInit {
       });
     } else {
       this.registerForm = new FormGroup({
-        'username': this.isProfile ? new FormControl({'value': this.loggedInUser.userName, disabled: !this.isEdit}) : new FormControl(null, [Validators.required]),
+        'username': this.isProfile ? new FormControl({'value': this.loggedInUser.userName, disabled: !this.isEdit}) : new FormControl(null, [Validators.required, Validators.pattern('[a-zA-Z0-9]+')]),
         'email': this.isProfile ? new FormControl({'value': this.loggedInUser.email, disabled: !this.isEdit}, [Validators.required, Validators.email]) : new FormControl(null, [Validators.required, Validators.email]),
         'password': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : new FormControl(null, [Validators.required]),
         'confirmPassword': this.isProfile ? new FormControl({'value': null, disabled: !this.isEdit}, this.isChangePassword ? Validators.required : null) : this.confirmPasswordFormControl,
@@ -102,7 +102,7 @@ export class UserAuthentificationComponent implements OnInit {
         'name': this.isProfile ? new FormControl({'value': this.loggedInUser.name, disabled: !this.isEdit}, [Validators.required]) : new FormControl(null, [Validators.required]),
         'surname': this.isProfile ? new FormControl({'value': this.loggedInUser.surname, disabled: !this.isEdit}, [Validators.required]) : new FormControl(null, [Validators.required]),
         'city': this.isProfile ? new FormControl({'value': this.loggedInUser.city, disabled: !this.isEdit}, [Validators.required]) :  new FormControl(null, [Validators.required]),
-        'phone': this.isProfile ? new FormControl({'value': this.loggedInUser.phoneNumber, disabled: !this.isEdit}, [Validators.required]) : new FormControl(null, [Validators.required]),
+        'phone': this.isProfile ? new FormControl({'value': this.loggedInUser.phoneNumber, disabled: !this.isEdit}, [Validators.required, Validators.minLength(6), Validators.pattern('[+]?[0-9]+')]) : new FormControl(null, [Validators.required, , Validators.minLength(6), Validators.pattern('[+]?[0-9]+')]),
       }, 
       {validators: ConfirmPasswordValidator.MatchPassword});
   

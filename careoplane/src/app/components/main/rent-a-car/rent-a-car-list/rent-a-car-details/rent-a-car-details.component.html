@@ -31,15 +31,15 @@
             </tr>
             <tr>
                 <td>Rent A Car</td>
-                <td>€{{rentACar.prices[0]}}.00</td>
+                <td>{{rentACar.prices[0] | currency: 'EUR'}}</td>
             </tr>
             <tr>
                 <td>Rent A Van</td>
-                <td>€{{rentACar.prices[1]}}.00</td>
+                <td>{{rentACar.prices[1] | currency: 'EUR'}}</td>
             </tr>
             <tr>
                 <td>Rent A Truck</td>
-                <td>€{{rentACar.prices[2]}}.00</td>
+                <td>{{rentACar.prices[2] | currency: 'EUR'}}</td>
             </tr>
         </table>
     </div>

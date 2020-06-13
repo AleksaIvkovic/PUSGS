@@ -22,6 +22,7 @@
                         <input 
                             (dateInput)="OnDateChange($event.value)"
                             matInput 
+                            [(ngModel)] = "datePickerValue"
                             [matDatepicker]="picker" 
                             placeholder="Select date"
                             id="picker">

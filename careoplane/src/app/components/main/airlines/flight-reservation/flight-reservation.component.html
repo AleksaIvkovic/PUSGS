@@ -20,7 +20,7 @@
               </div>
               <div class="col-md-3">
                 <mat-form-field appearance="fill">
-                  <mat-label>username</mat-label>
+                  <mat-label>Username</mat-label>
                   <mat-select [formControlName]="'username'">
                     <mat-option *ngFor="let friend of friends" [value]="friend">
                       {{friend}}
@@ -89,7 +89,7 @@
               </div>
               <div class="col-md-2">
                 <mat-form-field appearance="fill">
-                  <mat-label>passenger</mat-label>
+                  <mat-label>Passenger</mat-label>
                   <mat-select [formControlName]="'passenger'">
                     <mat-option *ngFor="let passenger of passengersList" [value]="passenger">
                       {{passenger.username}}
@@ -129,7 +129,7 @@
                 </div>
                 <div class="col-md-3">
                   <mat-form-field appearance="fill">
-                    <mat-label>passenger</mat-label>
+                    <mat-label>Passenger</mat-label>
                     <mat-select [formControlName]="'passenger'">
                       <mat-option *ngFor="let passenger of passengersList" [value]="passenger">
                         {{passenger.username}}

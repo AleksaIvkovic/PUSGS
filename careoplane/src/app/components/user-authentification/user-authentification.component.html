@@ -74,6 +74,9 @@
                             <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
                                 Username is <strong>required</strong>
                             </mat-error>
+                            <mat-error *ngIf="registerForm.controls['username'].hasError('pattern')">
+                                Username <strong>must</strong> contain only letters and numbers
+                            </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -246,6 +249,12 @@
                             <mat-icon matSuffix>phone</mat-icon>
                         <mat-error *ngIf="registerForm.controls['phone'].hasError('required')">
                             Phone number is <strong>required</strong>
+                        </mat-error>
+                        <mat-error *ngIf="registerForm.controls['phone'].hasError('pattern')">
+                            Phone number <strong>must</strong> contain only numbers
+                        </mat-error>
+                        <mat-error *ngIf="registerForm.controls['phone'].hasError('minlength')">
+                            Phone number <strong>must</strong> be more than 6 digits long
                         </mat-error>
                         </mat-form-field>
                     </div>
