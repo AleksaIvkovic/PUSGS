@@ -8,7 +8,7 @@
 </div>
 <br>
 <br>
-<div class="row" *ngIf="type === 'reservation' && canCancel">
+<div class="row" *ngIf="type === 'reservation' && canCancel && notCombined">
     <div class="col-md">
         <button mat-raised-button color="warn" (click)="OnCancel()">Cancel</button>
     </div>

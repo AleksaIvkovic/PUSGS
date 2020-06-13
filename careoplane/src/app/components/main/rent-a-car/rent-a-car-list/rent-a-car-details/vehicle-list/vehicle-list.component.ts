@@ -275,7 +275,7 @@ export class VehicleListComponent implements OnInit, OnDestroy {
         if (!indexesToRemove.includes(this.searchedVehicles.indexOf(vehicle))) {
           let keep = true;
           for (let takenDate of vehicle.unavailableDates) {
-            if (takenDate.getDate() >= this.searchForm.value['pickerPickUp'].getDate() && takenDate.getDate() <= this.searchForm.value['pickerReturn'].getDate()) {
+            if (takenDate.valueOf() >= this.searchForm.value['pickerPickUp'].valueOf() && takenDate.valueOf() <= this.searchForm.value['pickerReturn'].valueOf()) {
               keep = false;
             }
           }

@@ -652,7 +652,7 @@ namespace Careoplane.Controllers
 
             MailingService.SendEMailReceipt(inviter, flightReservation, vehicle);
 
-            return CreatedAtAction("GetFlightReservation", new { id = flightReservation.ReservationId }, flightReservation);
+            return Ok();
         }
 
         // DELETE: api/FlightReservations/5

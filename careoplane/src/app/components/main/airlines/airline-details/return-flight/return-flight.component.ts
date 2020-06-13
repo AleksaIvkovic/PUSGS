@@ -42,4 +42,8 @@ export class ReturnFlightComponent implements OnInit, OnDestroy {
       'classType' : this.classType 
     }});
   }
+
+  CheckDate(flight: Flight){
+    return new Date(flight.departure).valueOf() > new Date().valueOf();
+  }
 }

@@ -103,11 +103,11 @@
                 Edit
             </button>
             <button mat-mini-fab color="warn" style="margin: 0 auto;" (click)="DeleteFastReservation()" *ngIf="fastTicket != null && admin">
-                X
+                <mat-icon>delete</mat-icon>
             </button>
             <div *ngIf="fastTicket == null && admin">
                 <button mat-mini-fab color="warn" style="margin: 0 auto;" (click)="DeleteFlight()" *ngIf="seatsValid">
-                    X
+                    <mat-icon>delete</mat-icon>
                 </button>
             </div>
         </div>

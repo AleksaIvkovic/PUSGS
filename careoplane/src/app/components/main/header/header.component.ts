@@ -91,7 +91,9 @@ export class HeaderComponent implements OnInit {
 
   checkUser() {
     if (this.role === 'regular') {
-      this.router.navigate(['/main']);
+      if (this.router.url.includes('user-authentification')) {
+        this.router.navigate(['main']);
+      }
     } else if (this.role === 'racAdmin') {
       this.isRentACarAdmin = true;
       this.router.navigate(['main/rent-a-car-profile']);

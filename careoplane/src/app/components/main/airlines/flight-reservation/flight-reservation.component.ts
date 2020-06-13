@@ -17,6 +17,8 @@ import { RentACar } from 'src/app/models/rent-a-car.model';
 import { Discount } from 'src/app/models/discount.model';
 import { DiscountService } from 'src/app/services/discount.service';
 import { Vehicle } from 'src/app/models/vehicle.model';
+import { MatDialog } from '@angular/material/dialog';
+import { LoadingComponent } from 'src/app/components/loading/loading.component';
 
 
 @Component({
@@ -73,6 +75,8 @@ export class FlightReservationComponent implements OnInit {
   numberOfUsedPoints: number = 0;
   oldPrice: number = 0;
 
+  dialogRef: any = null;
+
   constructor(
     private datePipe: DatePipe, 
     private userService: UserService, 
@@ -81,7 +85,8 @@ export class FlightReservationComponent implements OnInit {
     private activeRoute: ActivatedRoute, 
     private airlineService: AirlineService,
     private vehicleService: VehicleService,
-    private discountService: DiscountService
+    private discountService: DiscountService,
+    private loadingDialog: MatDialog
     ) {}
 
   ngOnInit(): void {
@@ -316,16 +321,19 @@ export class FlightReservationComponent implements OnInit {
         this.thirdFormGroup.reset();
         this.fourthFormGroup.reset();
         this.Reset();
+        this.dialogRef.close();
         this.router.navigate(['../../../'], {relativeTo: this.activeRoute});
       },
       error =>
       {
         console.log(error);
+        this.dialogRef.close();
       }
     )
   }
 
   Done(){
+    this.dialogRef = this.loadingDialog.open(LoadingComponent);
     if(this.vehicleReservation != null){
       this.vehicleService.reserveVehicle(this.vehicleReservation,this.rentACar,this.vehicle.version).subscribe(
         (result : any) => {
@@ -333,6 +341,7 @@ export class FlightReservationComponent implements OnInit {
         },
         error => {
           console.log(error);
+          this.dialogRef.close();
         }
       )
     }

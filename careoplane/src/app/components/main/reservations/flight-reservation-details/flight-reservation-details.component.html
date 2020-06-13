@@ -21,16 +21,19 @@
 </div>
 <div *ngIf="!expired" class="mat-h4">
     <div class="row" *ngIf="type==='invitation'">
-        <div class="col-md">
-            <button mat-raised-button color="primary" (click)="Accept()">Accept</button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <div class="col-md-2">
+            <button mat-raised-button color="primary" (click)="Accept()" style="width: 100px;">Accept</button>&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
-        <div class="col-md">
-            <button mat-raised-button color="warn" (click)="Cancel()">Decline</button>
+        <div class="col-md-2">
+            <button mat-raised-button color="warn" (click)="Cancel()" style="width: 100px;">Decline</button>
         </div>
     </div>
     <div class="row" *ngIf="type==='reservation' && canCancel">
-        <div class="col-md">
-            <button mat-raised-button color="warn" (click)="Cancel()">Cancel</button>
+        <div class="col-md-2">
+            <button mat-raised-button color="warn" (click)="Cancel()" style="width: 100px;">Cancel</button>
+        </div>
+        <div class="col-md-2" *ngIf="creator">
+            <button mat-raised-button color="warn" (click)="CancelAll()" style="width: 100px;">Cancel All</button>
         </div>
     </div>
     <br/>

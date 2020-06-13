@@ -127,6 +127,7 @@ export class SeatSelectorComponent implements OnInit {
     
     this.airlineService.ticketDone.subscribe(value => {
       if(value != null && value.flightId != -1){
+        this.flight.version = this.flight.version + 1;
         for(let seat of this.flight.seats){
           if(seat.name == value.name){
             seat.discount = value.discount;

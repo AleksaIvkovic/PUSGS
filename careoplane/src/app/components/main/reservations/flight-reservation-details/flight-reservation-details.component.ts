@@ -19,6 +19,7 @@ export class FlightReservationDetailsComponent implements OnInit {
   flightScored: boolean[] = [];
   airlineScored: boolean[] = [];
   unauthenticatedUser: boolean = false;
+  creator: boolean = false;
   constructor(private ratingDialog: MatDialog, private activeRoute: ActivatedRoute, private router: Router, private airlineService: AirlineService) { }
 
   ngOnInit(): void {
@@ -41,6 +42,8 @@ export class FlightReservationDetailsComponent implements OnInit {
                   }
                 }
               }
+
+              this.creator = this.reservation.creator == localStorage.getItem('username') ? true: false;
             },
             error => {
               console.log(error);
@@ -172,5 +175,9 @@ export class FlightReservationDetailsComponent implements OnInit {
     }
     else
       this.canCancel = false;
+  }
+
+  CancelAll(){
+
   }
 }

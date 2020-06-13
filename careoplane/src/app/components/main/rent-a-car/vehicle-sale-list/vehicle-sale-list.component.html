@@ -34,38 +34,43 @@
 </div>
 <br>
 <div *ngIf="showTable">
-    <div class="row">
-        <div class="col-md-2 mat-body-strong">
-            Rent a Car
-        </div>
-        <div class="col-md-2 mat-body-strong">
-            Brand
-        </div>
-        <div class="col-md-1 mat-body-strong">
-            Type
-        </div>
-        <div class="col-md-1 mat-body-strong">
-            Seats
-        </div>
-        <div class="col-md-1 mat-body-strong">
-            Rating
-        </div>
-        <div class="col-md-1 mat-body-strong">
-            Price
-        </div>
+    <div *ngIf="vehicles.length == 0" class="mat-h3">
+        &nbsp;&nbsp;&nbsp;<b>We are sorry, there are currently no vehicles for the selected dates.</b>
     </div>
-    <hr>
-    <div class="row">
-        <div class="col-md-12">
-            <div *ngFor="let vehicle of vehicles;">
-                <app-vehicle-sale-item 
-                [location]='location' 
-                [fromDate]='fromDate' 
-                [toDate]='toDate' 
-                [vehicle]="vehicle" 
-                [discount]="discount" 
-                [numberOfDays]="numberOfDays">
-            </app-vehicle-sale-item>
+    <div *ngIf="vehicles.length != 0">
+        <div class="row">
+            <div class="col-md-2 mat-body-strong">
+                Rent a Car
+            </div>
+            <div class="col-md-2 mat-body-strong">
+                Brand
+            </div>
+            <div class="col-md-1 mat-body-strong">
+                Type
+            </div>
+            <div class="col-md-1 mat-body-strong">
+                Seats
+            </div>
+            <div class="col-md-1 mat-body-strong">
+                Rating
+            </div>
+            <div class="col-md-1 mat-body-strong">
+                Price
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <div *ngFor="let vehicle of vehicles;">
+                    <app-vehicle-sale-item 
+                    [location]='location' 
+                    [fromDate]='fromDate' 
+                    [toDate]='toDate' 
+                    [vehicle]="vehicle" 
+                    [discount]="discount" 
+                    [numberOfDays]="numberOfDays">
+                </app-vehicle-sale-item>
+                </div>
             </div>
         </div>
     </div>

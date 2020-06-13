@@ -114,6 +114,7 @@ import { VehicleReservationDetailsComponent } from './components/main/reservatio
 import { VehicleSaleListComponent } from './components/main/rent-a-car/vehicle-sale-list/vehicle-sale-list.component';
 import { VehicleSaleItemComponent } from './components/main/rent-a-car/vehicle-sale-list/vehicle-sale-item/vehicle-sale-item.component';
 import { UnauthorizedComponent } from './components/unauthorized/unauthorized.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 export function socialConfigs() {  
   const config = new AuthServiceConfig(  
@@ -189,6 +190,7 @@ export function socialConfigs() {
     VehicleSaleListComponent,
     VehicleSaleItemComponent,
     UnauthorizedComponent,
+    LoadingComponent,
   ],
   entryComponents: [
     LogInComponent

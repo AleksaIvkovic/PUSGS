@@ -63,8 +63,8 @@ export class VehicleSaleListComponent implements OnInit {
           let tempToVehicle = Object.assign(new TOVehicle('','',0,0,0,'',0,[],true,''), toVehicle);
           this.vehicles.push(tempToVehicle.ToRegular());
           this.numberOfDays = (this.toDate.setHours(0,0) - this.fromDate.setHours(0,0))  / 1000 / 60 / 60 / 24 + 1;
-          this.showTable = true;
         })
+        this.showTable = true;
       },
       error => {
         console.log(error);

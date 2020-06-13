@@ -139,6 +139,10 @@ export class VehicleDetailsComponent implements OnInit, OnDestroy {
     );
   }
 
+  checkRole(){
+    return localStorage.getItem('role');
+  }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
