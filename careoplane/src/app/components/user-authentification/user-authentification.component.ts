@@ -6,6 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { User } from 'src/app/models/user.model';
 import { ConfirmPasswordValidator } from 'src/app/validators/confirm-password.validator';
 import { Observable } from 'rxjs';
+import { ChangePasswordComponent } from '../change-password/change-password.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-authentification',
@@ -21,6 +23,7 @@ export class UserAuthentificationComponent implements OnInit {
   confirmPassword: string;
   confirmPasswordFormControl = new FormControl(null, [Validators.required]); //, this.comparePasswords.bind(this)
 
+  isFirstLogIn = false;
   isProfile = false;
   isEdit = false;
   loggedInUser: User;
@@ -35,7 +38,8 @@ export class UserAuthentificationComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private logInDialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
@@ -76,6 +80,14 @@ export class UserAuthentificationComponent implements OnInit {
 
   initForm() {
     if (this.isAddAdmin) {
+      this.isFirstLogIn = localStorage.getItem('is-first-log-in') == 'true';
+      if (this.isFirstLogIn) {
+        let dialogRef = this.logInDialog.open(
+          ChangePasswordComponent, {
+            data: {password: '', confirmPassword: ''}
+          }
+        );
+      }
       this.addForm = new FormGroup({
         'email': new FormControl(null, [Validators.required, Validators.email]),
         'type':  new FormControl(this.adminType[0]),

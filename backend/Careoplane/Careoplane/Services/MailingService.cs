@@ -96,5 +96,56 @@ namespace Careoplane.Services
                 throw ex;
             }
         }
+
+        public static void SendEmailVerification(AppUser applicationUser,string role, string token, string password)
+        {
+            MailAddress to = new MailAddress(applicationUser.Email, applicationUser.Name);
+            MailAddress from = new MailAddress("careoplane@gmail.com", "Careoplane");
+
+            MailMessage message = new MailMessage(from, to);
+            message.Subject = "Careoplane - Verify Account";
+
+            var link = string.Format("http://localhost:4200/main/confirmation?username={0}&token={1}", applicationUser.UserName, token);
+
+            string text = string.Format("Hello {0},\n\n\t", applicationUser.Name);
+
+            if (role == "aeroAdminNew" ||
+                role == "racAdminNew" ||
+                role == "sysAdmin")
+            {
+                text += string.Format("Your temporary password is {0}. Please make sure you change it on your first log in.\n\n\t", password);
+            }
+
+            text += string.Format("Please verify your account by visiting the link below\n\n\t{0}\n\n\t", link);
+            if (role == "aeroAdminNew" ||
+             role == "racAdminNew" ||
+             role == "sysAdmin")
+            {
+                text += "We look forward to working with you,\n\tCareoplane";
+            }
+            else
+            {
+                text += "Hope you travel soon,\n\tCareoplane";
+            }
+
+            message.Body = text;
+
+            SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
+            {
+                Credentials = new NetworkCredential("careoplane@gmail.com", "Careoplane11-9"),
+                EnableSsl = true
+            };
+            // code in brackets above needed if authentication required 
+
+            try
+            {
+                client.Send(message);
+            }
+            catch (SmtpException ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw ex;
+            }
+        }
     }
 }

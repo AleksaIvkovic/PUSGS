@@ -154,44 +154,47 @@ export class UserService {
 
         this.getAllUsers().subscribe(
             response => {
-              this.people = response;
+                this.people = response;
 
-              let counter = 0;
-              for(let person of this.people){
-                  if(person.userName == user.userName){
-                    this.people.splice(counter,1);
-                    break;
-                  }
-                  counter++;
-              }
-
-              counter = 0;
-              for(let person of this.people){
+                for(let person of this.people){
+                    if(person.userName == user.userName){
+                        this.people.splice(this.people.indexOf(person), 1);
+                        break;
+                    }
+                }
+                
                 for(let friend of this.requests){
-                    if(person.userName == friend.friendA.userName){
-                        this.people.splice(counter,1);
-                        break;
+                    for(let person of this.people){
+                        if(person.userName == friend.friendA.userName){
+                            this.people.splice(this.people.indexOf(person), 1);
+                            break;
+                        }
                     }
                 }
-                counter++;
-              }
-              
-              counter = 0;
-              for(let person of this.people){
-                for(let friend of this.friends){
-                    if(person.userName == friend.friendA.userName){
-                        this.people.splice(counter,1);
-                        break;
-                    }
-                    else if(person.userName == friend.friendB.userName){
-                        this.people.splice(counter,1);
-                        break;
+                
+                for(let friend of this.sent){
+                    for(let person of this.people){
+                        if(person.userName == friend.friendB.userName){
+                            this.people.splice(this.people.indexOf(person), 1);
+                            break;
+                        }
                     }
                 }
-                counter++;
-              }
 
-              this.searchUser.next(this.people);
+                for(let friend of this.friends){
+                    for(let person of  this.people){
+                        if(person.userName == friend.friendA.userName){
+                            this.people.splice(this.people.indexOf(person), 1);
+                            break;
+                        }
+                        else if(person.userName == friend.friendB.userName){
+                            this.people.splice(this.people.indexOf(person), 1);
+                            break;
+                        }
+                    }
+                }
+
+                this.searchUser.next(this.people);
             }
         );
         

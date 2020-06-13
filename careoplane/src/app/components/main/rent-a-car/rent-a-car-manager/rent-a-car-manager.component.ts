@@ -166,6 +166,8 @@ export class RentACarManagerComponent implements OnInit {
           this.userService.updateCompanyName(response['name']).subscribe(
             (response: any) => {
               localStorage.setItem('company', response.company)
+              let role = localStorage.getItem('role');
+              localStorage.setItem('role', role.substr(0, role.length-3));
               this._snackBar.open('Rent a car service created successfully', 'OK', {duration: 5000,});
               this.addForm.reset();
               this.router.navigate(['main/rent-a-car-profile']);

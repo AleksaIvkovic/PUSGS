@@ -202,6 +202,8 @@ export class AirlineEditComponent implements OnInit {
           
               this.airlineService.saveImage(formData).subscribe(
                 result => {
+                  let role = localStorage.getItem('role');
+                  localStorage.setItem('role', role.substr(0, role.length-3));
                   this.group.reset();
                   this.uploadedFile = null;
                   this.router.navigate(['../../airline-profile'],{relativeTo : this.activeRoute});

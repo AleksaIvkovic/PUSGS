@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Careoplane.Database;
 using Careoplane.Models;
+using Careoplane.Services;
 using Careoplane.TOModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -232,47 +233,9 @@ namespace Careoplane.Controllers
                 {
                     await _userManager.AddToRoleAsync(applicationUser, model.Role);
 
-                    MailAddress to = new MailAddress(applicationUser.Email, applicationUser.Name);
-                    MailAddress from = new MailAddress("careoplane@gmail.com", "Careoplane");
+                    string token = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
 
-                    MailMessage message = new MailMessage(from, to);
-                    message.Subject = "Careoplane - Verify Account";
-
-                    var link = string.Format("http://localhost:4200/main/confirmation?username={0}&token={1}", applicationUser.UserName, await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser));
-
-                    string text = string.Format("Hello {0},\n\n\tPlease verify your account by visiting the link below\n\t{1}", applicationUser.Name, link);
-                    string html = "Hello " + applicationUser.Name + ",\n\n\tPlease verify your account by visiting the link : <a href=\"" + link + "\">link</a><br/><br/>";
-
-                    html += HttpUtility.HtmlEncode(@"Or click on the copy the following link on the browser: " + link);
-
-                    if (model.Role == "aeroAdminNew" || 
-                        model.Role == "racAdminNew" || 
-                        model.Role == "sysAdmin")
-                    {
-                        text += string.Format("\n\n\tYour temporary password is {0}. Please make sure you change it on your first log in.", model.Password);
-                        html += string.Format("\n\n\tYour temporary password is {0}. Please make sure you change it on your first log in.", model.Password);
-                    }
-
-                    message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(text, null, MediaTypeNames.Text.Plain));
-                    message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(html, null, MediaTypeNames.Text.Html));
-
-
-                    SmtpClient client = new SmtpClient("smtp.gmail.com", 587)
-                    {
-                        Credentials = new NetworkCredential("careoplane@gmail.com", "Careoplane11-9"),
-                        EnableSsl = true
-                    };
-                    // code in brackets above needed if authentication required 
-
-                    try
-                    {
-                        client.Send(message);
-                    }
-                    catch (SmtpException ex)
-                    {
-                        Console.WriteLine(ex.ToString());
-                        throw ex;
-                    }
+                    MailingService.SendEmailVerification(applicationUser, model.Role, token, model.Password);
                 }
                 
                 return Ok(result);
